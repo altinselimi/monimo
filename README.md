@@ -1,4 +1,4 @@
-# momonimo
+# monimo
 
 ## Project setup
 ```

@@ -1,6 +1,18 @@
 import Vue from 'vue'
 import App from './App.vue'
 import './registerServiceWorker'
+import Axios from 'axios';
+import './routes';
+
+Axios.defaults.headers.common.Accept = 'application/json';
+
+Vue.$http = Axios;
+
+Object.defineProperty(Vue.prototype, '$http', {
+	get() {
+		return Axios;
+	},
+});
 
 Vue.config.productionTip = false
 
