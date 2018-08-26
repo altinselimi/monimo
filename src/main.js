@@ -5,7 +5,12 @@ import Axios from 'axios';
 import './routes';
 
 Axios.defaults.headers.common.Accept = 'application/json';
-Axios.defaults.baseURL = `$https://monimo-api.herokuapp.com/`;
+let baseURL = `$https://monimo-api.herokuapp.com/`;
+if(process.env.NODE_ENV !== 'production') {
+	baseURL = 'http://localhost:6069';
+}
+console.log('Env:', process.env.NODE_ENV);
+Axios.defaults.baseURL = baseURL;
 Vue.$http = Axios;
 
 Object.defineProperty(Vue.prototype, '$http', {
