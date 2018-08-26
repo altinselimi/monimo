@@ -54,7 +54,7 @@
 				</button>
 				<div class="next-up" v-if="isCurrentlyWatching && isCurrentlyWatching.next_up">
 					<h1>{{isCurrentlyWatching.next_not_aired || isCurrentlyWatching.finished ? 'Last Watched' : 'Next Up'}}</h1>
-					<episode-card :episode="isCurrentlyWatching.next_up" @watchit="watchEpisode" style="margin: 0px;"></episode-card>
+					<episode-card :episode="isCurrentlyWatching.next_up" @watchit="watchEpisode(episode, isCurrentlyWatching.next_up.last_watched_index++)" style="margin: 0px;"></episode-card>
 				</div>
 			</div>
 			<div class="episodes-section">
