@@ -1,9 +1,9 @@
 <template>
 	<div class="home">
-		<headerr></headerr>
+		<headerr :ifHome="back_button"></headerr>
 		<categories-section :categories="_genres" @addCategory="addCategory"></categories-section>
 		<movie-carousel :movies="currently_watching" title="Continue Watching" @navigate="openAnime" v-if="currently_watching.length"></movie-carousel>
-		<movie-carousel :movies="getting_animes ? [1,2,3,4,5,6,7] : filtered_animes" :title="resultsTitle" @navigate="openAnime" :loading="getting_animes"></movie-carousel>
+		<movie-carousel :showLoader="getting_anime_info" :movies="getting_animes ? [1,2,3,4,5,6,7] : filtered_animes" :title="resultsTitle" @navigate="openAnime" :loading="getting_animes"></movie-carousel>
 		<movie-carousel :movies="favorite_animes" title="Favorites" @navigate="openAnime" v-if="favorite_animes.length > 0"></movie-carousel>
 		<doggo></doggo>
 	</div>
@@ -50,6 +50,8 @@ export default {
 		},
 	},
 	data: () => ({
+		back_button : true, 
+		getting_anime_info: null,
 		getting_animes: false,
 		genres: [{ "name": "action", "id": 57 }, { "name": "adventure", "id": 58 }, { "name": "drama", "id": 60 }, { "name": "fantasy", "id": 77 }, { "name": "horror", "id": 71 }, { "name": "kids", "id": 95 }, { "name": "mystery", "id": 63 }, { "name": "psychological", "id": 73 }, { "name": "romance", "id": 67 }, { "name": "school", "id": 78 }, { "name": "sci-fi", "id": 61 }, { "name": "sports", "id": 65 }, { "name": "thriller", "id": 74 }]
 	}),
@@ -57,16 +59,15 @@ export default {
 		...mapActions(['getAnimes', 'getAnimeDetails']),
 		...mapMutations(['SET_CURRENT_ANIME', 'ADD_PREFERRED_GENRE', 'REMOVE_PREFERRED_GENRE']),
 		openAnime(anime) {
-			this.loading = anime.id;
 			if (this.animes_w_details[anime.id]) {
 				this.SET_CURRENT_ANIME(this.animes_w_details[anime.id]);
 				this.$router.push(`/anime/${anime.id}`);
 			} else {
+				this.getting_anime_info = anime.id;
 				this.getAnimeDetails(anime.id).then(res => {
 					this.$router.push(`/anime/${anime.id}`);
-					this.loading = false;
+					this.getting_anime_info = null;
 				}).catch(err => {
-					this.loading = false;
 					throw err;
 				});
 			}

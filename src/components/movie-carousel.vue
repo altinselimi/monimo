@@ -4,7 +4,7 @@
 		<ul class="movie-carousel">
 			<li v-for="movie in movies" v-if="movies">
 				<a tabindex="0">
-					<movie-card :movie="movie" @click.native="$emit('navigate', movie)" :loading="loading">
+					<movie-card :movie="movie" @click.native="$emit('navigate', movie)" :showLoader="movie.id === showLoader" :loading="loading">
 					</movie-card>
 				</a>
 			</li>
@@ -13,7 +13,7 @@
 </template>
 <script>
 export default {
-	props: ['movies', 'loading', 'title'],
+	props: ['movies', 'loading', 'title', 'showLoader'],
 	components: {
 		movieCard: () =>
 			import ('./movie-card.vue'),

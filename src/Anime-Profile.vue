@@ -62,7 +62,7 @@
 					<h1>Episodes</h1>
 					<ul class="episodes">
 						<li v-for="(episode, index) in current_anime.episodes">
-							<episode-card :episode="episode" @watchit="watchEpisode(episode, index)" :current="isCurrentlyWatching && isCurrentlyWatching.next_up.last_watched_index === index"></episode-card>
+							<episode-card :showLoader="index === start_episode" :episode="episode" @watchit="watchEpisode(episode, index)" :current="isCurrentlyWatching && isCurrentlyWatching.next_up.last_watched_index === index"></episode-card>
 						</li>
 					</ul>
 				</div>
@@ -75,6 +75,9 @@ import { mapActions, mapMutations, mapState } from 'vuex';
 
 export default {
 	name: 'anime-profile',
+	data:()=>({
+		start_episode:null,
+	}),
 	components: {
 		episodeCard: () =>
 			import ('./components/episode-card'),
@@ -113,6 +116,7 @@ export default {
 			return Math.floor(Math.random() * Math.floor(max));
 		},
 		watchEpisode(_episode, index) {
+			this.start_episode = index;
 			let { slug, episode_count, status } = this.current_anime.info;
 			let { episodes } = this.current_anime;
 			let episode = _episode.info.episode;
@@ -131,6 +135,7 @@ export default {
 					this.ADD_TO_WATCHING({ ...this.current_anime, ['next_up']: next_up, ['next_not_aired']: true })
 
 				this.$router.push(`/anime/${this.current_anime.info.id}/watch/${btoa(result.data.src)}`);
+				this.start_episode = null;
 			}).catch(err => {
 				throw err;
 			});
