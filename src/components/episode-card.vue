@@ -80,7 +80,6 @@ export default {
             animation: spin 1s linear infinite;
         }
     }
-
 .holder {
 	position: relative;
 	padding: 0 0 56.25%;
