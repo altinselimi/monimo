@@ -4,18 +4,24 @@ Vue.use(VueRouter);
 
 let routes = [{
 	path: '/home',
-	component: () => import('./Home.vue'),
+	component: () =>
+		import ('./Home.vue'),
 }, {
 	path: '/anime/:id',
-	component: () => import('./Anime-Profile.vue'),
+	component: () =>
+		import ('./Anime-Profile.vue'),
 }, {
 	path: '/anime/:id/watch/:src',
-	component: () => import('./Player.vue'),
+	component: () =>
+		import ('./Player.vue'),
 }, {
 	path: '/*',
 	redirect: '/home',
 }];
 
 export const router = new VueRouter({
+	scrollBehavior() {
+		return { x: 0, y: 0 };
+	},
 	routes,
 });

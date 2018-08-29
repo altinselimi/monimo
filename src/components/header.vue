@@ -64,6 +64,13 @@ export default {
 			}, 1000);
 			timeouts++;
 		},
+		surpriseMe() {
+			this.$http.get('/surprise-anime').then(res => {
+				console.log('Result:', res);
+			}).catch(err => {
+				throw err;
+			});
+		},
 		...mapActions(['getAnimes']),
 		...mapMutations(['UPDATE_SEARCH_QUERY']),
 		searchAnimes() {
