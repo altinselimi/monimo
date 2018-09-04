@@ -1,0 +1,389 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"iframe",
+				"iframe_src"
+			],
+			[
+				"schema",
+				"schema_object"
+			],
+			[
+				"case",
+				"caseId"
+			],
+			[
+				"slot",
+				"outline_slots"
+			],
+			[
+				"cell",
+				"cell_height"
+			],
+			[
+				"new_",
+				"new_appointment_model"
+			],
+			[
+				"new",
+				"new_appointment_model"
+			],
+			[
+				"target",
+				"target_hour_to"
+			],
+			[
+				"existin",
+				"existingAppointments"
+			],
+			[
+				"generate",
+				"generateCalendarProperties"
+			],
+			[
+				"shared",
+				"sharedObject"
+			],
+			[
+				"existing",
+				"existing_disposition_charges"
+			],
+			[
+				"maximi",
+				"Maximize2Icon"
+			],
+			[
+				"constur",
+				"constructed_results"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"remove",
+				"Package Control: Remove Package"
+			],
+			[
+				"arduino",
+				"Set Syntax: Arduino"
+			],
+			[
+				"prettify",
+				"HTMLPrettify: Set Plugin Options"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"ayu",
+				"ayu: Activate theme"
+			],
+			[
+				"instal",
+				"Package Control: Install Package"
+			]
+		],
+		"width": 0.0
+	},
+	"console":
+	{
+		"height": 0.0,
+		"history":
+		[
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/Users/altinselimi/Documents/Fun/momonimo",
+		"/Users/altinselimi/Documents/Fun/momonimo/src"
+	],
+	"file_history":
+	[
+		"/Users/altinselimi/Documents/Fun/momonimo/src/main.js",
+		"/Users/altinselimi/Documents/Fun/momonimo/.gitignore",
+		"/Users/altinselimi/Documents/Backend/monimo/server.js",
+		"/Users/altinselimi/Documents/Fun/momonimo/src/Player.vue",
+		"/Users/altinselimi/Documents/Fun/momonimo/src/Anime-Profile.vue",
+		"/Users/altinselimi/Downloads/landing_page/index.html",
+		"/Users/altinselimi/Downloads/landing_page/style.css",
+		"/Users/altinselimi/Documents/Backend/monimo/package-lock.json",
+		"/Users/altinselimi/Documents/Backend/monimo/package.json",
+		"/Users/altinselimi/Documents/Backend/monimo/.gitignore",
+		"/Users/altinselimi/Documents/Fun/momonimo/package.json",
+		"/Users/altinselimi/Documents/Fun/momonimo/public/img/icons/site.webmanifest",
+		"/Users/altinselimi/Documents/Fun/momonimo/public/index.html",
+		"/Users/altinselimi/Documents/Fun/momonimo/src/components/header.vue",
+		"/Users/altinselimi/Documents/Fun/momonimo/package-lock.json",
+		"/Users/altinselimi/Documents/Fun/momonimo/public/manifest.json",
+		"/Users/altinselimi/Documents/Fun/momonimo/README.md",
+		"/Users/altinselimi/Documents/Fun/momonimo/src/App.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/package.json",
+		"/Users/altinselimi/Documents/Fun/momonimo/src/components/episode-card.vue",
+		"/Users/altinselimi/Documents/Fun/momonimo/src/Home.vue",
+		"/Users/altinselimi/Documents/Fun/momonimo/src/components/movie-carousel.vue",
+		"/Users/altinselimi/Documents/Fun/momonimo/src/store.js",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/views/cases/case-update/case-update.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/views/cases/case-update/update-blocks/close-actions.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/views/cases/case-update/update-blocks/details-block.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/components/schema-form.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/mixins/schema-parser.js",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/views/cases/case-edit/case-edit.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/views/cases/case-update/update-blocks/adjourvents.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/views/cases/case-update/update-blocks/case-notes.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/views/cases/new-case/Index.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/components/custom-table.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/views/cases/new-case/case-form.vue",
+		"/Users/altinselimi/Documents/Fun/momonimo/src/components/movie-card.vue",
+		"/Users/altinselimi/Documents/Fun/momonimo/src/components/categories.vue",
+		"/Users/altinselimi/Documents/Fun/momonimo/src/routes.js",
+		"/Users/altinselimi/Documents/Fun/momonimo/src/Main-Screen.vue",
+		"/Users/altinselimi/Documents/Fun/momonimo/src/registerServiceWorker.js",
+		"/Users/altinselimi/Documents/Backend/mystars/server.js",
+		"/Users/altinselimi/Documents/Backend/mystars/package.json",
+		"/Users/altinselimi/Documents/Backend/mystars/.gitignore",
+		"/Users/altinselimi/Documents/Fun/momonimo/src/components/doggo.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/main.js",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/docs/guide/architecture.md",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/docs/_sidebar.md",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/docs/_coverpage.md",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/docs/guide/third-parties.md",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/docs/guide/getting-started.md",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/docs/index.html",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/docs/guide/design-pattern.md",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/docs/guide/intro.md",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/docs/guide/_sidebar.md",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/docs/README.md",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/docs/main.js",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/docs/components/schema-form.md",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/docs/components/custom-table.md",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/views/login/login.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/routes/index.js",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/views/login/new-password.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/utils/index.js",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/plugins/vue-router.js",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/views/login/forgot-password.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/views/login/reset-password.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/App.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/views/dashboard.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/views/login/layout.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/views/login/reset-password_json_schema.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/styling/_variables.scss",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/mixins/case.js",
+		"/Users/altinselimi/Documents/Fun/sticko/src/content/checkbox.vue",
+		"/Users/altinselimi/Documents/Fun/sticko/src/popup/root.vue",
+		"/Users/altinselimi/Documents/Fun/sticko/src/content/notes.vue",
+		"/Users/altinselimi/Documents/Fun/sticko/src/content/inject.js",
+		"/Users/altinselimi/Documents/Fun/sticko/src/store/index.js",
+		"/Users/altinselimi/Documents/Fun/sticko/src/manifest.js",
+		"/Users/altinselimi/Documents/Fun/sticko/package.json",
+		"/Users/altinselimi/Documents/Fun/sticko/src/popup/index.js",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/views/cases/case-update/update-blocks/people.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/store/modules/persons/index.js",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/views/login.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/store/index.js",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/views/person-page/index.vue",
+		"/Users/altinselimi/Documents/Frontend/casetabFrontEnd/src/views/cases/case-edit/_case-edit.vue",
+		"/Users/altinselimi/Documents/Fun/kalendar/README.md",
+		"/Users/altinselimi/Documents/Fun/kalendar/package.json",
+		"/Users/altinselimi/Documents/Fun/kalendar/src/components/kalendar-components/main.scss",
+		"/Users/altinselimi/Documents/Fun/calendarium/index.html",
+		"/Users/altinselimi/Documents/Fun/calendarium/src/components/quick-intro.vue",
+		"/Users/altinselimi/Documents/Fun/calendarium/package.json",
+		"/Users/altinselimi/Documents/Fun/calendarium/src/components/options.vue",
+		"/Users/altinselimi/Documents/Fun/calendarium/src/components/Hello.vue",
+		"/Users/altinselimi/Documents/Fun/calendarium/node_modules/kalendar-vue/dist/kalendar-vue.common.js",
+		"/Users/altinselimi/Documents/Fun/calendarium/src/main.js",
+		"/Users/altinselimi/Documents/Fun/calendarium/src/App.vue",
+		"/Users/altinselimi/Documents/Fun/calendarium/static/kalendar/demo.html",
+		"/Users/altinselimi/Documents/Fun/kalendar/src/components/kalendar-components/kalendar-cell.vue",
+		"/Users/altinselimi/Documents/Fun/kalendar/src/components/kalendar-components/kalendar-container.vue",
+		"/Users/altinselimi/Documents/Fun/kalendar/src/components/HelloWorld.vue",
+		"/Users/altinselimi/Documents/Fun/kalendar/src/components/index.js",
+		"/Users/altinselimi/Documents/Fun/kalendar/src/components/kalendar-components/kalendar-day.vue",
+		"/Users/altinselimi/Documents/Fun/kalendar/src/components/kalendar-components/kalendar-weekview.vue",
+		"/Users/altinselimi/Documents/Fun/calendarium/node_modules/kalendar-vue/src/main.js",
+		"/Users/altinselimi/Documents/Fun/calendarium/src/components/Calendar/Container.vue",
+		"/Users/altinselimi/Documents/Fun/sticko/src/backend/index.js",
+		"/Users/altinselimi/Documents/Frontend/AUMS-Frontend/src/main.js",
+		"/Users/altinselimi/Documents/Frontend/AUMS-Frontend/package.json",
+		"/Users/altinselimi/Documents/Frontend/AUMS-Frontend/src/app.vue",
+		"/Users/altinselimi/Documents/Frontend/AUMS-Frontend/src/plugins/axios.js",
+		"/Users/altinselimi/Documents/Frontend/AUMS-Frontend/src/bootstrap.js",
+		"/Users/altinselimi/Documents/Frontend/AUMS-Frontend/src/plugins/vuex-router-sync.js",
+		"/Users/altinselimi/Documents/Frontend/AUMS-Frontend/src/plugins/vuex.js",
+		"/Users/altinselimi/Documents/Frontend/AUMS-Frontend/src/plugins/vue-router.js",
+		"/Users/altinselimi/Documents/Fun/calendarium/src/components/Calendar/Day.vue",
+		"/Users/altinselimi/Documents/Fun/calendarium/src/components/Calendar/Cell.vue",
+		"/Users/altinselimi/Documents/Fun/calendarium/src/components/Calendar/WeekView.vue",
+		"/Users/altinselimi/Documents/Fun/calendarium/src/components/Calendar/EventPopup.vue",
+		"/Users/altinselimi/Documents/Fun/calendarium/build/webpack.prod.conf.js",
+		"/Users/altinselimi/Documents/Fun/calendarium/build/utils.js",
+		"/Users/altinselimi/Documents/Fun/calendarium/build/webpack.dev.conf.js",
+		"/Users/altinselimi/Documents/Fun/calendarium/build/service-worker-dev.js",
+		"/Users/altinselimi/Documents/Fun/calendarium/build/service-worker-prod.js",
+		"/Users/altinselimi/Documents/Fun/calendarium/build/load-minified.js",
+		"/Users/altinselimi/Documents/Fun/calendarium/src/components/Calendar/filters.js",
+		"/Users/altinselimi/Documents/Arduino/WifiWebClient/WifiWebClient.ino",
+		"/Users/altinselimi/Documents/Arduino/libraries/OLED_Display_128X64-master/examples/OLED_Hello_World/OLED_Hello_World.ino",
+		"/Users/altinselimi/Documents/Arduino/WifiWebClient/Adafruit_GFX.h",
+		"/Users/altinselimi/Documents/Arduino/WifiWebClient/Adafruit_SSD1306.h"
+	],
+	"find":
+	{
+		"height": 54.0
+	},
+	"find_in_files":
+	{
+		"height": 134.0,
+		"where_history":
+		[
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 26.0
+	},
+	"input":
+	{
+		"height": 48.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.stino_build_panel":
+	{
+		"height": 0.0
+	},
+	"output.stino_panel":
+	{
+		"height": 0.0
+	},
+	"pinned_build_system": "",
+	"project": "monimo.sublime-project",
+	"replace":
+	{
+		"height": 48.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": false,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 242.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}
