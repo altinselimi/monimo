@@ -12,6 +12,7 @@
                 <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
             </svg>
         </div>
+        <div v-if="loading" class="loading"></div>
         <div class="contents" v-if="!loading">
             <div class="background">
                 <img :src="movie.poster">
@@ -45,17 +46,18 @@ $yellow: #fbbd08;
     overflow: hidden;
     margin: 15px;
     .loading {
+        background-color: rgba(gray,.1);
         flex: 1;
+        height: 100%;
+        width: 100%;
         background-repeat: no-repeat;
         background-image: linear-gradient( 90deg,
         rgba(lightgrey, 0) 0,
         rgba(lightgrey, .8) 50%,
-        rgba(lightgrey, 0) 100%), //loading animation
-        linear-gradient(#fdfdfd 40px, transparent 0),
-        linear-gradient(#e4e4e4 100%, transparent 0);
-        background-size: 100% calc(100% - 35px), 100% 35px, 100% 100%;
-        background-position: -150% 0, 0px 100%; //animation: loading 1.5s infinite;	
-        animation: loading 2s linear infinite;
+        rgba(lightgrey, 0) 100%);
+        background-size: 50% calc(100% - 35px), 100% 35px, 100% 100%;
+        background-position: -150% 0, 0 100%; //animation: loading 1.5s infinite;	
+        animation: loading 1.5s linear infinite;
     }
     .loader {
         position: absolute;
@@ -125,7 +127,7 @@ $yellow: #fbbd08;
 @keyframes loading {
     to {
         background-position: 350% 0,
-        0px 100%;
+        0 0;
     }
 }
 
