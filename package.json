@@ -55,7 +55,7 @@
     "not ie <= 8"
   ],
   "main": "dist_electron/bundled/background.js",
-    "build": {
+  "build": {
     "appId": "monimo",
     "category": "monimo.app",
     "dmg": {
@@ -77,5 +77,4 @@
       "icon": "public/favicon.ico"
     }
   }
-
 }

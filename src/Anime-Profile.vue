@@ -54,7 +54,7 @@
 				</button>
 				<div class="next-up" v-if="isCurrentlyWatching && isCurrentlyWatching.next_up">
 					<h1>{{isCurrentlyWatching.next_not_aired || isCurrentlyWatching.finished ? 'Last Watched' : 'Next Up'}}</h1>
-					<episode-card :episode="isCurrentlyWatching.next_up" @watchit="watchEpisode(episode, isCurrentlyWatching.next_up.last_watched_index++)" style="margin: 0px;"></episode-card>
+					<episode-card :episode="isCurrentlyWatching.next_up" @watchit="watchEpisode(isCurrentlyWatching.next_up, ++isCurrentlyWatching.next_up.last_watched_index)" style="margin: 0px;"></episode-card>
 				</div>
 			</div>
 			<div class="episodes-section">
@@ -116,6 +116,8 @@ export default {
 			return Math.floor(Math.random() * Math.floor(max));
 		},
 		watchEpisode(_episode, index) {
+			console.log(_episode);
+			console.log(index);
 			this.start_episode = index;
 			let { slug, episode_count, status } = this.current_anime.info;
 			let { episodes } = this.current_anime;
