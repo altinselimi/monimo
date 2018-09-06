@@ -5,10 +5,14 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "build:electron": "vue-cli-service build:electron",
+    "serve:electron": "vue-cli-service serve:electron",
+    "postinstall": "electron-builder install-app-deps"
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "electron": "^2.0.8",
     "register-service-worker": "^1.0.0",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
@@ -20,8 +24,10 @@
     "@vue/cli-plugin-eslint": "^3.0.0",
     "@vue/cli-plugin-pwa": "^3.0.0",
     "@vue/cli-service": "^3.0.0",
+    "electron": "^2.0.2",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",
+    "vue-cli-plugin-electron-builder": "^1.0.0-rc.2",
     "vue-template-compiler": "^2.5.17"
   },
   "eslintConfig": {
@@ -47,5 +53,29 @@
     "> 1%",
     "last 2 versions",
     "not ie <= 8"
-  ]
+  ],
+  "main": "dist_electron/bundled/background.js",
+    "build": {
+    "appId": "monimo",
+    "category": "monimo.app",
+    "dmg": {
+      "contents": [
+        {
+          "x": 110,
+          "y": 150
+        },
+        {
+          "x": 240,
+          "y": 150,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "win": {
+      "target": "squirrel",
+      "icon": "public/favicon.ico"
+    }
+  }
+
 }

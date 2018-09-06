@@ -7,7 +7,7 @@ import './routes';
 Axios.defaults.headers.common.Accept = 'application/json';
 let baseURL = `https://monimo-api.herokuapp.com/`;
 if(process.env.NODE_ENV !== 'production') {
-	baseURL = 'http://localhost:6069';
+	//baseURL = 'http://localhost:6069';
 }
 console.log('Env:', process.env.NODE_ENV);
 console.log('BaseUrl:', baseURL);
