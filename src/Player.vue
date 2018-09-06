@@ -1,12 +1,13 @@
 <template>
     <div class="player">
-        <headerr/>
-        <webview :src="iframe_src" v-if="isElectron" disablewebsecurity style="width:100%;height:100%"></webview>
-        <iframe sandbox="allow-scripts" :src="iframe_src" v-else width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen="allowfullscreen">
+        <headerr v-show="show_header"/>
+        <webview :src="iframe_src" @mousemove="showHeader" v-if="isElectron" disablewebsecurity style="width:100%;height:100%"></webview>
+        <iframe sandbox="allow-scripts" @mousemove="showHeader" :src="iframe_src" v-else width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen="allowfullscreen">
         </iframe>
     </div>
 </template>
 <script>
+	let global_timeout = null;
     export default {
         created() {
             let link = this.$route.params.src;
@@ -34,10 +35,19 @@
                 console.log("working");
             }, 3000)
         },
-        methods: {
-            isElectron() {
+        computed: {
+        	isElectron() {
                 return navigator.userAgent.toLowerCase().indexOf('electron/') > -1;
-            }
+            },
+        },
+        methods: {
+        	showHeader() {
+        		this.show_header = true;
+        		clearTimeout(global_timeout);
+        		global_timeout = setTimeout(() => {
+        			this.show_header = false;
+        		}, 3000);
+        	},
         },
         components: {
             headerr: () =>
@@ -45,6 +55,7 @@
         },
         data: () => ({
             iframe_src: null,
+            show_header: false,
         }),
     }
 </script>
