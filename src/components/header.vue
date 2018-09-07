@@ -226,7 +226,7 @@
         outline:none;
     }
     .fullscreen:hover{
-    	opacity:1!important;
-    	transition:0.2s ease-out
+    	opacity:0.8!important;
+    	transition:0.3s ease-in-out;
     }
 </style>
