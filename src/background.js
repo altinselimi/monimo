@@ -20,9 +20,10 @@ let mainWindow
 protocol.registerStandardSchemes(['app'], { secure: true })
 function createMainWindow () {
   const window = new BrowserWindow({
-    width: 1000,
-    height: 1000,
-    webPreferences: { experimentalFeatures: true }
+    fullscreenable:true,
+    frame:false,
+    webPreferences: { experimentalFeatures: true },
+    backgroundColor: '#000000',
   })
 
   if (isDevelopment) {

@@ -1,5 +1,7 @@
 {
   "name": "monimo",
+  "author":"Monimo",
+  "description":"Electron-VueJS based application, to watch anime!",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -12,7 +14,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "electron": "^2.0.8",
+    "electron-builder-squirrel-windows": "^20.28.3",
     "register-service-worker": "^1.0.0",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
@@ -56,8 +58,7 @@
   ],
   "main": "dist_electron/bundled/background.js",
   "build": {
-    "appId": "monimo",
-    "category": "monimo.app",
+    "appId": "com.monimo.app",
     "dmg": {
       "contents": [
         {
@@ -74,7 +75,7 @@
     },
     "win": {
       "target": "squirrel",
-      "icon": "public/favicon.ico"
+      "icon": "public/favicon-256x256.ico"
     }
   }
 }

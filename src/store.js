@@ -18,6 +18,7 @@ export default new Vuex.Store({
     favorite_animes: [],
     watching_animes: [],
     search_query: null,
+    window_mode: 'normal'
   },
   mutations: {
     SET_ANIMES(state, payload) {
@@ -56,6 +57,9 @@ export default new Vuex.Store({
     UPDATE_SEARCH_QUERY(state, payload) {
       state.search_query = payload;
     },
+    SET_WINDOW_MODE(state, payload){
+      state.window_mode = payload;
+    }
   },
   actions: {
     getAnimes({ state, commit }, params) {
