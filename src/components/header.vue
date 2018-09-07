@@ -1,5 +1,28 @@
 <template>
     <header>
+        <div class="fullscreen">
+            <button class="buttons" @click="fullscreen()">
+                <svg v-if="window_mode !== 'fullscreen'" class="feather feather-maximize-2 sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="15 3 21 3 21 9"></polyline>
+                    <polyline points="9 21 3 21 3 15"></polyline>
+                    <line x1="21" y1="3" x2="14" y2="10"></line>
+                    <line x1="3" y1="21" x2="10" y2="14"></line>
+                </svg>
+                <svg v-else class="feather feather-minimize-2 sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <polyline points="4 14 10 14 10 20"></polyline>
+                    <polyline points="20 10 14 10 14 4"></polyline>
+                    <line x1="14" y1="10" x2="21" y2="3"></line>
+                    <line x1="3" y1="21" x2="10" y2="14"></line>
+                </svg>
+            </button>
+            <button class="buttons">
+                <svg class="feather feather-x-circle sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-reactid="1326">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+            </button>
+        </div>
         <nav>
             <div style="cursor: pointer;" @click="$router.go(-1)" v-if="!ifHome">
                 <svg class="feather feather-arrow-left sc-iwsKbI cnlcoQ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-reactid="121">
@@ -30,17 +53,14 @@
                     </button>
                 </form>
             </div>
-            <div class="fulscreen">
-                <button @click="fullscreen()">[]</button>
-                <button @click="unfullscreen()">X</button>
-            </div>
         </nav>
     </header>
 </template>
 <script>
     import {
         mapActions,
-        mapMutations
+        mapMutations,
+        mapState
     } from 'vuex';
     let timeouts = 0;
     let timeout;
@@ -55,6 +75,9 @@
                     this.UPDATE_SEARCH_QUERY(value);
                 },
             },
+            ...mapState({
+                window_mode: state => state.window_mode,
+            })
         },
         data: () => ({
             show_search: false,
@@ -84,7 +107,7 @@
                 });
             },
             ...mapActions(['getAnimes']),
-            ...mapMutations(['UPDATE_SEARCH_QUERY']),
+            ...mapMutations(['UPDATE_SEARCH_QUERY', 'SET_WINDOW_MODE']),
             searchAnimes() {
                 this.getAnimes({
                     order: 'relevance_desc',
@@ -95,11 +118,14 @@
                 }
             },
             fullscreen() {
-                document.body.requestFullscreen();
+                if (this.window_mode === 'normal') {
+                    document.body.requestFullscreen();
+                    this.SET_WINDOW_MODE('fullscreen');
+                } else {
+                    document.exitFullscreen();
+                    this.SET_WINDOW_MODE('normal');
+                }
             },
-            unfullscreen() {
-                document.exitFullscreen();
-            }
         },
     }
 </script>
@@ -173,5 +199,34 @@
 
     header+* {
         padding-top: 90px;
+    }
+
+    .fullscreen {
+        position: absolute;
+        width: 100%;
+        top: 0px;
+        background-color: #333;
+        right: 0px;
+        margin: 0px;
+        padding: 0px;
+        display: flex;
+        /* align-items: flex-end; */
+        justify-content: flex-end;
+        opacity:0;
+    }
+
+    .buttons {
+        color: white;
+        background-color: #333;
+        border: none;
+        svg{
+        	width: 20px;
+        	height: 20px;
+        }
+        outline:none;
+    }
+    .fullscreen:hover{
+    	opacity:1!important;
+    	transition:0.2s ease-out
     }
 </style>
