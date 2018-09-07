@@ -1,53 +1,76 @@
 <template>
     <div class="player">
-        <headerr v-show="show_header"/>
+        <headerr v-show="show_header" />
         <webview :src="iframe_src" @mousemove="showHeader" v-if="isElectron" disablewebsecurity style="width:100%;height:100%"></webview>
         <iframe sandbox="allow-scripts" @mousemove="showHeader" :src="iframe_src" v-else width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen="allowfullscreen">
         </iframe>
     </div>
 </template>
 <script>
-	let global_timeout = null;
+    let global_timeout = null;
+    const video_player_style = `
+    video {
+        height: 100%;
+        width: 100%;
+        border: none;
+    }`;
+    const to_be_executed = `
+    	var video = document.querySelector("video");
+    	video.setAttribute('autoplay', true);
+		video.setAttribute('controls', true);
+    	[...document.querySelectorAll('body>*')].forEach(element => {
+		    element.remove();
+		});
+		document.body.append(video);
+		video.play();
+		setInterval(() => {
+    		console.log(video.currentTime)
+    	},10000);`;
     export default {
         created() {
             let link = this.$route.params.src;
             this.iframe_src = atob(this.$route.params.src);
             if (!this.iframe_src) this.$router.push('/');
         },
-        mounted() {
-        	if(!this.isElectron) return;
-            setTimeout(() => {
-                let webview = document.querySelector("webview");
-                webview.sendInputEvent({
-                    type: 'mouseDown',
-                    x: 5,
-                    y: 230,
-                    button: 'left',
-                    clickCount: 1
-                });
-                webview.sendInputEvent({
-                    type: 'mouseUp',
-                    x: 5,
-                    y: 230,
-                    button: 'left',
-                    clickCount: 1
-                });
-                console.log("working");
-            }, 3000)
+        updated() {
+            if (!this.isElectron) return;
+            let webview = document.querySelector("webview");
+            webview.addEventListener('dom-ready', (e) => {
+                webview.openDevTools();
+                /* webview.sendInputEvent({
+                     type: 'mouseDown',
+                     x: 5,
+                     y: 230,
+                     button: 'left',
+                     clickCount: 1
+                 });
+                 webview.sendInputEvent({
+                     type: 'mouseUp',
+                     x: 5,
+                     y: 230,
+                     button: 'left',
+                     clickCount: 1
+                 });*/
+                webview.executeJavaScript(to_be_executed);
+                webview.insertCSS(video_player_style);
+            });
+            webview.addEventListener('console-message', (e) => {
+                console.log(e.message);//the actual time that is premmited using console-message
+            })
         },
         computed: {
-        	isElectron() {
+            isElectron() {
                 return navigator.userAgent.toLowerCase().indexOf('electron/') > -1;
             },
         },
         methods: {
-        	showHeader() {
-        		this.show_header = true;
-        		clearTimeout(global_timeout);
-        		global_timeout = setTimeout(() => {
-        			this.show_header = false;
-        		}, 3000);
-        	},
+            showHeader() {
+                this.show_header = true;
+                clearTimeout(global_timeout);
+                global_timeout = setTimeout(() => {
+                    this.show_header = false;
+                }, 3000);
+            },
         },
         components: {
             headerr: () =>
