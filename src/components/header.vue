@@ -2,7 +2,7 @@
     <header>
         <div class="fullscreen">
             <button class="buttons" @click="fullscreen()">
-                <svg v-if="window_mode !== 'fullscreen'" class="feather feather-maximize-2 sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            	<svg v-if="window_mode !== 'fullscreen'" class="feather feather-maximize-2 sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <polyline points="15 3 21 3 21 9"></polyline>
                     <polyline points="9 21 3 21 3 15"></polyline>
                     <line x1="21" y1="3" x2="14" y2="10"></line>
@@ -15,7 +15,7 @@
                     <line x1="3" y1="21" x2="10" y2="14"></line>
                 </svg>
             </button>
-            <button class="buttons">
+            <button @click="close()" class="buttons">
                 <svg class="feather feather-x-circle sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-reactid="1326">
                     <circle cx="12" cy="12" r="10"></circle>
                     <line x1="15" y1="9" x2="9" y2="15"></line>
@@ -62,6 +62,8 @@
         mapMutations,
         mapState
     } from 'vuex';
+    import { remote } from 'electron';
+    let app = remote.getCurrentWindow();
     let timeouts = 0;
     let timeout;
     export default {
@@ -77,6 +79,7 @@
             },
             ...mapState({
                 window_mode: state => state.window_mode,
+                window_size: state => state.window_size
             })
         },
         data: () => ({
@@ -107,7 +110,7 @@
                 });
             },
             ...mapActions(['getAnimes']),
-            ...mapMutations(['UPDATE_SEARCH_QUERY', 'SET_WINDOW_MODE']),
+            ...mapMutations(['UPDATE_SEARCH_QUERY', 'SET_WINDOW_MODE','SET_WINDOW_SIZE']),
             searchAnimes() {
                 this.getAnimes({
                     order: 'relevance_desc',
@@ -126,6 +129,9 @@
                     this.SET_WINDOW_MODE('normal');
                 }
             },
+            close() {
+            	app.close();
+            }
         },
     }
 </script>
