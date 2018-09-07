@@ -20,7 +20,7 @@ npm run build
 npm run lint
 ```
 
-Roadmap: 
+Roadmap: </br>
 ~~1) Incorporate Electron, making the application available on macOS, Windows & Linux.~~</br>
 ~~2) Create a consistent video-player view, where no ads shall be shown.~~</br>
 3) Implement auto-play next, skip intro and resume playing.</br>
