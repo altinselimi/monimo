@@ -2,7 +2,7 @@
     <header>
         <div class="fullscreen">
             <button class="buttons" @click="fullscreen()">
-            	<svg v-if="window_mode !== 'fullscreen'" class="feather feather-maximize-2 sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <svg v-if="window_mode !== 'fullscreen'" class="feather feather-maximize-2 sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                     <polyline points="15 3 21 3 21 9"></polyline>
                     <polyline points="9 21 3 21 3 15"></polyline>
                     <line x1="21" y1="3" x2="14" y2="10"></line>
@@ -15,7 +15,7 @@
                     <line x1="3" y1="21" x2="10" y2="14"></line>
                 </svg>
             </button>
-            <button @click="close()" class="buttons">
+            <button @click="close()" v-if="isElectron" class="buttons">
                 <svg class="feather feather-x-circle sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-reactid="1326">
                     <circle cx="12" cy="12" r="10"></circle>
                     <line x1="15" y1="9" x2="9" y2="15"></line>
@@ -32,9 +32,9 @@
             </div>
             <div class="logo-wrap">
                 <a tabindex="0" @click="$router.push('/home')" class="logo">
-					<span>MONIMO</span>
-					<span class="sublogo">your anime best fren</span>
-				</a>
+                    <span>MONIMO</span>
+                    <span class="sublogo">your anime best fren</span>
+                </a>
             </div>
             <div class="search">
                 <a tabindex="0" @click="showSearch()" :style="`opacity: ${!show_search ? 1 : 0}`">
@@ -62,10 +62,9 @@
         mapMutations,
         mapState
     } from 'vuex';
-    import { remote } from 'electron';
-    let app = remote.getCurrentWindow();
     let timeouts = 0;
     let timeout;
+    let app;
     export default {
         props: ['ifHome'],
         computed: {
@@ -77,14 +76,24 @@
                     this.UPDATE_SEARCH_QUERY(value);
                 },
             },
+            isElectron() {
+                return navigator.userAgent.toLowerCase().indexOf('electron/') > -1;
+            },
             ...mapState({
-                window_mode: state => state.window_mode,
-                window_size: state => state.window_size
+                window_mode: state => state.window_mode
             })
         },
         data: () => ({
             show_search: false,
         }),
+        beforeMount() {
+            if (this.isElectron) {
+                import ('electron')
+                .then((electro) => {
+                    app = electro.remote.getCurrentWindow();
+                });
+            }
+        },
         methods: {
             showSearch() {
                 if (timeouts) clearTimeout(timeout);
@@ -110,7 +119,7 @@
                 });
             },
             ...mapActions(['getAnimes']),
-            ...mapMutations(['UPDATE_SEARCH_QUERY', 'SET_WINDOW_MODE','SET_WINDOW_SIZE']),
+            ...mapMutations(['UPDATE_SEARCH_QUERY', 'SET_WINDOW_MODE']),
             searchAnimes() {
                 this.getAnimes({
                     order: 'relevance_desc',
@@ -130,7 +139,7 @@
                 }
             },
             close() {
-            	app.close();
+                app.close();
             }
         },
     }
@@ -218,21 +227,22 @@
         display: flex;
         /* align-items: flex-end; */
         justify-content: flex-end;
-        opacity:0;
+        opacity: 0;
     }
 
     .buttons {
         color: white;
         background-color: #333;
         border: none;
-        svg{
-        	width: 20px;
-        	height: 20px;
+        svg {
+            width: 20px;
+            height: 20px;
         }
         outline:none;
     }
-    .fullscreen:hover{
-    	opacity:0.8!important;
-    	transition:0.3s ease-in-out;
+
+    .fullscreen:hover {
+        opacity: 0.8!important;
+        transition: 0.3s ease-in-out;
     }
 </style>
