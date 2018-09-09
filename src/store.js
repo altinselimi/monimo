@@ -18,7 +18,7 @@ export default new Vuex.Store({
     favorite_animes: [],
     watching_animes: [],
     search_query: null,
-    window_mode: 'normal'
+    window_mode: 'normal',
   },
   mutations: {
     SET_ANIMES(state, payload) {

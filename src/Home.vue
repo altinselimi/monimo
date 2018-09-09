@@ -3,7 +3,7 @@
 		<headerr :ifHome="back_button"></headerr>
 		<categories-section :categories="_genres" @addCategory="addCategory"></categories-section>
 		<movie-carousel :movies="currently_watching" title="Continue Watching" @navigate="openAnime" v-if="currently_watching.length"></movie-carousel>
-		<movie-carousel :showLoader="getting_anime_info" :movies="getting_animes ? [1,2,3,4,5,6,7] : filtered_animes" :title="resultsTitle" @navigate="openAnime" :loading="getting_animes"></movie-carousel>
+		<movie-carousel :showLoader="getting_anime_info" :movies="getting_animes ? [1,2,3,4,5,6,7] : filtered_animes" :title="resultsTitle" :filteredSeries="selected_genre_names" @navigate="openAnime" :loading="getting_animes"></movie-carousel>
 		<movie-carousel :movies="favorite_animes" title="Favorites" @navigate="openAnime" v-if="favorite_animes.length > 0"></movie-carousel>
 		<doggo></doggo>
 	</div>
@@ -46,6 +46,7 @@ export default {
 			return this.genres.map(genre => ({ ...genre, ['selected']: this.preferred_genres.includes(genre.id) }))
 		},
 		resultsTitle() {
+			console.log(this.preferred_genres);
 			return this.search_query ? 'Results' : 'Trending';
 		},
 	},
@@ -53,7 +54,8 @@ export default {
 		back_button : true, 
 		getting_anime_info: null,
 		getting_animes: false,
-		genres: [{ "name": "action", "id": 57 }, { "name": "adventure", "id": 58 }, { "name": "drama", "id": 60 }, { "name": "fantasy", "id": 77 }, { "name": "horror", "id": 71 }, { "name": "kids", "id": 95 }, { "name": "mystery", "id": 63 }, { "name": "psychological", "id": 73 }, { "name": "romance", "id": 67 }, { "name": "school", "id": 78 }, { "name": "sci-fi", "id": 61 }, { "name": "sports", "id": 65 }, { "name": "thriller", "id": 74 }]
+		genres: [{ "name": "action", "id": 57 }, { "name": "adventure", "id": 58 }, { "name": "drama", "id": 60 }, { "name": "fantasy", "id": 77 }, { "name": "horror", "id": 71 }, { "name": "kids", "id": 95 }, { "name": "mystery", "id": 63 }, { "name": "psychological", "id": 73 }, { "name": "romance", "id": 67 }, { "name": "school", "id": 78 }, { "name": "sci-fi", "id": 61 }, { "name": "sports", "id": 65 }, { "name": "thriller", "id": 74 }],
+		selected_genre_names: [],
 	}),
 	methods: {
 		...mapActions(['getAnimes', 'getAnimeDetails']),
@@ -75,8 +77,10 @@ export default {
 		addCategory(genre) {
 			if (genre.selected) {
 				this.REMOVE_PREFERRED_GENRE(genre.id);
+				this.selected_genre_names.splice(this.selected_genre_names.findIndex(name => genre.name === name),1);
 			} else {
 				this.ADD_PREFERRED_GENRE(genre.id);
+				this.selected_genre_names.push(genre.name);
 			}
 			this.getting_animes = true;
 			this.getAnimes().then(res => {

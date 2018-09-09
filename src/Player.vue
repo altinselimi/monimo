@@ -9,6 +9,9 @@
 <script>
     let global_timeout = null;
     const video_player_style = `
+    body,html {
+    	background-color:black;
+    }
     video {
         height: 100%;
         width: 100%;
@@ -22,10 +25,10 @@
 		    element.remove();
 		});
 		document.body.append(video);
-		video.play();
 		setInterval(() => {
     		console.log(video.currentTime)
-    	},10000);`;
+    	},10000);
+    	video.play();`;
     export default {
         created() {
             let link = this.$route.params.src;
@@ -51,8 +54,9 @@
                      button: 'left',
                      clickCount: 1
                  });*/
-                webview.executeJavaScript(to_be_executed);
                 webview.insertCSS(video_player_style);
+                webview.executeJavaScript(to_be_executed);
+                
             });
             webview.addEventListener('console-message', (e) => {
                 console.log(e.message);//the actual time that is premmited using console-message
