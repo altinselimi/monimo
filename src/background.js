@@ -23,7 +23,7 @@ function createMainWindow () {
     fullscreenable:true,
     frame:false,
     webPreferences: { experimentalFeatures: true },
-    backgroundColor: '#000000',
+    backgroundColor: '#353535',
   })
 
   if (isDevelopment) {
