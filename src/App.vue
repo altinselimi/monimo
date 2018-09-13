@@ -54,6 +54,7 @@ html {
   height: 100%;
   width: 100%;
   font-size: calc(16px + .1vw);
+  background-color:#353535;
 }
 ::-webkit-scrollbar {
     width: 8px;
@@ -81,5 +82,34 @@ html {
 }
 ::-webkit-scrollbar-thumb:horizontal {
   min-width: 10px;
+}
+body>*{
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+    background-color: rgba(0,0,0,0);
+    -webkit-border-radius: 100px;
+}
+
+::-webkit-scrollbar:hover {
+    background-color: rgba(0, 0, 0, 0.09);
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(0,0,0,0.5);
+    -webkit-border-radius: 100px;
+}
+::-webkit-scrollbar-thumb:active {
+    background: rgba(0,0,0,0.61); 
+    -webkit-border-radius: 100px;
+}
+
+/* add vertical min-height & horizontal min-width */
+::-webkit-scrollbar-thumb:vertical {
+  min-height: 10px;
+}
+::-webkit-scrollbar-thumb:horizontal {
+  min-width: 10px;
+}
 }
 </style>
