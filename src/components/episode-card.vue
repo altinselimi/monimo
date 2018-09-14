@@ -1,5 +1,5 @@
 <template>
-	<a class="episode-card" @click="$emit('watchit', episode)" tabindex="0" :class="{'currently-watching': current, 'sticker-overlay': current}">
+	<a class="episode-card" @click="$emit('watchit', episode)" tabindex="0" :class="{'currently-watching': current, 'sticker-overlay': current, 'finished_watching': finished }">
 		<div class="loader" v-if="showLoader">
             <svg class="feather feather-loader sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-reactid="706">
                 <line x1="12" y1="2" x2="12" y2="6"></line>
@@ -20,7 +20,7 @@
 </template>
 <script>
 export default {
-	props: ['episode', 'current', 'showLoader'],
+	props: ['episode', 'current', 'showLoader', 'finished'],
 	computed: {
 		wallpaper() {
 			if (!this.episode.thumbnail) return null;
@@ -53,6 +53,16 @@ export default {
 	&.currently-watching::before {
 		content: 'Last Watched';
 		background-color: #2196F3;
+	}
+	&.finished_watching::after{
+		position:absolute;
+		bottom: 0px;
+		right: 5px;
+		font-size: .8rem;
+		z-index:1;
+		padding:2px 5px;
+		content: 'Finished';
+		background-color: red;
 	}
 	h4 {
 		margin: 0px;

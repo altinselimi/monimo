@@ -52,9 +52,9 @@
 					</svg>
 					FAVORITE
 				</button>
-				<div class="next-up" v-if="isCurrentlyWatching && isCurrentlyWatching.next_up">
-					<h1>{{isCurrentlyWatching.next_not_aired || isCurrentlyWatching.finished ? 'Last Watched' : 'Next Up'}}</h1>
-					<episode-card :episode="isCurrentlyWatching.next_up" @watchit="watchEpisode(isCurrentlyWatching.next_up, ++isCurrentlyWatching.next_up.last_watched_index)" style="margin: 0px;"></episode-card>
+				<div class="next-up" v-if="episodeInHalf || isCurrentlyWatching && isCurrentlyWatching.next_up">
+					<h1>{{titleOfNextUp}}</h1>
+					<episode-card :episode="hasNextUp" @watchit="watchEpisode(hasNextUp, checkIfFinished)" style="margin: 0px;"></episode-card>
 				</div>
 			</div>
 			<div class="episodes-section">
@@ -62,7 +62,7 @@
 					<h1>Episodes</h1>
 					<ul class="episodes">
 						<li v-for="(episode, index) in current_anime.episodes">
-							<episode-card :showLoader="index === start_episode" :episode="episode" @watchit="watchEpisode(episode, index)" :current="isCurrentlyWatching && isCurrentlyWatching.next_up.last_watched_index === index"></episode-card>
+							<episode-card :showLoader="index === start_episode" :episode="episode" @watchit="watchEpisode(episode, index)" :current="isCurrentlyWatching && isCurrentlyWatching.next_up.last_watched_index === index" :finished="!(typeof episode.finished_watching === 'undefined')"></episode-card>
 						</li>
 					</ul>
 				</div>
@@ -94,7 +94,7 @@ export default {
 		...mapState({
 			current_anime: state => state.current_anime,
 			favorite_animes: state => state.favorite_animes,
-			watching_animes: state => state.watching_animes,
+			watching_animes: state => state.watching_animes
 		}),
 		isFavorite() {
 			return this.favorite_animes.find(anime => anime.info.id === this.current_anime.info.id);
@@ -102,12 +102,32 @@ export default {
 		wallpaper() {
 			let { wallpapers } = this.current_anime;
 			if (!wallpapers || wallpapers.length === 0) return null;
-			console.log('Wallpapers:', wallpapers);
+			console.log(this.isCurrentlyWatching);
+			//console.log(this.isCurrentlyWatching.next_up);
+			console.log(this.hasNextUp);
+			//console.log(this.checkIfFinished);
+			console.log(this.episodeInHalf);
 			return this.current_anime && `https://cdn.masterani.me/wallpaper/0/${wallpapers[this.getRandomInt(wallpapers.length)].file}`;
 		},
 		isCurrentlyWatching() {
 			return this.watching_animes.find(anime => anime.info.id === this.current_anime.info.id);
 		},
+		episodeInHalf(){
+			return this.current_anime.episodes.find(
+				episode => episode.current_time !== null
+				);
+		},
+		titleOfNextUp(){
+			return this.episodeInHalf? 'Continue Watching' : 
+			this.isCurrentlyWatching  ||  this.isCurrentlyWatching.finished ? 'Last Watched': 'Next Up';
+		},
+		hasNextUp(){
+			return this.episodeInHalf? this.episodeInHalf
+			: this.isCurrentlyWatching? this.isCurrentlyWatching.next_up: null;
+		},
+		checkIfFinished(){
+			return this.episodeInHalf? this.isCurrentlyWatching.next_up.last_watched_index: ++this.isCurrentlyWatching.next_up.last_watched_index
+		}
 	},
 	methods: {
 		...mapActions(['getAnimeDetails', 'getVideoLink']),
@@ -135,8 +155,8 @@ export default {
 					this.ADD_TO_WATCHING({ ...this.current_anime, ['next_up']: next_up, ['finished']: true });
 				else
 					this.ADD_TO_WATCHING({ ...this.current_anime, ['next_up']: next_up, ['next_not_aired']: true })
-
-				this.$router.push(`/anime/${this.current_anime.info.id}/watch/${btoa(result.data.src)}`);
+				console.log(episode);
+				this.$router.push(`/anime/${this.current_anime.info.id}/watch/${episode}/${btoa(result.data.src)}`);
 				this.start_episode = null;
 			}).catch(err => {
 				throw err;

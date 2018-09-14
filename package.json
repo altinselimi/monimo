@@ -1,13 +1,16 @@
 {
   "name": "monimo",
-  "author":"Monimo",
-  "description":"Electron-VueJS based application, to watch anime!",
+  "author": "Monimo",
+  "description": "Electron-VueJS based application, to watch anime!",
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "serve": "vue-cli-service serve",
+    "dev": "concurrently --kill-others \"npm run server\" \"npm run serve\"",
+    "dev:electron": "concurrently --kill-others \"npm run server\" \"npm run serve:electron\"",
+    "serve": "vue-cli-service serve ",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
+    "server": "npm start --prefix ./monimo-api/",
     "build:electron": "vue-cli-service build:electron",
     "serve:electron": "vue-cli-service serve:electron",
     "postinstall": "electron-builder install-app-deps"
@@ -26,6 +29,7 @@
     "@vue/cli-plugin-eslint": "^3.0.0",
     "@vue/cli-plugin-pwa": "^3.0.0",
     "@vue/cli-service": "^3.0.0",
+    "concurrently": "^4.0.1",
     "electron": "^2.0.2",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",

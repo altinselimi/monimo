@@ -24,7 +24,7 @@
             </button>
         </div>
         <nav>
-            <div style="cursor: pointer;" @click="$router.go(-1)" v-if="!ifHome">
+            <div style="cursor: pointer;" @click="getBack()" v-if="!ifHome">
                 <svg class="feather feather-arrow-left sc-iwsKbI cnlcoQ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-reactid="121">
                     <line x1="19" y1="12" x2="5" y2="12"></line>
                     <polyline points="12 19 5 12 12 5"></polyline>
@@ -111,6 +111,13 @@
                 }, 1000);
                 timeouts++;
             },
+            getBack() {
+                if(this.$route.path == '/home'){
+                    this.getAnimes();
+                }
+               // console.log(this.$route.currentRoute.path)
+                this.$router.go(-1);
+            },
             surpriseMe() {
                 this.$http.get('/surprise-anime').then(res => {
                     console.log('Result:', res);
@@ -125,8 +132,9 @@
                     order: 'relevance_desc',
                     search: this.search
                 });
-                if (this.$router.currentRoute.path !== '/home') {
-                    this.$router.push('/home');
+                if (this.$router.currentRoute.path !== `/results/${this.search}`) {
+                    this.$router.push({path:`/results/${this.search}`});
+                    //console.log(this.$router.currentRoute);
                 }
             },
             fullscreen() {

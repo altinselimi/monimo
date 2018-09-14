@@ -1,5 +1,5 @@
 <template>
-    <div class="movie-card">
+    <div class="movie-card" :class="{result: screen}">
         <div class="loader" v-if=" showLoader">
             <svg class="feather feather-loader sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-reactid="706">
                 <line x1="12" y1="2" x2="12" y2="6"></line>
@@ -31,7 +31,7 @@
 </template>
 <script>
 export default {
-    props: ['movie', 'loading', 'showLoader'],
+    props: ['movie', 'loading', 'showLoader','screen'],
 }
 </script>
 <style lang="scss">
@@ -122,6 +122,9 @@ $yellow: #fbbd08;
         position: relative;
         background-color: white;
     }
+}
+.result{
+    margin:15px auto;
 }
 
 @keyframes loading {
