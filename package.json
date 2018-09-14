@@ -30,7 +30,7 @@
     "@vue/cli-plugin-pwa": "^3.0.0",
     "@vue/cli-service": "^3.0.0",
     "concurrently": "^4.0.1",
-    "electron": "^2.0.2",
+    "electron": "^2.0.9",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",
     "vue-cli-plugin-electron-builder": "^1.0.0-rc.2",

@@ -25,7 +25,7 @@ data: () => ({
 		mounted() { //order=score_desc&page=1
 			this.getting_animes = true;
 			 this.getAnimes({
-                    order: 'relevance_desc',
+                    order: 'search_desc',
                     search: this.$route.params.search
                 }).then(res => {
 				this.getting_animes = false;

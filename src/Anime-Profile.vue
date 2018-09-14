@@ -52,7 +52,7 @@
 					</svg>
 					FAVORITE
 				</button>
-				<div class="next-up" v-if="episodeInHalf || isCurrentlyWatching && isCurrentlyWatching.next_up">
+				<div class="next-up" v-if="isCurrentlyWatching">
 					<h1>{{titleOfNextUp}}</h1>
 					<episode-card :episode="hasNextUp" @watchit="watchEpisode(hasNextUp, checkIfFinished)" style="margin: 0px;"></episode-card>
 				</div>
@@ -118,8 +118,7 @@ export default {
 				);
 		},
 		titleOfNextUp(){
-			return this.episodeInHalf? 'Continue Watching' : 
-			this.isCurrentlyWatching  ||  this.isCurrentlyWatching.finished ? 'Last Watched': 'Next Up';
+			return this.episodeInHalf ? 'Continue Watching' : 'Next Up';
 		},
 		hasNextUp(){
 			return this.episodeInHalf? this.episodeInHalf
