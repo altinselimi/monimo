@@ -128,10 +128,10 @@
             ...mapActions(['getAnimes']),
             ...mapMutations(['UPDATE_SEARCH_QUERY', 'SET_WINDOW_MODE']),
             searchAnimes() {
-                this.getAnimes({
-                    order: 'relevance_desc',
-                    search: this.search
-                });
+                // this.getAnimes({
+                //     order: 'relevance_desc',
+                //     search: this.search
+                // });
                 if (this.$router.currentRoute.path !== `/results/${this.search}`) {
                     this.$router.push({path:`/results/${this.search}`});
                     //console.log(this.$router.currentRoute);
