@@ -5,7 +5,7 @@ import Axios from 'axios';
 import './routes';
 
 Axios.defaults.headers.common.Accept = 'application/json';
-let baseURL = `https://monimo-api.herokuapp.com/`;
+let baseURL = `http://localhost:6069/`;
 if(process.env.NODE_ENV !== 'production') {
 	//baseURL = 'http://localhost:6069';
 }

@@ -22,7 +22,10 @@ function createMainWindow () {
   const window = new BrowserWindow({
     fullscreenable:true,
     frame:false,
-    webPreferences: { experimentalFeatures: true },
+    webPreferences: { 
+      experimentalFeatures: true,
+      webSecurity: false
+    },
     backgroundColor: '#353535',
   })
 

@@ -17,8 +17,9 @@ export default new Vuex.Store({
     preferred_genres: [],
     favorite_animes: [],
     watching_animes: [],
+    searched_animes: [],
     search_query: null,
-    window_mode: 'normal',
+    window_mode: 'normal'
   },
   mutations: {
     SET_ANIMES(state, payload) {
@@ -59,6 +60,15 @@ export default new Vuex.Store({
     },
     SET_WINDOW_MODE(state, payload){
       state.window_mode = payload;
+    },
+    SET_CURRENT_TIME(state, payload){
+      state.animes_w_details[payload.anime].episodes[payload.episode-1].current_time = payload.time;
+    },
+    SET_NEW_PROPERTY(state, payload){
+      state.animes_w_details[payload.anime].episodes[payload.episode].finished_watching = payload.finished;
+    },
+    SET_SEARCHED_ANIMES(state, payload){
+      state.searched_animes = payload;
     }
   },
   actions: {
@@ -80,7 +90,8 @@ export default new Vuex.Store({
               ['poster']: `https://cdn.masterani.me/poster/1/${anime.poster.file}`,
             }
           });
-          commit('SET_ANIMES', animes);
+          console.log(animes);
+          typeof _params.search === 'undefined'? commit('SET_ANIMES', animes): commit('SET_SEARCHED_ANIMES',animes);
           resolve(animes);
         }).catch(err => {
           reject(err);
@@ -91,6 +102,7 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         Vue.$http.get('/anime-details', { params: { anime_id: payload } }).then(res => {
           console.log('anime details:', res.data);
+          res.data.episodes.forEach((episode)=> episode.current_time=null);
           commit('ADD_ANIME_DETAILS', { id: payload, data: res.data });
           commit('SET_CURRENT_ANIME', res.data);
           resolve(res.data);
@@ -124,5 +136,8 @@ export default new Vuex.Store({
         return { ...anime.info, ['genres']: anime.genres, ['poster']: `https://cdn.masterani.me/poster/1/${anime.poster}` };
       });
     },
+    searched: (state) => {
+      return state.searched_animes;
+    }
   },
 });

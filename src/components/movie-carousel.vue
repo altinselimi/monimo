@@ -5,10 +5,10 @@
         <h5 v-for="selected in filteredSeries">
                 {{ selected }} </h5>
         </div>        
-        <ul class="movie-carousel">
+        <ul class="movie-carousel" :class="isResult?'result':'normal'">
             <li v-for="movie in movies" v-if="movies">
                 <a tabindex="0">
-                    <movie-card :movie="movie" @click.native="$emit('navigate', movie)" :showLoader="movie.id === showLoader" :loading="loading">
+                    <movie-card :movie="movie" @click.native="$emit('navigate', movie)" :showLoader="movie.id === showLoader" :loading="loading" :screen="isResult">
                     </movie-card>
                 </a>
             </li>
@@ -17,7 +17,7 @@
 </template>
 <script>
     export default {
-        props: ['movies', 'loading', 'title', 'showLoader', 'filteredSeries'],
+        props: ['movies', 'loading', 'title', 'showLoader', 'filteredSeries','isResult'],
         components: {
             movieCard: () =>
                 import ('./movie-card.vue'),
@@ -63,6 +63,15 @@
         >li {
             width: auto;
         }
+    }
+    ul.normal {
         flex-wrap: nowrap;
+    }
+    ul.result {
+        flex-wrap: wrap;
+        justify-content:space-between;
+        >li{
+            flex: 0 0 27%;
+        }
     }
 </style>

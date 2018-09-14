@@ -7,11 +7,17 @@ let routes = [{
 	component: () =>
 		import ('./Home.vue'),
 }, {
+	path: '/results/:search',
+	props:true,
+	component: () =>
+		import ('./Results.vue'),
+	
+}, {
 	path: '/anime/:id',
 	component: () =>
 		import ('./Anime-Profile.vue'),
 }, {
-	path: '/anime/:id/watch/:src',
+	path: '/anime/:id/watch/:episode/:src',
 	component: () =>
 		import ('./Player.vue'),
 }, {

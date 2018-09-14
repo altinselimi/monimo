@@ -2,9 +2,10 @@
 	<div class="home">
 		<headerr :ifHome="back_button"></headerr>
 		<categories-section :categories="_genres" @addCategory="addCategory"></categories-section>
-		<movie-carousel :movies="currently_watching" title="Continue Watching" @navigate="openAnime" v-if="currently_watching.length"></movie-carousel>
-		<movie-carousel :showLoader="getting_anime_info" :movies="getting_animes ? [1,2,3,4,5,6,7] : filtered_animes" :title="resultsTitle" :filteredSeries="selected_genre_names" @navigate="openAnime" :loading="getting_animes"></movie-carousel>
-		<movie-carousel :movies="favorite_animes" title="Favorites" @navigate="openAnime" v-if="favorite_animes.length > 0"></movie-carousel>
+		<movie-carousel :movies="currently_watching" title="Continue Watching" @navigate="openAnime" v-if="currently_watching.length" :isResult="false" :filteredSeries="selected_genre_names"></movie-carousel>
+		<movie-carousel :showLoader="getting_anime_info" :movies="animes" :title="'Trending'" :filteredSeries="selected_genre_names" @navigate="openAnime" :loading="getting_animes"
+		:isResult="false"></movie-carousel>
+		<movie-carousel :movies="favorite_animes" title="Favorites" @navigate="openAnime" v-if="favorite_animes.length > 0" :isResult="false" :filteredSeries="selected_genre_names"></movie-carousel>
 		<doggo></doggo>
 	</div>
 </template>
@@ -24,6 +25,8 @@ export default {
 			import ('./components/categories'),
 	},
 	mounted() { //order=score_desc&page=1
+		// this.$http.get('https://www.masterani.me/api/anime/filter?page=1')
+		// .then(res => { console.log('response:', res)}).catch(err => console.error(err));
 		if (!this.animes) {
 			this.getting_animes = true;
 			this.getAnimes().then(res => {
