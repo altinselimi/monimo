@@ -8,16 +8,18 @@ let routes = [{
 		import ('./Home.vue'),
 }, {
 	path: '/results/:search',
-	props:true,
+	props: true,
 	component: () =>
 		import ('./Results.vue'),
-	
+
 }, {
 	path: '/anime/:id',
+	props: true,
 	component: () =>
 		import ('./Anime-Profile.vue'),
 }, {
-	path: '/anime/:id/watch/:episode/:src',
+	path: '/anime/:episode_id/watch/:episode_index/:links',
+	props: true,
 	component: () =>
 		import ('./Player.vue'),
 }, {

@@ -129,7 +129,7 @@ export default {
 		}
 	},
 	methods: {
-		...mapActions(['getAnimeDetails', 'getVideoLink']),
+		...mapActions(['getAnimeDetails', 'getVideoLinks']),
 		...mapMutations(['ADD_TO_FAVORITES', 'REMOVE_FROM_FAVORITES', 'ADD_TO_WATCHING', 'REMOVE_FROM_WATCHING']),
 		getRandomInt(max) {
 			return Math.floor(Math.random() * Math.floor(max));
@@ -141,7 +141,8 @@ export default {
 			let { slug, episode_count, status } = this.current_anime.info;
 			let { episodes } = this.current_anime;
 			let episode = _episode.info.episode;
-			this.getVideoLink({ slug, episode }).then(result => {
+			this.getVideoLinks({ slug, episode }).then(result => {
+				let links = JSON.stringify(result);
 				if (this.isCurrentlyWatching)
 					this.REMOVE_FROM_WATCHING(this.current_anime);
 				let next_up = episodes[index + 1];
@@ -154,8 +155,7 @@ export default {
 					this.ADD_TO_WATCHING({ ...this.current_anime, ['next_up']: next_up, ['finished']: true });
 				else
 					this.ADD_TO_WATCHING({ ...this.current_anime, ['next_up']: next_up, ['next_not_aired']: true })
-				console.log(episode);
-				this.$router.push(`/anime/${this.current_anime.info.id}/watch/${episode}/${btoa(result.data.src)}`);
+				this.$router.push(`/anime/${this.current_anime.info.id}/watch/${episode}/${btoa(links)}`);
 				this.start_episode = null;
 			}).catch(err => {
 				throw err;
