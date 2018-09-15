@@ -65,6 +65,10 @@ export default new Vuex.Store({
     SET_CURRENT_TIME(state, payload){
       state.animes_w_details[payload.anime].episodes[payload.episode-1].current_time = payload.time;
     },
+    SET_LAST_WATCHED(state, payload){
+       state.animes_w_details[payload.anime].episodes.forEach(episode => episode.last_watched = false);
+       state.animes_w_details[payload.anime].episodes[payload.episode-1].last_watched = payload.last_watched;
+    },
     SET_NEW_PROPERTY(state, payload){
       state.animes_w_details[payload.anime].episodes[payload.episode].finished_watching = payload.finished;
     },

@@ -52,9 +52,9 @@
 					</svg>
 					FAVORITE
 				</button>
-				<div class="next-up" v-if="isCurrentlyWatching">
+				<div class="next-up" v-if="wasWatching">
 					<h1>{{titleOfNextUp}}</h1>
-					<episode-card :episode="hasNextUp" @watchit="watchEpisode(hasNextUp, checkIfFinished)" style="margin: 0px;"></episode-card>
+					<episode-card :episode="wasWatching" @watchit="watchEpisode(wasWatching)" style="margin: 0px;"></episode-card>
 				</div>
 			</div>
 			<div class="episodes-section">
@@ -62,7 +62,7 @@
 					<h1>Episodes</h1>
 					<ul class="episodes">
 						<li v-for="(episode, index) in current_anime.episodes">
-							<episode-card :showLoader="index === start_episode" :episode="episode" @watchit="watchEpisode(episode, index)" :current="isCurrentlyWatching && isCurrentlyWatching.next_up.last_watched_index === index" :finished="!(typeof episode.finished_watching === 'undefined')"></episode-card>
+							<episode-card :showLoader="index === start_episode" :episode="episode" @watchit="watchEpisode(episode)" :current="episode.last_watched" :finished="!(typeof episode.finished_watching === 'undefined')"></episode-card>
 						</li>
 					</ul>
 				</div>
@@ -102,31 +102,19 @@ export default {
 		wallpaper() {
 			let { wallpapers } = this.current_anime;
 			if (!wallpapers || wallpapers.length === 0) return null;
-			console.log(this.isCurrentlyWatching);
-			//console.log(this.isCurrentlyWatching.next_up);
-			console.log(this.hasNextUp);
-			//console.log(this.checkIfFinished);
-			console.log(this.episodeInHalf);
 			return this.current_anime && `https://cdn.masterani.me/wallpaper/0/${wallpapers[this.getRandomInt(wallpapers.length)].file}`;
-		},
-		isCurrentlyWatching() {
-			return this.watching_animes.find(anime => anime.info.id === this.current_anime.info.id);
 		},
 		episodeInHalf(){
 			return this.current_anime.episodes.find(
-				episode => episode.current_time !== null
+				episode => episode.last_watched === true
 				);
 		},
 		titleOfNextUp(){
 			return this.episodeInHalf ? 'Continue Watching' : 'Next Up';
 		},
-		hasNextUp(){
-			return this.episodeInHalf? this.episodeInHalf
-			: this.isCurrentlyWatching? this.isCurrentlyWatching.next_up: null;
+		wasWatching(){
+			return this.episodeInHalf;
 		},
-		checkIfFinished(){
-			return this.episodeInHalf? this.isCurrentlyWatching.next_up.last_watched_index: ++this.isCurrentlyWatching.next_up.last_watched_index
-		}
 	},
 	methods: {
 		...mapActions(['getAnimeDetails', 'getVideoLinks']),
@@ -134,29 +122,15 @@ export default {
 		getRandomInt(max) {
 			return Math.floor(Math.random() * Math.floor(max));
 		},
-		watchEpisode(_episode, index) {
+		watchEpisode(_episode) {
 			console.log(_episode);
-			console.log(index);
-			this.start_episode = index;
-			let { slug, episode_count, status } = this.current_anime.info;
-			let { episodes } = this.current_anime;
+			let { slug, status } = this.current_anime.info;
 			let episode = _episode.info.episode;
 			this.getVideoLinks({ slug, episode }).then(result => {
 				let links = JSON.stringify(result);
 				if (this.isCurrentlyWatching)
 					this.REMOVE_FROM_WATCHING(this.current_anime);
-				let next_up = episodes[index + 1];
-				if (!next_up)
-					next_up = episodes[index];
-				next_up['last_watched_index'] = index;
-				if (index < episode_count - 1)
-					this.ADD_TO_WATCHING({ ...this.current_anime, ['next_up']: next_up })
-				else if (status === 0 && index === episode_count - 1)
-					this.ADD_TO_WATCHING({ ...this.current_anime, ['next_up']: next_up, ['finished']: true });
-				else
-					this.ADD_TO_WATCHING({ ...this.current_anime, ['next_up']: next_up, ['next_not_aired']: true })
 				this.$router.push(`/anime/${this.current_anime.info.id}/watch/${episode}/${btoa(links)}`);
-				this.start_episode = null;
 			}).catch(err => {
 				throw err;
 			});
