@@ -32,9 +32,22 @@ const video_player_style = `
 export default {
     props: ['links', 'episode_index', 'episode_id'],
     created() {
-        let links = JSON.parse(atob(this.links));
+        //this.$router.push('/');
+        let links = JSON.parse(atob(this.links))['subs'];
         console.log('Links in player:', links);
-        this.iframe_src = links[0].link;
+        let video_link;
+        let medium_quality = links.find(link => link.quality === 720);
+        let low_quality = links.find(link => link.quality === 480);
+        let high_quality = links.find(link => link.quality === 1080);
+        video_link = low_quality || medium_quality || high_quality;
+        let internet_speed = navigator.connection.downlink;
+        if(internet_speed > 5 && medium_quality) {
+            video_link = medium_quality;
+        } else if (internet_speed > 8 && high_quality) {
+            video_link = high_quality;
+        }
+        this.internet_speed = internet_speed;
+        this.iframe_src = video_link.link;
         if (!this.iframe_src) this.$router.push('/');
     },
     mounted() {
@@ -140,6 +153,7 @@ export default {
         current_time: null,
         video_length: null,
         js_executed: false,
+        internet_speed: null,
     }),
 }
 </script>

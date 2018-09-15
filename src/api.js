@@ -37,8 +37,10 @@ export default {
 					name: mirror.host.name,
 					link: `${mirror.host.embed_prefix}${mirror.embed_id}${mirror.host.embed_suffix}`,
 				}));
-				console.log('Links:', links);
-				resolve(links);
+				let subs = links.filter(link => link.type === 'sub');
+				let dubs = links.filter(link => link.type === 'dub');
+				console.log('Links:', {subs, dubs});
+				resolve({subs, dubs});
 			}).catch( err => reject(err));
 		});
 	},
