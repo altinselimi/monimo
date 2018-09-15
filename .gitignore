@@ -19,6 +19,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw*
-
+.jsbeautifyrc
 #Electron-builder output
 /dist_electron

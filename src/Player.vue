@@ -72,7 +72,7 @@
                     // console.log(typeof Number(message[1]));
                     this.video_length = Number(msg[1]);
                 }
-                if (!isNaN(Number(msg[0]))) this.AnimeCurrentTime((Number(msg[0]))); //the actual time that is premmited using console-message
+                if (!isNaN(Number(msg[0]))&&!timer) this.AnimeCurrentTime((Number(msg[0]))); //the actual time that is premmited using console-message
             });
         },
         computed: {
@@ -129,8 +129,8 @@
                     }).then(result => {
                         let links = JSON.stringify(result);
                         let router_link = `/anime/${episode_id}/watch/${episode_index}/${btoa(links)}`;
-                        this.$router.push(router_link);
-                        location.reload();
+                        this.$router.push({path: router_link});
+                        // location.reload();
                         console.log('Pushed to:', router_link);
                     }).catch(err => { throw err });
                 }
