@@ -236,6 +236,8 @@
         /* align-items: flex-end; */
         justify-content: flex-end;
         opacity: 0;
+        -webkit-user-select: none;
+        -webkit-app-region: drag;
     }
 
     .buttons {
