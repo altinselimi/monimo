@@ -22,6 +22,7 @@ export default {
 	},
 	videoLinks: (req) => {
 		let anime_url = `https://www.masterani.me/anime/watch/${req.slug}/${req.episode}`;
+		console.log("Slug:" ,req.slug);
 		if (!anime_url) throw new Error('missing url');
 		let targets = ['mp4upload', 'openload'];
 		return new Promise((resolve, reject) => {
@@ -40,7 +41,7 @@ export default {
 				let subs = links.filter(link => link.type === 'sub');
 				let dubs = links.filter(link => link.type === 'dub');
 				console.log('Links:', {subs, dubs});
-				resolve({subs, dubs});
+				resolve({subs, dubs, slug: req.slug});
 			}).catch( err => reject(err));
 		});
 	},
