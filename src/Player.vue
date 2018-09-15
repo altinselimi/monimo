@@ -8,128 +8,136 @@
     </div>
 </template>
 <script>
-    import {
-        mapMutations,
-        mapState
-    } from 'vuex';
-    let global_timeout = null;
-    let timer = null;
-    const video_player_style = `
+import {
+    mapMutations,
+    mapState
+} from 'vuex';
+let global_timeout = null;
+let timer = null;
+const video_player_style = `
         body,html {
             background-color:black;
         }
-
-        body > * {
-            display: none!important;
+    body > * {
+        display: none!important;
+    }
+    video#the-real-video {
+        display: block!important;
+    }
+    body > video {
+        height: 100%;
+        width: 100%;
+        border: none;
+        display: block;
+    }`;
+export default {
+    props: ['links', 'episode_index', 'episode_id'],
+    created() {
+        //this.$router.push('/');
+        let links = JSON.parse(atob(this.links))['subs'];
+        console.log('Links in player:', links);
+        let video_link;
+        let medium_quality = links.find(link => link.quality === 720);
+        let low_quality = links.find(link => link.quality === 480);
+        let high_quality = links.find(link => link.quality === 1080);
+        video_link = low_quality || medium_quality || high_quality;
+        let internet_speed = navigator.connection.downlink;
+        if (internet_speed > 5 && medium_quality) {
+            video_link = medium_quality;
+        } else if (internet_speed > 8 && high_quality) {
+            video_link = high_quality;
         }
-        video#the-real-video {
-            display: block!important;
-        }
-        body > video {
-            height: 100%;
-            width: 100%;
-            border: none;
-            display: block;
-        }`;
-    export default {
-        props: ['links', 'episode_index', 'episode_id'],
-        components: {
-            headerr: () => import('./components/header')
-        },
-        created() {
-            //this.$router.push('/');
-            let links = JSON.parse(atob(this.links));
-            console.log('Links in player:', links);
-            this.iframe_src = links[0].link;
-            if (!this.iframe_src) this.$router.push('/');
-        },
-        mounted() {
-            if (!this.isElectron) return;
-            let webview = document.querySelector("webview");
-            webview.addEventListener('dom-ready', (e) => {
-                // webview.openDevTools();
-                if (this.js_executed) return;
-                webview.insertCSS(video_player_style);
-                webview.executeJavaScript(this.qite(this.episodeCurrentTime || null));
-                this.js_executed = true;
-            });
-            webview.addEventListener('console-message', (event) => {
-                console.log(event.message);
-                let msg = event.message.split(",");
-                if (!this.video_length && !isNaN(Number(msg[1]))) {
-                    // console.log(Number(message[1]));
-                    // console.log(typeof Number(message[1]));
-                    this.video_length = Number(msg[1]);
-                }
-                if (!isNaN(Number(msg[0]))) this.AnimeCurrentTime((Number(msg[0]))); //the actual time that is premmited using console-message
-            });
-        },
-        computed: {
-            ...mapState({
-                animes_w_details: state => state.animes_w_details
-            }),
-            isElectron() {
-                return navigator.userAgent.toLowerCase().indexOf('electron/') > -1;
-            },
-            episodeCurrentTime() {
-                return this.animes_w_details[this.episode_id].episodes[this.episode_index - 1].current_time;
-            },
-            isEpisodeNear() {
-                console.log(this.video_length);
-                return this.video_length && this.current_time + 60 >= this.video_length;
+        this.internet_speed = internet_speed;
+        this.iframe_src = video_link.link;
+        if (!this.iframe_src) this.$router.push('/');
+    },
+    mounted() {
+        if (!this.isElectron) return;
+        let webview = document.querySelector("webview");
+        webview.addEventListener('dom-ready', (e) => {
+            // webview.openDevTools();
+            if (this.js_executed) return;
+            webview.insertCSS(video_player_style);
+            webview.executeJavaScript(this.qite(this.episodeCurrentTime || null));
+            this.js_executed = true;
+        });
+        webview.addEventListener('console-message', (event) => {
+            console.log(event.message);
+            let msg = event.message.split(",");
+            if (!this.video_length && !isNaN(Number(msg[1]))) {
+                // console.log(Number(message[1]));
+                // console.log(typeof Number(message[1]));
+                this.video_length = Number(msg[1]);
             }
+            if (!isNaN(Number(msg[0]))) this.AnimeCurrentTime((Number(msg[0]))); //the actual time that is premmited using console-message
+        });
+    },
+    computed: {
+        ...mapState({
+            animes_w_details: state => state.animes_w_details
+        }),
+        isElectron() {
+            return navigator.userAgent.toLowerCase().indexOf('electron/') > -1;
         },
-        methods: {
-            ...mapMutations(['SET_CURRENT_TIME', 'SET_NEW_PROPERTY']),
-            showHeader() {
-                this.show_header = true;
-                clearTimeout(global_timeout);
-                global_timeout = setTimeout(() => {
-                    this.show_header = false;
-                }, 3000);
-            },
-            AnimeCurrentTime(time) {
-                this.current_time = time;
-                if (this.isEpisodeNear && !timer) {
-                    this.countDown();
-                    console.log('called mofock')
-                }
-                this.SET_CURRENT_TIME({
-                    anime: this.episode_id,
-                    episode: this.episode_index,
-                    time: time
-                });
-                if (time === this.video_length) this.episodeFinished();
-            },
-            episodeFinished() {
-                this.AnimeCurrentTime(null);
-                this.SET_NEW_PROPERTY({
-                    anime: this.episode_id,
-                    episode: this.episode_index - 1 + '',
-                    finished: true
-                });
-            },
-            goToNextEpisode(episode_id,episode_index){
-                if(this.animes_w_details.episode_id[episode_index+1]) {
-                    this.$router.push(`/animes/${episode_id}/watch/${episode_index+1}/$`);
-                } 
-                
-            },
-            countDown(param) {
-                timer = setInterval(() => {
-                    if (this.countdown === 0) {
-                        clearInterval(timer);
+        episodeCurrentTime() {
+            return this.animes_w_details[this.episode_id].episodes[this.episode_index - 1].current_time;
+        },
+        isEpisodeNear() {
+            console.log(this.video_length);
+            return this.video_length && this.current_time + 60 >= this.video_length;
+        }
+    },
+    methods: {
+        ...mapMutations(['SET_CURRENT_TIME', 'SET_NEW_PROPERTY']),
+        showHeader() {
+            this.show_header = true;
+            clearTimeout(global_timeout);
+            global_timeout = setTimeout(() => {
+                this.show_header = false;
+            }, 3000);
+        },
+        AnimeCurrentTime(time) {
+            this.current_time = time;
+            if (this.isEpisodeNear && !timer) {
+                this.countDown();
+                console.log('called mofock')
+            }
+            this.SET_CURRENT_TIME({
+                anime: this.episode_id,
+                episode: this.episode_index,
+                time: time
+            });
+            if (time === this.video_length) this.episodeFinished();
+        },
+        episodeFinished() {
+            this.AnimeCurrentTime(null);
+            this.SET_NEW_PROPERTY({
+                anime: this.episode_id,
+                episode: this.episode_index - 1 + '',
+                finished: true
+            });
+        },
+        goToNextEpisode(episode_id, episode_index) {
+            if (this.animes_w_details.episode_id[episode_index + 1]) {
+                this.$router.push(`/animes/${episode_id}/watch/${episode_index+1}/$`);
+            }
 
-                        this.$router.push(`/`)
-                        return;
-                    } else {
-                        console.log(this.countdown);
-                        --this.countdown;
-                    }
-                }, 1000)
-            },
-            qite(param) {
-                return `
+        },
+        countDown(param) {
+            timer = setInterval(() => {
+                if (this.countdown === 0) {
+                    clearInterval(timer);
+
+                    this.$router.push(`/`)
+                    return;
+                } else {
+                    console.log(this.countdown);
+                    --this.countdown;
+                }
+            }, 1000)
+        },
+        qite(param) {
+            return `
                     console.log('executing sum js');
                     var page_video = document.querySelector("video");
                     var video = document.createElement('video');
@@ -159,44 +167,48 @@
                         clearInterval(timeout);
                     }
                 `;
-            }
-        },
-        data: () => ({
-            iframe_src: null,
-            show_header: false,
-            current_time: null,
-            countdown: 60,
-            video_length: null,
-            js_executed: false,
-        }),
-        beforeDestroy() {
-            clearTimeout(global_timeout);
-            clearInterval(timer);
-            global_timeout = null;
-            timer = null;
         }
-    };
+    },
+    beforeDestroy() {
+        clearTimeout(global_timeout);
+        clearInterval(timer);
+        global_timeout = null;
+        timer = null;
+    },
+    components: {
+        headerr: () =>
+            import ('./components/header.vue'),
+    },
+    data: () => ({
+        iframe_src: null,
+        show_header: false,
+        current_time: null,
+        video_length: null,
+        js_executed: false,
+        internet_speed: null,
+    }),
+};
 </script>
 <style lang="scss">
-    .player {
-        width: 100%;
-        height: 100%;
-    }
+.player {
+    width: 100%;
+    height: 100%;
+}
 
-    webview {
-        padding-top: 0px!important;
-        width: 100%;
-        height: 100%;
-        border: none;
-    }
+webview {
+    padding-top: 0px!important;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
 
-    .nextup {
-        position: absolute;
-        bottom: 100px;
-        right: 20px;
-        padding: 2px 5px;
-        color: white;
-        background-color: #2196f3;
-        z-index: 30;
-    }
+.nextup {
+    position: absolute;
+    bottom: 100px;
+    right: 20px;
+    padding: 2px 5px;
+    color: white;
+    background-color: #2196f3;
+    z-index: 30;
+}
 </style>
