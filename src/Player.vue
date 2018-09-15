@@ -7,12 +7,12 @@
     </div>
 </template>
 <script>
-    import {
-        mapMutations,
-        mapState
-    } from 'vuex';
-    let global_timeout = null;
-    const video_player_style = `
+import {
+    mapMutations,
+    mapState
+} from 'vuex';
+let global_timeout = null;
+const video_player_style = `
     body,html {
         background-color:black;
     }
@@ -29,127 +29,131 @@
         border: none;
         display: block;
     }`;
-    export default {
-        created() {
-            let link = this.$route.params.src;
-            this.iframe_src = atob(this.$route.params.src);
-            if (!this.iframe_src) this.$router.push('/');
-            console.log(this.animes_w_details[this.$route.params.id].episodes[this.$route.params.episode - 1].current_time);
-        },
-        mounted() {
-            if (!this.isElectron) return;
-            let webview = document.querySelector("webview");
-            webview.addEventListener('dom-ready', (e) => {
-                // webview.openDevTools();
-                if (this.js_executed) return;
-                webview.insertCSS(video_player_style);
-                webview.executeJavaScript(this.qite(this.animes_w_details[this.$route.params.id].episodes[this.$route.params.episode - 1].current_time));
-                this.js_executed = true;
-            });
-            webview.addEventListener('console-message', (event) => {
-                console.log(event.message);
-                let msg = event.message.split(",");
-                if (!this.video_length && !isNaN(Number(msg[1]))) {
-                    // console.log(Number(message[1]));
-                    // console.log(typeof Number(message[1]));
-                    this.video_length = Number(msg[1]);
-                }
-                if (!isNaN(Number(msg[0]))) this.AnimeCurrentTime((Number(msg[0]))); //the actual time that is premmited using console-message
-            });
-        },
-        computed: {
-            ...mapState({
-                animes_w_details: state => state.animes_w_details
-            }),
-            isElectron() {
-                return navigator.userAgent.toLowerCase().indexOf('electron/') > -1;
-            },
-            isEqual() {
-                if (this.current_time === this.video_length);
-            },
-        },
-        methods: {
-            ...mapMutations(['SET_CURRENT_TIME', 'SET_NEW_PROPERTY']),
-            showHeader() {
-                this.show_header = true;
-                clearTimeout(global_timeout);
-                global_timeout = setTimeout(() => {
-                    this.show_header = false;
-                }, 3000);
-            },
-            AnimeCurrentTime(time) {
-                this.SET_CURRENT_TIME({
-                    anime: this.$route.params.id,
-                    episode: this.$route.params.episode,
-                    time: time
-                });
-                if (time === this.video_length) this.episodeFinished();
-            },
-            episodeFinished() {
-                this.AnimeCurrentTime(null);
-                this.SET_NEW_PROPERTY({
-                    anime: this.$route.params.id,
-                    episode: this.$route.params.episode - 1 + '',
-                    finished: true
-                });
-            },
-            qite(param) {
-                return `
-        console.log('executing sum js');
-        var page_video = document.querySelector("video");
-        var video = document.createElement('video');
-        video.setAttribute('src', page_video.src);
-        video.setAttribute('autoplay', true);
-        video.setAttribute('controls', true);
-        video.setAttribute('id', 'the-real-video');
-        /*[...document.querySelectorAll('body>*')].forEach(element => {
-            element.remove();
-        });*/
-        let starting_point = ${param? param : 'null'}
-        console.log(['qka po di une ', ''+starting_point]);
-        document.body.append(video);
-        ${param? 'video.currentTime === '+param :''}
-        var timeout = setInterval(() => {
-            if(starting_point > video.currentTime){
-                video.currentTime = starting_point;
+export default {
+    props: ['links', 'episode_index', 'episode_id'],
+    created() {
+        let links = JSON.parse(atob(this.links));
+        console.log('Links in player:', links);
+        this.iframe_src = links[0].link;
+        if (!this.iframe_src) this.$router.push('/');
+    },
+    mounted() {
+        if (!this.isElectron) return;
+        let webview = document.querySelector("webview");
+        webview.addEventListener('dom-ready', (e) => {
+            // webview.openDevTools();
+            if (this.js_executed) return;
+            webview.insertCSS(video_player_style);
+            webview.executeJavaScript(this.qite(this.episodeCurrentTime || null));
+            this.js_executed = true;
+        });
+        webview.addEventListener('console-message', (event) => {
+            console.log(event.message);
+            let msg = event.message.split(",");
+            if (!this.video_length && !isNaN(Number(msg[1]))) {
+                // console.log(Number(message[1]));
+                // console.log(typeof Number(message[1]));
+                this.video_length = Number(msg[1]);
             }
-            if(video.duration === video.currentTime) {
-                clearInterval(timeout);
-                timeout = 0;
-            };
-            console.log([video.currentTime, video.duration])
-        }, 3000);
-        video.play().then(video.currentTime === ${param});
-        window.onunload = () => {
-            clearInterval(timeout);
-        }
-        `
-            }
-        },
-        components: {
-            headerr: () =>
-                import ('./components/header.vue'),
-        },
-        data: () => ({
-            iframe_src: null,
-            show_header: false,
-            current_time: null,
-            video_length: null,
-            js_executed: false,
+            if (!isNaN(Number(msg[0]))) this.AnimeCurrentTime((Number(msg[0]))); //the actual time that is premmited using console-message
+        });
+    },
+    computed: {
+        ...mapState({
+            animes_w_details: state => state.animes_w_details
         }),
-    }
+        isElectron() {
+            return navigator.userAgent.toLowerCase().indexOf('electron/') > -1;
+        },
+        isEqual() {
+            if (this.current_time === this.video_length);
+        },
+        episodeCurrentTime() {
+            return this.animes_w_details[this.episode_id].episodes[this.episode_index - 1].current_time;
+        },
+    },
+    methods: {
+        ...mapMutations(['SET_CURRENT_TIME', 'SET_NEW_PROPERTY']),
+        showHeader() {
+            this.show_header = true;
+            clearTimeout(global_timeout);
+            global_timeout = setTimeout(() => {
+                this.show_header = false;
+            }, 3000);
+        },
+        AnimeCurrentTime(time) {
+            this.SET_CURRENT_TIME({
+                anime: this.episode_id,
+                episode: this.episode_index,
+                time: time
+            });
+            if (time === this.video_length) this.episodeFinished();
+        },
+        episodeFinished() {
+            this.AnimeCurrentTime(null);
+            this.SET_NEW_PROPERTY({
+                anime: this.episode_id,
+                episode: this.episode_index - 1 + '',
+                finished: true
+            });
+        },
+        qite(param) {
+            return `
+                    console.log('executing sum js');
+                    var page_video = document.querySelector("video");
+                    var video = document.createElement('video');
+                    video.setAttribute('src', page_video.src);
+                    video.setAttribute('autoplay', true);
+                    video.setAttribute('controls', true);
+                    video.setAttribute('id', 'the-real-video');
+                    /*[...document.querySelectorAll('body>*')].forEach(element => {
+                        element.remove();
+                    });*/
+                    let starting_point = ${param? param : 'null'}
+                    console.log(['qka po di une ', ''+starting_point]);
+                    document.body.append(video);
+                    ${param? 'video.currentTime === '+param :''}
+                    var timeout = setInterval(() => {
+                        if(starting_point > video.currentTime){
+                            video.currentTime = starting_point;
+                        }
+                        if(video.duration === video.currentTime) {
+                            clearInterval(timeout);
+                            timeout = 0;
+                        };
+                        console.log([video.currentTime, video.duration])
+                    }, 3000);
+                    video.play().then(video.currentTime === ${param});
+                    window.onunload = () => {
+                        clearInterval(timeout);
+                    }
+                `
+        }
+    },
+    components: {
+        headerr: () =>
+            import ('./components/header.vue'),
+    },
+    data: () => ({
+        iframe_src: null,
+        show_header: false,
+        current_time: null,
+        video_length: null,
+        js_executed: false,
+    }),
+}
 </script>
 <style lang="scss">
-    .player {
-        width: 100%;
-        height: 100%;
-    }
+.player {
+    width: 100%;
+    height: 100%;
+}
 
-    iframe,
-    webview {
-        padding-top: 0px!important;
-        width: 100%;
-        height: 100%;
-        border: none;
-    }
+iframe,
+webview {
+    padding-top: 0px!important;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
 </style>

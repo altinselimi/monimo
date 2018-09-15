@@ -1,6 +1,7 @@
 import Vuex from 'vuex';
 import createLogger from 'vuex/dist/logger';
 import Vue from 'vue';
+import api from './api';
 
 const debug = process.env.NODE_ENV !== 'production';
 
@@ -84,13 +85,13 @@ export default new Vuex.Store({
         if (state.preferred_genres.length > 0) {
           _params.genres = state.preferred_genres;
         }
-        Vue.$http.get('/animes', { params: _params }).then(res => {
+        api.animes({ params: _params }).then(res => {
+          console.log('Response:', res);
           let animes = res.data.data.map(anime => {
             return { ...anime,
               ['poster']: `https://cdn.masterani.me/poster/1/${anime.poster.file}`,
             }
           });
-          console.log(animes);
           typeof _params.search === 'undefined'? commit('SET_ANIMES', animes): commit('SET_SEARCHED_ANIMES',animes);
           resolve(animes);
         }).catch(err => {
@@ -100,7 +101,7 @@ export default new Vuex.Store({
     },
     getAnimeDetails({ state, commit }, payload) {
       return new Promise((resolve, reject) => {
-        Vue.$http.get('/anime-details', { params: { anime_id: payload } }).then(res => {
+        api.animeDetails({ anime_id: payload }).then(res => {
           console.log('anime details:', res.data);
           res.data.episodes.forEach((episode)=> episode.current_time=null);
           commit('ADD_ANIME_DETAILS', { id: payload, data: res.data });
@@ -111,8 +112,8 @@ export default new Vuex.Store({
         })
       })
     },
-    getVideoLink({ state, commit }, { slug, episode }) {
-      return Vue.$http.get('/get-video-link', { params: { slug: slug, episode: episode } });
+    getVideoLinks({ state, commit }, { slug, episode }) {
+      return api.videoLinks({ slug: slug, episode: episode } );
     }
   },
   getters: {
