@@ -4,6 +4,7 @@
         <webview :src="iframe_src" @mousemove="showHeader" v-if="isElectron" disablewebsecurity style="width:100%;height:100%"></webview>
         <iframe sandbox="allow-scripts" @mousemove="showHeader" :src="iframe_src" v-else width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen="allowfullscreen">
         </iframe>
+        <div v-if="isEpisodeNear" class="nextup">Next episode in: {{countdown}}</div>
     </div>
 </template>
 <script>
@@ -12,6 +13,7 @@
         mapState
     } from 'vuex';
     let global_timeout = null;
+    let timer = null;
     const video_player_style = `
     body,html {
         background-color:black;
@@ -64,9 +66,9 @@
             isElectron() {
                 return navigator.userAgent.toLowerCase().indexOf('electron/') > -1;
             },
-            isEqual() {
-                if (this.current_time === this.video_length);
-            },
+            isEpisodeNear() {              
+                return this.video_length && this.current_time+60 >= this.video_length;
+            }
         },
         methods: {
             ...mapMutations(['SET_CURRENT_TIME', 'SET_NEW_PROPERTY']),
@@ -78,6 +80,8 @@
                 }, 3000);
             },
             AnimeCurrentTime(time) {
+                this.current_time = time;
+                if(this.isEpisodeNear){ this.countDown(); console.log('called mofock')}
                 this.SET_CURRENT_TIME({
                     anime: this.$route.params.id,
                     episode: this.$route.params.episode,
@@ -92,6 +96,16 @@
                     episode: this.$route.params.episode - 1 + '',
                     finished: true
                 });
+            },
+            countDown(param){
+                    timer = setInterval(()=> {
+                    if(this.countdown === 0) {
+                    clearInterval(timer);
+                    return;
+                }else{
+                    console.log(this.countdown);
+                    --this.countdown;
+                }}, 1000)
             },
             qite(param) {
                 return `
@@ -134,9 +148,16 @@
             iframe_src: null,
             show_header: false,
             current_time: null,
+            countdown: 60,
             video_length: null,
             js_executed: false,
         }),
+        beforeDestroy(){
+            clearTimeout(global_timeout);
+            clearInterval(timer);
+            global_timeout = null;
+            timer = null;
+        }
     }
 </script>
 <style lang="scss">
@@ -151,5 +172,14 @@
         width: 100%;
         height: 100%;
         border: none;
+    }
+    .nextup{
+        position:absolute;
+        bottom:100px;
+        right: 20px;
+        padding: 2px 5px;
+        color:white;
+        background-color:#2196f3;
+        z-index:30;
     }
 </style>
