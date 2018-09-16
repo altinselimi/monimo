@@ -7,7 +7,7 @@ let routes = [{
 	component: () =>
 		import ('./Home.vue'),
 }, {
-	path: '/results/:search',
+	path: '/results/:query',
 	props: true,
 	component: () =>
 		import ('./Results.vue'),

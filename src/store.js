@@ -75,6 +75,7 @@ export default new Vuex.Store({
   actions: {
     getAnimes({ state, commit }, params) {
       return new Promise((resolve, reject) => {
+        console.log('params:', params);
         let _params = {
           order: 'score_desc',
           page: 1,
@@ -85,7 +86,8 @@ export default new Vuex.Store({
         if (state.preferred_genres.length > 0) {
           _params.genres = state.preferred_genres;
         }
-        api.animes({ params: _params }).then(res => {
+        console.log('params at end:', _params);
+        api.animes(_params).then(res => {
           console.log('Response:', res);
           let animes = res.data.data.map(anime => {
             return { ...anime,

@@ -69,9 +69,9 @@
     }
     ul.result {
         flex-wrap: wrap;
-        justify-content:space-between;
+        justify-content: flex-start;
         >li{
-            flex: 0 0 27%;
+            margin: 0px 15px;
         }
     }
 </style>
