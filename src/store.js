@@ -3,6 +3,8 @@ import createLogger from 'vuex/dist/logger';
 import Vue from 'vue';
 import api from './api';
 import createPersistedState from 'vuex-persistedstate';
+import hardcoded_data from './hardcoded_data.js';
+const { staff_picks } = hardcoded_data;
 
 const debug = process.env.NODE_ENV !== 'production';
 
@@ -14,7 +16,10 @@ export default new Vuex.Store({
    */
   state: {
     animes: null,
+    last_releases: null,
     current_anime: null,
+    staff_picks: staff_picks,
+    current_anime_video_links: null,
     animes_w_details: {},
     preferred_genres: [],
     favorite_animes: [],
@@ -26,6 +31,9 @@ export default new Vuex.Store({
   mutations: {
     SET_ANIMES(state, payload) {
       state.animes = payload;
+    },
+    SET_LAST_RELEASES(state, payload) {
+      state.last_releases = payload;
     },
     ADD_ANIMES(state, payload) {
       state.animes.push(payload);
@@ -64,7 +72,6 @@ export default new Vuex.Store({
       state.window_mode = payload;
     },
     SET_CURRENT_TIME(state, payload) {
-      console.log('Current time payload:', payload);
       if (!state.animes_w_details) return;
       state.animes_w_details[payload.anime].episodes[payload.episode - 1].current_time = payload.time;
     },
@@ -73,6 +80,9 @@ export default new Vuex.Store({
     },
     SET_SEARCHED_ANIMES(state, payload) {
       state.searched_animes = payload;
+    },
+    SET_CURRENT_VIDEO_LINKS(state, payload) {
+      state.current_anime_video_links = payload;
     }
   },
   actions: {
@@ -105,12 +115,28 @@ export default new Vuex.Store({
         });
       });
     },
-    getAnimeDetails({ state, commit }, payload) {
+    getLastReleases({ state, commit }, payload) {
       return new Promise((resolve, reject) => {
-        api.animeDetails({ anime_id: payload }).then(res => {
+        api.getReleases().then(res => {
+          let animes = res.data.map(result => {
+            return { ...result.anime,
+              ['poster']: `https://cdn.masterani.me/poster/1/${result.anime.poster}`,
+              ['released_at']: result.created_at,
+              ['episode_number']: result.episode,
+            }
+          });
+          commit('SET_LAST_RELEASES', animes);
+        }).catch(err => {
+          reject(err);
+        })
+      });
+    },
+    getAnimeDetails({ state, commit }, anime_id) {
+      return new Promise((resolve, reject) => {
+        api.animeDetails({ anime_id: anime_id }).then(res => {
           console.log('anime details:', res.data);
-          res.data.episodes.forEach((episode) => episode.current_time = null);
-          commit('ADD_ANIME_DETAILS', { id: payload, data: res.data });
+          res.data.episodes.forEach(episode => episode.current_time = null);
+          commit('ADD_ANIME_DETAILS', { id: anime_id, data: res.data });
           commit('SET_CURRENT_ANIME', res.data);
           resolve(res.data);
         }).catch(err => {
@@ -147,5 +173,5 @@ export default new Vuex.Store({
       return state.searched_animes;
     }
   },
-  plugins: [createPersistedState()],
+  plugins: debug ? [] : [createPersistedState()],
 });

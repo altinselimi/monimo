@@ -8,7 +8,7 @@
 		<headerr />
 		<article>
 			<div style="padding: 20px; flex: 1;">
-				<div class="article-top">
+				<div class="article-top" v-if="current_anime.info">
 					<h1>{{current_anime.info.title}}</h1>
 					<p style="margin: 8px 0px;">{{current_anime.info.synopsis.slice(0,400)}}...</p>
 					<div style="margin: 15px 0px;">
@@ -129,13 +129,13 @@ export default {
 		},
 		finishedAnime() {
 			let { episodes, watching, info } = this.animeWithDetails;
-			if(!watching) return;
+			if (!watching) return;
 			return !episodes[watching] && info.status === 0;
 		},
 	},
 	methods: {
 		...mapActions(['getAnimeDetails', 'getVideoLinks']),
-		...mapMutations(['ADD_TO_FAVORITES', 'REMOVE_FROM_FAVORITES', 'ADD_TO_WATCHING', 'REMOVE_FROM_WATCHING']),
+		...mapMutations(['ADD_TO_FAVORITES', 'REMOVE_FROM_FAVORITES', 'ADD_TO_WATCHING', 'REMOVE_FROM_WATCHING', 'SET_CURRENT_VIDEO_LINKS']),
 		getRandomInt(max) {
 			return Math.floor(Math.random() * Math.floor(max));
 		},
@@ -143,10 +143,9 @@ export default {
 			let { slug, status } = this.current_anime.info;
 			let episode = _episode.info.episode;
 			this.getVideoLinks({ slug, episode }).then(result => {
-				let links = JSON.stringify(result);
-				if (this.isCurrentlyWatching)
-					this.REMOVE_FROM_WATCHING(this.current_anime);
-				this.$router.push(`/anime/${this.current_anime.info.id}/watch/${episode}/${btoa(links)}`);
+				this.SET_CURRENT_VIDEO_LINKS(result);
+				if (this.isCurrentlyWatching) this.REMOVE_FROM_WATCHING(this.current_anime);
+				this.$router.push(`/anime/${this.current_anime.info.id}/watch/${episode}`);
 			}).catch(err => {
 				throw err;
 			});

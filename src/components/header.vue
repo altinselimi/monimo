@@ -9,7 +9,8 @@
             </div>
             <div class="logo-wrap">
                 <a tabindex="0" @click="$router.push('/home')" class="logo">
-                    <span style="font-size:80%; align-self: flex-end;">🦉</span><span>MONIMO</span>
+                    <span style="font-size:80%; align-self: flex-end;">🦉</span>
+                    <span>MONIMO</span>
                     <!-- <span class="sublogo">your anime best fren</span> -->
                 </a>
             </div>
@@ -41,7 +42,6 @@ import {
 } from 'vuex';
 let timeouts = 0;
 let timeout;
-let app;
 export default {
     props: ['isHome'],
     computed: {
@@ -54,7 +54,7 @@ export default {
             },
         },
         isElectron() {
-            return true;//navigator.userAgent.toLowerCase().indexOf('electron/') > -1;
+            return true; //navigator.userAgent.toLowerCase().indexOf('electron/') > -1;
         },
         ...mapState({
             window_mode: state => state.window_mode
@@ -63,14 +63,6 @@ export default {
     data: () => ({
         show_search: false,
     }),
-    beforeMount() {
-        if (this.isElectron) {
-            import ('electron')
-            .then((electro) => {
-                app = electro.remote.getCurrentWindow();
-            });
-        }
-    },
     methods: {
         showSearch() {
             if (timeouts) clearTimeout(timeout);
@@ -84,13 +76,6 @@ export default {
                 this.show_search = false
             }, 1000);
             timeouts++;
-        },
-        surpriseMe() {
-            this.$http.get('/surprise-anime').then(res => {
-                console.log('Result:', res);
-            }).catch(err => {
-                throw err;
-            });
         },
         ...mapActions(['getAnimes']),
         ...mapMutations(['UPDATE_SEARCH_QUERY', 'SET_WINDOW_MODE']),
@@ -109,6 +94,8 @@ export default {
 </script>
 <style lang="scss">
 header {
+    //-webkit-user-select: none;
+    -webkit-app-region: drag;
     backdrop-filter: blur(21px);
     background-color: rgba(black, .75);
     padding: 20px;

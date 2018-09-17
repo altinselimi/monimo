@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, screen } from 'electron'
+import { app, protocol, BrowserWindow, screen } from 'electron';
 import * as path from 'path'
 import { format as formatUrl } from 'url'
 import {
@@ -12,6 +12,8 @@ if (isDevelopment) {
   // Don't load any native (external) modules until the following line is run:
   require('module').globalPaths.push(process.env.NODE_MODULES_PATH)
 }
+const { autoUpdater } = require("electron-updater");
+autoUpdater.checkForUpdatesAndNotify();
 
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
 let mainWindow
@@ -24,7 +26,8 @@ function createMainWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   const window = new BrowserWindow({
     fullscreenable: true,
-    frame: false,
+    titleBarStyle: 'hiddenInset',
+    //frame: false,
     webPreferences: {
       experimentalFeatures: true,
       webSecurity: false
