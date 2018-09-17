@@ -1,20 +1,16 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, screen } from 'electron';
+import { app, protocol, BrowserWindow, ipcMain,screen } from 'electron'
+import { autoUpdater } from 'electron-updater'
 import * as path from 'path'
 import { format as formatUrl } from 'url'
-import {
-  createProtocol,
-  installVueDevtools
-} from 'vue-cli-plugin-electron-builder/lib'
+import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib'
 const isDevelopment = process.env.NODE_ENV !== 'production'
+
 if (isDevelopment) {
   // Don't load any native (external) modules until the following line is run:
   require('module').globalPaths.push(process.env.NODE_MODULES_PATH)
 }
-const { autoUpdater } = require("electron-updater");
-autoUpdater.checkForUpdatesAndNotify();
-
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
 let mainWindow
 
@@ -22,7 +18,6 @@ let mainWindow
 protocol.registerStandardSchemes(['app'], { secure: true })
 
 function createMainWindow() {
-
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   const window = new BrowserWindow({
     fullscreenable: true,
@@ -40,7 +35,7 @@ function createMainWindow() {
   if (isDevelopment) {
     // Load the url of the dev server if in development mode
     window.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-    if (!process.env.IS_TEST) window.webContents.openDevTools()
+    // if (!process.env.IS_TEST) window.webContents.openDevTools()
   } else {
     createProtocol('app')
     //   Load the index.html when not in development
@@ -52,6 +47,7 @@ function createMainWindow() {
       })
     )
   }
+  
 
   window.on('closed', () => {
     mainWindow = null
@@ -88,5 +84,10 @@ app.on('ready', async() => {
     // Install Vue Devtools
     await installVueDevtools()
   }
+  autoUpdater.checkForUpdatesAndNotify();
   mainWindow = createMainWindow()
+})
+
+autoUpdater.on('update-downloaded', info => {
+  autoUpdater.quitAndInstall()
 })
