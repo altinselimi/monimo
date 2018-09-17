@@ -1,7 +1,7 @@
 <template>
     <div class="player" @mousemove="showHeader">
         <headerr v-show="show_header" />
-        <div class="loader" v-if="isElectron && loading_player">
+        <div class="loader" v-if="loading_player || !video_length">
             <svg class="feather feather-loader sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-reactid="706">
                 <line x1="12" y1="2" x2="12" y2="6"></line>
                 <line x1="12" y1="18" x2="12" y2="22"></line>
@@ -12,11 +12,12 @@
                 <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
                 <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
             </svg>
+            <span>Go grab the 🍿, this might take a while.</span>
         </div>
         <webview :src="iframe_src" v-if="isElectron" disablewebsecurity style="width:100%;height:100%"></webview>
         <iframe sandbox="allow-scripts" :src="iframe_src" v-else width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen="allowfullscreen">
         </iframe>
-        <next-btn class="next-btn" :class="{'is-near-end': isEpisodeNear, 'mouse-moved': show_header}" @click.native="goToNextEpisode(anime_id, episode_number)" :progress-value.sync="progressValue" :stroke-width="5">
+        <next-btn class="next-btn" v-if="nextEpisodeExists" :class="{'is-near-end': isEpisodeNear, 'mouse-moved': show_header}" @click.native="goToNextEpisode(anime_id, episode_number)" :progress-value.sync="progressValue" :stroke-width="5">
             <svg version="1.1" width="17" height="17" viewBox="0 0 17 17" style="transform: scale(1.8);">
                 <g>
                 </g>
@@ -109,9 +110,11 @@ export default {
             if (message === 'loaded_player') {
                 this.loading_player = false;
                 this.updateAnime(this.episode_number);
+                return;
             }
             if (message === 'fullscreen' || message === 'normal') {
                 this.SET_WINDOW_MODE(message);
+                return;
             }
             let msg = message.split(",");
             let current_time = Number(msg[0]);
@@ -138,6 +141,9 @@ export default {
         },
         currentEpisode() {
             return this.animeDetails && this.animeDetails.episodes[this.episode_number - 1];
+        },
+        nextEpisodeExists() {
+            return !!this.animeDetails.episodes[this.episode_number];
         },
         isEpisodeNear() {
             return this.video_length && this.current_time + 60 >= this.video_length;
@@ -199,6 +205,7 @@ export default {
                 if (this.animeDetails.info.status > 0) { // if anime is still ongoing
                     this.updateAnime(episode_number, true); // set expecting_next to true
                 }
+                this.$router.go(-1);
             }
         },
         updateAnime(episode_number, expecting_next) {
@@ -343,6 +350,12 @@ progress {
     justify-content: center;
     align-items: center;
     overflow: hidden;
+    flex-direction: column;
+    color: white;
+    span {
+        margin-top: 10px;
+        opacity: .8;
+    }
     svg {
         stroke: white;
         animation: spin 1s linear infinite;

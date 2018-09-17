@@ -38,11 +38,15 @@
 						</div>
 						<div class="info-sec">
 							<h4>Trailer</h4>
-							<ul class="genres">
-								<li class="genre trailer-link">
-									<a :href="`https://youtube.com/watch?v=${current_anime.info.youtube_trailer_id}`">{{current_anime.info.title}}</a>
+							<ul class="genres" style="margin: 0px; align-self: center;">
+								<li>
+									<button @click="show_trailer = true" class="trailer-link">{{current_anime.info.title}}</button>
 								</li>
 							</ul>
+							<div class="trailer-wrapper" @click="show_trailer = false" v-if="show_trailer">
+								<iframe :src="`https://youtube.com/embed/${current_anime.info.youtube_trailer_id}`" frameborder="0"></iframe>
+								<button class="close-trailer">CLOSE TRAILER</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -85,6 +89,7 @@ export default {
 	name: 'anime-profile',
 	data: () => ({
 		start_episode: null,
+		show_trailer: false,
 	}),
 	components: {
 		episodeCard: () =>
@@ -227,6 +232,34 @@ export default {
 	}
 	.trailer-link {
 		color: #2196F3;
+		border: none;
+		font-size: .8rem;
+		padding: 0px;
+		background: transparent;
+		margin: 0px;
+	}
+	.trailer-wrapper {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		background-color: rgba(0, 0, 0, 0.89);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		z-index: 10;
+		iframe {
+			width: 500px;
+			height: 300px;
+		}
+		.close-trailer {
+			background: transparent;
+			border: none;
+			border-bottom: solid 1px white;
+			color: white;
+		}
 	}
 	.genre {
 		padding: 0px 0px;
