@@ -4,7 +4,7 @@ import { app, protocol, BrowserWindow, ipcMain,screen } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import * as path from 'path'
 import { format as formatUrl } from 'url'
-import { createProtocol, installVueDevtool } from 'vue-cli-plugin-electron-builder/lib'
+import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 
 if (isDevelopment) {
