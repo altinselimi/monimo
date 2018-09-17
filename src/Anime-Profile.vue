@@ -8,7 +8,7 @@
 		<headerr />
 		<article>
 			<div style="padding: 20px; flex: 1;">
-				<div class="article-top">
+				<div class="article-top" v-if="current_anime.info">
 					<h1>{{current_anime.info.title}}</h1>
 					<p style="margin: 8px 0px;">{{current_anime.info.synopsis.slice(0,400)}}...</p>
 					<div style="margin: 15px 0px;">
@@ -38,11 +38,15 @@
 						</div>
 						<div class="info-sec">
 							<h4>Trailer</h4>
-							<ul class="genres">
-								<li class="genre trailer-link">
-									<a :href="`https://youtube.com/watch?v=${current_anime.info.youtube_trailer_id}`">{{current_anime.info.title}}</a>
+							<ul class="genres" style="margin: 0px; align-self: center;">
+								<li>
+									<button @click="show_trailer = true" class="trailer-link">{{current_anime.info.title}}</button>
 								</li>
 							</ul>
+							<div class="trailer-wrapper" @click="show_trailer = false" v-if="show_trailer">
+								<iframe :src="`https://youtube.com/embed/${current_anime.info.youtube_trailer_id}`" frameborder="0"></iframe>
+								<button class="close-trailer">CLOSE TRAILER</button>
+							</div>
 						</div>
 					</div>
 				</div>
@@ -52,8 +56,16 @@
 					</svg>
 					FAVORITE
 				</button>
-				<div class="next-up" v-if="wasWatching">
-					<h1>{{titleOfNextUp}}</h1>
+				<div class="finished-anime" v-if="finishedAnime">
+					<h3>You have finished this anime. 🥂</h3>
+				</div>
+				<div class="next-up" v-if="expectingNext && !finishedAnime">
+					<h1>Next Up ⚠️</h1>
+					<episode-card v-if="nextEpisode" :episode="nextEpisode" @watchit="watchEpisode(nextEpisode)" style="margin: 0px;"></episode-card>
+					<h3 v-else>Upcoming episode has not been released yet. ☹️</h3>
+				</div>
+				<div class="next-up" v-if="wasWatching && !expectingNext">
+					<h1>Continue Watching 🍿</h1>
 					<episode-card :episode="wasWatching" @watchit="watchEpisode(wasWatching)" style="margin: 0px;"></episode-card>
 				</div>
 			</div>
@@ -62,7 +74,7 @@
 					<h1>Episodes</h1>
 					<ul class="episodes">
 						<li v-for="(episode, index) in current_anime.episodes">
-							<episode-card :showLoader="index === start_episode" :episode="episode" @watchit="watchEpisode(episode)" :current="episode.last_watched" :finished="!(typeof episode.finished_watching === 'undefined')"></episode-card>
+							<episode-card :showLoader="index === start_episode" :episode="episode" @watchit="watchEpisode(episode)"></episode-card>
 						</li>
 					</ul>
 				</div>
@@ -75,8 +87,9 @@ import { mapActions, mapMutations, mapState } from 'vuex';
 
 export default {
 	name: 'anime-profile',
-	data:()=>({
-		start_episode:null,
+	data: () => ({
+		start_episode: null,
+		show_trailer: false,
 	}),
 	components: {
 		episodeCard: () =>
@@ -94,43 +107,50 @@ export default {
 		...mapState({
 			current_anime: state => state.current_anime,
 			favorite_animes: state => state.favorite_animes,
-			watching_animes: state => state.watching_animes
+			watching_animes: state => state.watching_animes,
+			animes_w_details: state => state.animes_w_details,
 		}),
 		isFavorite() {
 			return this.favorite_animes.find(anime => anime.info.id === this.current_anime.info.id);
+		},
+		animeWithDetails() {
+			return this.animes_w_details && this.animes_w_details[this.current_anime.info.id];
 		},
 		wallpaper() {
 			let { wallpapers } = this.current_anime;
 			if (!wallpapers || wallpapers.length === 0) return null;
 			return this.current_anime && `https://cdn.masterani.me/wallpaper/0/${wallpapers[this.getRandomInt(wallpapers.length)].file}`;
 		},
-		episodeInHalf(){
-			return this.current_anime.episodes.find(
-				episode => episode.last_watched === true
-				);
+		wasWatching() {
+			let { watching, episodes } = this.animeWithDetails;
+			return watching && episodes[parseInt(watching) - 1];
 		},
-		titleOfNextUp(){
-			return this.episodeInHalf ? 'Continue Watching' : 'Next Up';
+		expectingNext() {
+			return this.animeWithDetails.expecting_next;
 		},
-		wasWatching(){
-			return this.episodeInHalf;
+		nextEpisode() {
+			let { episodes, watching } = this.animeWithDetails;
+			return this.expectingNext && episodes[watching] || null;
+		},
+		finishedAnime() {
+			let { episodes, watching, info } = this.animeWithDetails;
+			if (!watching) return;
+			return !episodes[watching] && info.status === 0;
 		},
 	},
 	methods: {
 		...mapActions(['getAnimeDetails', 'getVideoLinks']),
-		...mapMutations(['ADD_TO_FAVORITES', 'REMOVE_FROM_FAVORITES', 'ADD_TO_WATCHING', 'REMOVE_FROM_WATCHING']),
+		...mapMutations(['ADD_TO_FAVORITES', 'REMOVE_FROM_FAVORITES', 'ADD_TO_WATCHING', 'REMOVE_FROM_WATCHING', 'SET_CURRENT_VIDEO_LINKS']),
 		getRandomInt(max) {
 			return Math.floor(Math.random() * Math.floor(max));
 		},
 		watchEpisode(_episode) {
-			console.log(_episode);
 			let { slug, status } = this.current_anime.info;
 			let episode = _episode.info.episode;
 			this.getVideoLinks({ slug, episode }).then(result => {
-				let links = JSON.stringify(result);
-				if (this.isCurrentlyWatching)
-					this.REMOVE_FROM_WATCHING(this.current_anime);
-				this.$router.push(`/anime/${this.current_anime.info.id}/watch/${episode}/${btoa(links)}`);
+				this.SET_CURRENT_VIDEO_LINKS(result);
+				if (this.isCurrentlyWatching) this.REMOVE_FROM_WATCHING(this.current_anime);
+				this.$router.push(`/anime/${this.current_anime.info.id}/watch/${episode}`);
 			}).catch(err => {
 				throw err;
 			});
@@ -181,6 +201,7 @@ export default {
 		width: 100%;
 		padding: 50px;
 		padding-top: 90px;
+		padding-right: 0px;
 		display: flex;
 		flex-wrap: wrap;
 	}
@@ -211,6 +232,34 @@ export default {
 	}
 	.trailer-link {
 		color: #2196F3;
+		border: none;
+		font-size: .8rem;
+		padding: 0px;
+		background: transparent;
+		margin: 0px;
+	}
+	.trailer-wrapper {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100vw;
+		height: 100vh;
+		background-color: rgba(0, 0, 0, 0.89);
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		flex-direction: column;
+		z-index: 10;
+		iframe {
+			width: 500px;
+			height: 300px;
+		}
+		.close-trailer {
+			background: transparent;
+			border: none;
+			border-bottom: solid 1px white;
+			color: white;
+		}
 	}
 	.genre {
 		padding: 0px 0px;
@@ -242,10 +291,11 @@ export default {
 		z-index: 3;
 		display: grid;
 		grid-template-columns: repeat(auto-fill, minmax(150px, 350px));
-		grid-column-gap: 15px;
 		margin: 0px;
 		padding: 0px;
 		list-style: none;
+		grid-column-gap: 20px;
+		grid-row-gap: 20px;
 	}
 	.favorite-btn {
 		display: flex;
@@ -268,6 +318,9 @@ export default {
 				stroke: red;
 				fill: red;
 			}
+		}
+		&:focus {
+			outline: none;
 		}
 	}
 }

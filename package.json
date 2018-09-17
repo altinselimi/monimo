@@ -1,14 +1,13 @@
 {
   "name": "monimo",
   "author": "Monimo",
-  "description": "Electron-VueJS based application, to watch anime!",
+  "description": "First class experience for watching animes.",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve ",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
-    "server": "npm start --prefix ./monimo-api/",
     "build:electron": "vue-cli-service build:electron",
     "serve:electron": "vue-cli-service serve:electron",
     "postinstall": "electron-builder install-app-deps"
@@ -20,6 +19,7 @@
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
     "vuex": "^3.0.1",
+    "vuex-persistedstate": "^2.5.4",
     "vuex-router-sync": "^5.0.0"
   },
   "devDependencies": {
@@ -61,15 +61,15 @@
   "main": "dist_electron/bundled/background.js",
   "build": {
     "appId": "com.github.altinselimi.monimo",
-     "publish": [
+    "publish": [
       {
         "provider": "github",
         "owner": "altinselimi",
         "repo": "monimo"
       }
     ],
-     "productName": "Monimo",
-     "directories": {
+    "productName": "Monimo",
+    "directories": {
       "output": "build"
     },
     "dmg": {
@@ -87,15 +87,17 @@
       ]
     },
     "win": {
-      "publish":["github"],
+      "publish": [
+        "github"
+      ],
       "target": "nsis-web",
       "icon": "public/img/icons/logo.png"
     },
     "mac": {
-       "icon": "public/img/icons/logo.png"
+      "icon": "public/img/icons/logo.png"
     },
     "linux": {
-        "icon": "public/img/icons"
+      "icon": "public/img/icons"
     }
   }
 }

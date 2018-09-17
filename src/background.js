@@ -1,16 +1,16 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, ipcMain } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain,screen } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import * as path from 'path'
 import { format as formatUrl } from 'url'
 import { createProtocol, installVueDevtool } from 'vue-cli-plugin-electron-builder/lib'
 const isDevelopment = process.env.NODE_ENV !== 'production'
+
 if (isDevelopment) {
   // Don't load any native (external) modules until the following line is run:
   require('module').globalPaths.push(process.env.NODE_MODULES_PATH)
 }
-
 // global reference to mainWindow (necessary to prevent window from being garbage collected)
 let mainWindow
 
@@ -18,15 +18,19 @@ let mainWindow
 protocol.registerStandardSchemes(['app'], { secure: true })
 
 function createMainWindow() {
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   const window = new BrowserWindow({
     fullscreenable: true,
-    frame: false,
+    titleBarStyle: 'hiddenInset',
+    //frame: false,
     webPreferences: {
       experimentalFeatures: true,
       webSecurity: false
     },
     backgroundColor: '#353535',
-  })
+    width,
+    height,
+  });
 
   if (isDevelopment) {
     // Load the url of the dev server if in development mode
@@ -84,9 +88,6 @@ app.on('ready', async() => {
   mainWindow = createMainWindow()
 })
 
-autoUpdater.on('update-downloaded', (info) => {
-    win.webContents.send('updateReady')
-});
-ipcMain.on("quitAndInstall", (event, arg) => {
-    autoUpdater.quitAndInstall();
+autoUpdater.on('update-downloaded', info => {
+  autoUpdater.quitAndInstall()
 })

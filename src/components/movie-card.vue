@@ -17,36 +17,41 @@
             <div class="background">
                 <img :src="movie.poster">
                 <div class="overlay">
-                    <div class="score">
+                    <div class="score" v-if="movie.score">
                         <svg class="feather feather-star sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-reactid="1101">
                             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                         </svg>
                         <span>{{movie.score}}</span>
                     </div>
+                    <h4>{{movie.title.slice(0,22)}}</h4>
                 </div>
             </div>
-            <h4>{{movie.title.slice(0,22)}}</h4>
         </div>
     </div>
 </template>
 <script>
 export default {
-    props: ['movie', 'loading', 'showLoader','screen'],
+    props: ['movie', 'loading', 'showLoader', 'screen'],
 }
 </script>
 <style lang="scss">
 $yellow: #fbbd08;
+
 .movie-card {
+    --width: 350px;
+    --height: 496px;
     position: relative;
-    width: 240px;
-    height: 385.6px;
+    width: calc( var(--width) - 100px);
+    height: calc( var(--height) - 100px);
+    max-width: var(--width);
+    max-height: var(--height);
     display: flex;
     background-color: white;
     border-radius: 25px;
     overflow: hidden;
     margin: 15px;
     .loading {
-        background-color: rgba(gray,.1);
+        background-color: rgba(gray, .1);
         flex: 1;
         height: 100%;
         width: 100%;
@@ -56,7 +61,7 @@ $yellow: #fbbd08;
         rgba(lightgrey, .8) 50%,
         rgba(lightgrey, 0) 100%);
         background-size: 50% calc(100% - 35px), 100% 35px, 100% 100%;
-        background-position: -150% 0, 0 100%; //animation: loading 1.5s infinite;	
+        background-position: -150% 0, 0 100%; //animation: loading 1.5s infinite;   
         animation: loading 1.5s linear infinite;
     }
     .loader {
@@ -72,13 +77,14 @@ $yellow: #fbbd08;
         align-items: center;
         overflow: hidden;
         svg {
-        	stroke:white;
+            stroke: white;
             animation: spin 1s linear infinite;
         }
     }
     .contents {
         display: flex;
         flex-direction: column;
+        width: 100%;
     }
     .background {
         display: flex;
@@ -86,13 +92,15 @@ $yellow: #fbbd08;
         align-items: center;
         position: relative;
         img {
-            height: auto;
-            width: 100%;
+            /*             height: auto;
+            width: 100%; */
+            object-fit: cover;
+            object-position: center center;
         }
     }
     .score {
         position: absolute;
-        bottom: 8px;
+        bottom: 48px;
         left: 8px;
         padding: 2px 8px;
         border-radius: 15px;
@@ -115,16 +123,21 @@ $yellow: #fbbd08;
         text-transform: uppercase;
         font-weight: 600;
         font-size: .8rem;
-        overflow-x: hidden;
-        height: 50px;
+        overflow: hidden;
+        height: 40px;
+        width: 100%;
         display: inline-flex;
         align-items: center;
-        position: relative;
-        background-color: white;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background-color: rgba(white, 1);
     }
 }
-.result{
-    margin:15px auto;
+
+.result {
+    margin: 15px auto;
 }
 
 @keyframes loading {
