@@ -1,12 +1,10 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, ipcMain } from 'electron'
+import { autoUpdater } from 'electron-updater'
 import * as path from 'path'
 import { format as formatUrl } from 'url'
-import {
-  createProtocol,
-  installVueDevtools
-} from 'vue-cli-plugin-electron-builder/lib'
+import { createProtocol, installVueDevtool } from 'vue-cli-plugin-electron-builder/lib'
 const isDevelopment = process.env.NODE_ENV !== 'production'
 if (isDevelopment) {
   // Don't load any native (external) modules until the following line is run:
@@ -18,11 +16,12 @@ let mainWindow
 
 // Standard scheme must be registered before the app is ready
 protocol.registerStandardSchemes(['app'], { secure: true })
-function createMainWindow () {
+
+function createMainWindow() {
   const window = new BrowserWindow({
-    fullscreenable:true,
-    frame:false,
-    webPreferences: { 
+    fullscreenable: true,
+    frame: false,
+    webPreferences: {
       experimentalFeatures: true,
       webSecurity: false
     },
@@ -32,7 +31,7 @@ function createMainWindow () {
   if (isDevelopment) {
     // Load the url of the dev server if in development mode
     window.loadURL(process.env.WEBPACK_DEV_SERVER_URL)
-    if (!process.env.IS_TEST) window.webContents.openDevTools()
+    // if (!process.env.IS_TEST) window.webContents.openDevTools()
   } else {
     createProtocol('app')
     //   Load the index.html when not in development
@@ -44,6 +43,7 @@ function createMainWindow () {
       })
     )
   }
+  
 
   window.on('closed', () => {
     mainWindow = null
@@ -75,10 +75,18 @@ app.on('activate', () => {
 })
 
 // create main BrowserWindow when electron is ready
-app.on('ready', async () => {
+app.on('ready', async() => {
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     await installVueDevtools()
   }
+  autoUpdater.checkForUpdatesAndNotify();
   mainWindow = createMainWindow()
+})
+
+autoUpdater.on('update-downloaded', (info) => {
+    win.webContents.send('updateReady')
+});
+ipcMain.on("quitAndInstall", (event, arg) => {
+    autoUpdater.quitAndInstall();
 })

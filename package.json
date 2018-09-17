@@ -5,8 +5,6 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "concurrently --kill-others \"npm run server\" \"npm run serve\"",
-    "dev:electron": "concurrently --kill-others \"npm run server\" \"npm run serve:electron\"",
     "serve": "vue-cli-service serve ",
     "build": "vue-cli-service build",
     "lint": "vue-cli-service lint",
@@ -17,7 +15,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
-    "electron-builder-squirrel-windows": "^20.28.3",
+    "electron-updater": "^3.1.2",
     "register-service-worker": "^1.0.0",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
@@ -25,15 +23,15 @@
     "vuex-router-sync": "^5.0.0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.0.0",
-    "@vue/cli-plugin-eslint": "^3.0.0",
-    "@vue/cli-plugin-pwa": "^3.0.0",
-    "@vue/cli-service": "^3.0.0",
+    "@vue/cli-plugin-babel": "^3.0.3",
+    "@vue/cli-plugin-eslint": "^3.0.3",
+    "@vue/cli-plugin-pwa": "^3.0.3",
+    "@vue/cli-service": "^3.0.3",
     "concurrently": "^4.0.1",
     "electron": "^2.0.9",
     "node-sass": "^4.9.0",
     "sass-loader": "^7.0.1",
-    "vue-cli-plugin-electron-builder": "^1.0.0-rc.2",
+    "vue-cli-plugin-electron-builder": "^1.0.0-rc.3",
     "vue-template-compiler": "^2.5.17"
   },
   "eslintConfig": {
@@ -62,7 +60,18 @@
   ],
   "main": "dist_electron/bundled/background.js",
   "build": {
-    "appId": "com.monimo.app",
+    "appId": "com.github.altinselimi.monimo",
+     "publish": [
+      {
+        "provider": "github",
+        "owner": "altinselimi",
+        "repo": "monimo"
+      }
+    ],
+     "productName": "Monimo",
+     "directories": {
+      "output": "build"
+    },
     "dmg": {
       "contents": [
         {
@@ -78,8 +87,15 @@
       ]
     },
     "win": {
-      "target": "squirrel",
-      "icon": "public/favicon-256x256.ico"
+      "publish":["github"],
+      "target": "nsis-web",
+      "icon": "public/img/icons/logo.png"
+    },
+    "mac": {
+       "icon": "public/img/icons/logo.png"
+    },
+    "linux": {
+        "icon": "public/img/icons"
     }
   }
 }

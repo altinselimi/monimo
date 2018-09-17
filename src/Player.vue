@@ -1,6 +1,6 @@
 <template>
     <div class="player">
-        <headerr v-show="show_header" />
+        <headerr v-show="show_header"/>
         <div class="loader" v-if="isElectron && loading_player">
             <svg class="feather feather-loader sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-reactid="706">
                 <line x1="12" y1="2" x2="12" y2="6"></line>
@@ -242,13 +242,10 @@
         z-index: 2;
     }
     .loader {
-        position: absolute;
-        z-index: 1;
+        z-index: 2;
         height: 100%;
         width: 100%;
         background: black;
-        top: 0;
-        left: 0;
         display: flex;
         justify-content: center;
         align-items: center;
