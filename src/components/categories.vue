@@ -20,7 +20,6 @@ ul.categories-carousel {
 	margin: 0px;
 	list-style: none;
 	flex-wrap: nowrap;
-	padding-top: 20px;
 	display: flex;
 	align-items: center;
 	a {

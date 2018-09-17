@@ -59,6 +59,7 @@ export default {
 		},
 		result() {
 			return `Result for: ${this.query}`;
+
 		}
 	}
 }
@@ -72,5 +73,4 @@ export default {
 		color: white;
 	}
 }
-
 </style>

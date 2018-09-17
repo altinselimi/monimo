@@ -2,6 +2,7 @@ import Vuex from 'vuex';
 import createLogger from 'vuex/dist/logger';
 import Vue from 'vue';
 import api from './api';
+import createPersistedState from 'vuex-persistedstate';
 
 const debug = process.env.NODE_ENV !== 'production';
 
@@ -59,16 +60,18 @@ export default new Vuex.Store({
     UPDATE_SEARCH_QUERY(state, payload) {
       state.search_query = payload;
     },
-    SET_WINDOW_MODE(state, payload){
+    SET_WINDOW_MODE(state, payload) {
       state.window_mode = payload;
     },
-    SET_CURRENT_TIME(state, payload){
-      state.animes_w_details[payload.anime].episodes[payload.episode-1].current_time = payload.time;
+    SET_CURRENT_TIME(state, payload) {
+      console.log('Current time payload:', payload);
+      if (!state.animes_w_details) return;
+      state.animes_w_details[payload.anime].episodes[payload.episode - 1].current_time = payload.time;
     },
-    SET_NEW_PROPERTY(state, payload){
-      state.animes_w_details[payload.anime].episodes[payload.episode].finished_watching = payload.finished;
+    UPDATE_DETAILED_ANIME(state, payload) {
+      state.animes_w_details[payload.anime_id] = payload.new_data;
     },
-    SET_SEARCHED_ANIMES(state, payload){
+    SET_SEARCHED_ANIMES(state, payload) {
       state.searched_animes = payload;
     }
   },
@@ -83,7 +86,7 @@ export default new Vuex.Store({
         if (params) {
           _params = { ..._params, ...params };
         }
-        if (state.preferred_genres.length > 0) {
+        if (state.preferred_genres.length > 0 && !state.search_query) {
           _params.genres = state.preferred_genres;
         }
         console.log('params at end:', _params);
@@ -94,7 +97,8 @@ export default new Vuex.Store({
               ['poster']: `https://cdn.masterani.me/poster/1/${anime.poster.file}`,
             }
           });
-          typeof _params.search === 'undefined'? commit('SET_ANIMES', animes): commit('SET_SEARCHED_ANIMES',animes);
+          typeof _params.search === 'undefined' ? commit('SET_ANIMES', animes) : commit('SET_SEARCHED_ANIMES', animes);
+          commit('UPDATE_SEARCH_QUERY', null);
           resolve(animes);
         }).catch(err => {
           reject(err);
@@ -105,7 +109,7 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         api.animeDetails({ anime_id: payload }).then(res => {
           console.log('anime details:', res.data);
-          res.data.episodes.forEach((episode)=> episode.current_time=null);
+          res.data.episodes.forEach((episode) => episode.current_time = null);
           commit('ADD_ANIME_DETAILS', { id: payload, data: res.data });
           commit('SET_CURRENT_ANIME', res.data);
           resolve(res.data);
@@ -115,7 +119,7 @@ export default new Vuex.Store({
       })
     },
     getVideoLinks({ state, commit }, { slug, episode }) {
-      return api.videoLinks({ slug: slug, episode: episode } );
+      return api.videoLinks({ slug: slug, episode: episode });
     }
   },
   getters: {
@@ -143,4 +147,5 @@ export default new Vuex.Store({
       return state.searched_animes;
     }
   },
+  plugins: [createPersistedState()],
 });

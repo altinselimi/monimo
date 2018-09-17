@@ -18,7 +18,7 @@ let routes = [{
 	component: () =>
 		import ('./Anime-Profile.vue'),
 }, {
-	path: '/anime/:episode_id/watch/:episode_index/:links',
+	path: '/anime/:anime_id/watch/:episode_number/:links',
 	props: true,
 	component: () =>
 		import ('./Player.vue'),

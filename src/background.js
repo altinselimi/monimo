@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow } from 'electron'
+import { app, protocol, BrowserWindow, screen } from 'electron'
 import * as path from 'path'
 import { format as formatUrl } from 'url'
 import {
@@ -18,16 +18,21 @@ let mainWindow
 
 // Standard scheme must be registered before the app is ready
 protocol.registerStandardSchemes(['app'], { secure: true })
-function createMainWindow () {
+
+function createMainWindow() {
+
+  const { width, height } = screen.getPrimaryDisplay().workAreaSize;
   const window = new BrowserWindow({
-    fullscreenable:true,
-    frame:false,
-    webPreferences: { 
+    fullscreenable: true,
+    frame: false,
+    webPreferences: {
       experimentalFeatures: true,
       webSecurity: false
     },
     backgroundColor: '#353535',
-  })
+    width,
+    height,
+  });
 
   if (isDevelopment) {
     // Load the url of the dev server if in development mode
@@ -75,7 +80,7 @@ app.on('activate', () => {
 })
 
 // create main BrowserWindow when electron is ready
-app.on('ready', async () => {
+app.on('ready', async() => {
   if (isDevelopment && !process.env.IS_TEST) {
     // Install Vue Devtools
     await installVueDevtools()
