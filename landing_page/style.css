@@ -132,6 +132,7 @@ body {
 .bottom .highlight-card {
   display: flex;
   padding: 20px;
+  overflow: hidden;
 }
 .bottom .highlight-card h3 {
   margin: 0;
