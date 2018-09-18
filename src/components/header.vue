@@ -84,7 +84,7 @@ export default {
             //     order: 'relevance_desc',
             //     search: this.search
             // })
-            if (this.search && this.$router.currentRoute.path !== `/results/${this.search}`) {
+            if (this.search && this.search.length > 2 && this.$router.currentRoute.path !== `/results/${this.search}`) {
                 this.$router.push({ path: `/results/${this.search}` });
                 //console.log(this.$router.currentRoute);
             }

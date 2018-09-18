@@ -3,13 +3,16 @@
         <div class="title">
             <h3 v-if="title">{{title}} <span>{{ genres ? `from ${genres}` : ''}}</span></h3>
         </div>
-        <ul class="movie-carousel" :class="isResult?'result':'normal'">
-            <li v-for="movie in movies" v-if="movies">
+        <ul class="movie-carousel" :class="isResult?'result':'normal'" v-if="movies">
+            <li v-for="movie in movies" v-if="movie">
                 <a tabindex="0">
                     <movie-card :movie="movie" @click.native="$emit('navigate', movie)" :showLoader="movie.id === showLoader" :loading="loading" :screen="isResult">
                     </movie-card>
                 </a>
             </li>
+        </ul>
+        <ul v-else>
+            <h3 style="color: white;">No Results</h3>
         </ul>
     </div>
 </template>
