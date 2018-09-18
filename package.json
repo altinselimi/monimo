@@ -90,8 +90,20 @@
       "publish": [
         "github"
       ],
-      "target": "nsis-web",
+      "target": [
+      {
+        "target": "nsis",
+        "arch": [
+          "x64",
+          "ia32"
+        ]
+      }
+    ],
       "icon": "src/assets/icon.png"
+    },
+     "nsis": {
+      "createDesktopShortcut": true,
+      "uninstallDisplayName": "Monimo"
     },
     "mac": {
       "icon": "src/assets/icon.png"
