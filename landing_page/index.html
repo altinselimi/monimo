@@ -9,6 +9,16 @@
   <link rel="stylesheet" href="./fonts/fonts.css">
   <link rel="stylesheet" href="./style.css">
   <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126063296-1"></script>
+  <script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() { dataLayer.push(arguments); }
+  gtag('js', new Date());
+
+  gtag('config', 'UA-126063296-1');
+  </script>
 </head>
 
 <body>
@@ -93,11 +103,11 @@ var app = new Vue({
   el: '#app',
   computed: {
     system() {
-      if(navigator.platform.indexOf('Mac') > -1) return 'mac';
+      if (navigator.platform.indexOf('Mac') > -1) return 'mac';
       return 'windows';
     },
     link() {
-      if(this.system === 'mac') {
+      if (this.system === 'mac') {
         return 'https://github.com/altinselimi/monimo/releases/download/1.0/Monimo-0.1.0.dmg';
       }
       return 'https://github.com/altinselimi/monimo/releases/download/1.0/Monimo.Setup.0.1.0.exe';
