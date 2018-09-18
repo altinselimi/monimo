@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, ipcMain,screen } from 'electron'
+import { app, protocol, BrowserWindow, screen } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import * as path from 'path'
 import { format as formatUrl } from 'url'
@@ -90,4 +90,7 @@ app.on('ready', async() => {
 
 autoUpdater.on('update-downloaded', info => {
   autoUpdater.quitAndInstall()
+})
+autoUpdater.on('update-available', (info) => {
+  sendStatusToWindow('Update available.');
 })
