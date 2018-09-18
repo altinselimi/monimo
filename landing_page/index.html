@@ -25,13 +25,13 @@
           <p class="sub-heading">Best experience in the anime land</p>
           <p>This application was made by anime fans, for anime fans, around the idea that having a great user experience, is as important as having basic features. If you'd like to support us, please star on Github and spread the word. Its open source so you can use it to make your own also. Limitless possibilities !</p>
           <div class="buttons">
-            <button>
+            <button @click="goToLink(link)">
               <i color="black" class="fab" :class="{'fa-windows': system === 'windows', 'fa-apple': system === 'mac'}"></i>
-              <a :href="link" target="_blank">DOWNLOAD</a>
+              <a target="_blank">DOWNLOAD</a>
             </button>
-            <button>
+            <button @click="goToLink('https://github.com/altinselimi/monimo')">
               <i class="fab fa-github"></i>
-              <a href="https://github.com/altinselimi/monimo">GITHUB</a>
+              <a>GITHUB</a>
             </button>
           </div>
         </div>
@@ -103,6 +103,11 @@ var app = new Vue({
       return 'https://github.com/altinselimi/monimo/releases/download/1.0/Monimo.Setup.0.1.0.exe';
     },
   },
+  methods: {
+    goToLink(link) {
+      window.open(link, '_blank');
+    }
+  }
 })
 </script>
 
