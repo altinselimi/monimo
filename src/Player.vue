@@ -32,10 +32,8 @@ import {
     mapState,
     mapActions
 } from 'vuex';
-
 let global_timeout = null;
 let timer = null;
-
 const video_player_style = `
     body,html {
         background-color:black;
@@ -53,7 +51,6 @@ const video_player_style = `
         display: block;
     }
 `;
-
 export default {
     props: ['episode_number', 'anime_id'],
     components: {
@@ -182,7 +179,6 @@ export default {
                     time: time
                 });
             }
-
         },
         goToNextEpisode(anime_id, episode_number) {
             if (this.animes_w_details[anime_id].episodes[episode_number]) {
@@ -259,14 +255,12 @@ export default {
     width: 100%;
     height: 100%;
 }
-
 webview {
     padding-top: 0px!important;
     width: 100%;
     height: 100%;
     border: none;
 }
-
 .nextup {
     position: absolute;
     bottom: 100px;
@@ -276,7 +270,6 @@ webview {
     background-color: #2196f3;
     z-index: 2;
 }
-
 .next-btn {
     position: fixed;
     bottom: 40px;
@@ -289,9 +282,7 @@ webview {
     &.is-near-end {
         opacity: 1!important;
     }
-
 }
-
 .auto-next {
     &:after {
         content: "NEXT";
@@ -328,17 +319,14 @@ webview {
     height: 40px;
     text-align: center;
 }
-
 progress {
     -webkit-appearance: none;
     appearance: none;
 }
-
 ::-webkit-progress-bar,
  ::-webkit-progress-value {
     display: none;
 }
-
 .loader {
     position: absolute;
     z-index: 1;
@@ -362,7 +350,6 @@ progress {
         animation: spin 1s linear infinite;
     }
 }
-
 @keyframes spin {
     0% {
         transform: rotate(0deg);

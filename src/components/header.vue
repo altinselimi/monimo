@@ -83,8 +83,8 @@ export default {
             // this.getAnimes({
             //     order: 'relevance_desc',
             //     search: this.search
-            // });
-            if (this.$router.currentRoute.path !== `/results/${this.search}`) {
+            // })
+            if (this.search && this.$router.currentRoute.path !== `/results/${this.search}`) {
                 this.$router.push({ path: `/results/${this.search}` });
                 //console.log(this.$router.currentRoute);
             }
@@ -161,7 +161,6 @@ header {
         }
     }
 }
-
 header+* {
     padding-top: 90px;
 }
