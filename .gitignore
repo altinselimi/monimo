@@ -20,5 +20,6 @@ yarn-error.log*
 *.sln
 *.sw*
 .jsbeautifyrc
+.package-lock.json
 #Electron-builder output
 /dist_electron
