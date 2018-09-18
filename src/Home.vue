@@ -2,8 +2,8 @@
 	<div class="home">
 		<headerr :is-home="true"></headerr>
 		<categories-section :categories="store_genres" @addCategory="addCategory"></categories-section>
-		<movie-carousel :movies="currently_watching" title="Continue Watching" @navigate="openAnime" v-if="currently_watching.length"></movie-carousel>
 		<movie-carousel :showLoader="getting_anime_info" :movies="animes" :selected-genres="selected_genres_name" :title="'Trending'" @navigate="openAnime" :loading="getting_animes"></movie-carousel>
+		<movie-carousel :movies="currently_watching" title="Continue Watching" @navigate="openAnime" v-if="currently_watching.length"></movie-carousel>
 		<div class="two-in-one">
 			<movie-carousel style="flex: 1;" :movies="last_releases" title="Fresh Off The Oven" @navigate="openAnime($event, false)"></movie-carousel>
 			<movie-carousel style="flex: 1;" :movies="staff_picks" title="Staff Picks" @navigate="openAnime"></movie-carousel>
@@ -143,6 +143,7 @@ export default {
 		//margin-left: 10px;
 	}
 }
+
 
 /* @media screen and (max-width: 1000px) {
 	.two-in-one {

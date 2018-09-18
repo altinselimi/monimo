@@ -135,7 +135,7 @@ export default {
 		finishedAnime() {
 			let { episodes, watching, info } = this.animeWithDetails;
 			if (!watching) return;
-			return !episodes[watching] && info.status === 0;
+			return !episodes[watching] && info.status === 0 && this.wasWatching.current_time === 0;
 		},
 	},
 	methods: {

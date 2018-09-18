@@ -110,6 +110,7 @@ export default {
             if (message === 'loaded_player') {
                 this.loading_player = false;
                 this.updateAnime(this.episode_number);
+                this.ADD_TO_WATCHING(this.animeDetails);
                 return;
             }
             if (message === 'fullscreen' || message === 'normal') {
@@ -153,7 +154,7 @@ export default {
         },
     },
     methods: {
-        ...mapMutations(['SET_CURRENT_TIME', 'UPDATE_DETAILED_ANIME', 'SET_CURRENT_VIDEO_LINKS', 'SET_WINDOW_MODE']),
+        ...mapMutations(['SET_CURRENT_TIME', 'UPDATE_DETAILED_ANIME', 'SET_CURRENT_VIDEO_LINKS', 'SET_WINDOW_MODE', 'ADD_TO_WATCHING']),
         ...mapActions(['getVideoLinks']),
         showHeader() {
             this.show_header = true;
