@@ -88,13 +88,15 @@ body {
 }
 .top .main .submain .buttons button a,
 .top .main .submain .buttons button i {
-  font-weight: bold;
   letter-spacing: 0;
   font-size: 14px;
   background: linear-gradient(135deg, #4287fb, #4485fb, #5575f9, #5b71f6, #646cf6, #676bf6, #6d66f2, #7563f1, #7b5ff0, #7b5def, #8757ec, #8e51eb, #954ee8, #994fe8, #9e4fe5, #ab51e2, #b451df, #bf53de, #c854d9);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+.top .main .submain .buttons button a {
+    font-weight: bold;
 }
 .top .main .submain .buttons button i {
   margin-right: 10px;
