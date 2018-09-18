@@ -16,6 +16,8 @@ It doesn't use torrents, but instead uses @masteranidotme API. That means if you
 
 > Blog post on why's and how's of it https://medium.com/@AltinSelimi/how-i-made-a-kickass-anime-application-6f509c952861
 
+Huge thanks to [Shpetim](https://github.com/shpetimselaci) and [Aurora](https://github.com/boredalis) for their contributions.
+
 ## Project setup
 ```
 npm install
