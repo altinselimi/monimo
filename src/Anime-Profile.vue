@@ -107,7 +107,6 @@ export default {
 		...mapState({
 			current_anime: state => state.current_anime,
 			favorite_animes: state => state.favorite_animes,
-			watching_animes: state => state.watching_animes,
 			animes_w_details: state => state.animes_w_details,
 		}),
 		isFavorite() {

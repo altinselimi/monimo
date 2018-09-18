@@ -23,7 +23,7 @@ export default new Vuex.Store({
     animes_w_details: {},
     preferred_genres: [],
     favorite_animes: [],
-    watching_animes: [],
+    watching_animes: {},
     searched_animes: [],
     search_query: null,
     window_mode: 'normal'
@@ -42,7 +42,7 @@ export default new Vuex.Store({
       state.current_anime = payload;
     },
     ADD_ANIME_DETAILS(state, payload) {
-      Vue.set(state.animes_w_details, payload.id, payload.data);
+      Vue.set(state.animes_w_details, payload.id, {...state.animes_w_details[payload.id], ...payload.data});
     },
     ADD_PREFERRED_GENRE(state, payload) {
       state.preferred_genres.push(payload);
@@ -59,11 +59,10 @@ export default new Vuex.Store({
       state.favorite_animes.splice(index, 1);
     },
     ADD_TO_WATCHING(state, payload) {
-      state.watching_animes.push(payload);
+      Vue.set(state.watching_animes, payload.info.id, payload);
     },
     REMOVE_FROM_WATCHING(state, payload) {
-      let index = state.watching_animes.findIndex(anime => anime.info.id === payload.info.id);
-      state.watching_animes.splice(index, 1);
+      Vue.delete(state.watching_animes, payload.info.id);
     },
     UPDATE_SEARCH_QUERY(state, payload) {
       state.search_query = payload;
@@ -76,7 +75,7 @@ export default new Vuex.Store({
       state.animes_w_details[payload.anime].episodes[payload.episode - 1].current_time = payload.time;
     },
     UPDATE_DETAILED_ANIME(state, payload) {
-      state.animes_w_details[payload.anime_id] = payload.new_data;
+      Vue.set(state.animes_w_details, payload.anime_id, payload.new_data);
     },
     SET_SEARCHED_ANIMES(state, payload) {
       state.searched_animes = payload;
@@ -165,7 +164,10 @@ export default new Vuex.Store({
       });
     },
     currently_watching: (state) => {
-      return state.watching_animes.map(anime => {
+      let keys = Object.keys(state.watching_animes);
+      return keys.length > 0 && keys.map(key => {
+        let anime = state.watching_animes[key];
+        if(!anime) return;
         return { ...anime.info, ['genres']: anime.genres, ['poster']: `https://cdn.masterani.me/poster/1/${anime.poster}` };
       });
     },
@@ -173,5 +175,5 @@ export default new Vuex.Store({
       return state.searched_animes;
     }
   },
-  plugins: debug ? [] : [createPersistedState()],
+  plugins: debug ? [createPersistedState()] : [createPersistedState()],
 });
