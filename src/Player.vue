@@ -2,27 +2,14 @@
     <div class="player" @mousemove="showHeader">
         <headerr v-show="show_header" />
         <div class="loader" v-if="loading_player || !video_length">
-            <svg class="feather feather-loader sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-reactid="706">
-                <line x1="12" y1="2" x2="12" y2="6"></line>
-                <line x1="12" y1="18" x2="12" y2="22"></line>
-                <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
-                <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
-                <line x1="2" y1="12" x2="6" y2="12"></line>
-                <line x1="18" y1="12" x2="22" y2="12"></line>
-                <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
-                <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
-            </svg>
+            <LoaderIcon/>
             <span>Go grab the 🍿, this might take a while.</span>
         </div>
         <webview :src="iframe_src" v-if="isElectron" disablewebsecurity style="width:100%;height:100%"></webview>
         <iframe sandbox="allow-scripts" :src="iframe_src" v-else width="100%" height="100%" frameborder="0" scrolling="no" allowfullscreen="allowfullscreen">
         </iframe>
         <next-btn class="next-btn" v-if="nextEpisodeExists" :class="{'is-near-end': isEpisodeNear, 'mouse-moved': show_header}" @click.native="goToNextEpisode(anime_id, episode_number)" :progress-value.sync="progressValue" :stroke-width="5">
-            <svg version="1.1" width="17" height="17" viewBox="0 0 17 17" style="transform: scale(1.8);">
-                <g>
-                </g>
-                <path d="M3 2.436v12.136l7.281-6.098-7.281-6.038zM4 4.564l4.719 3.913-4.719 3.952v-7.865zM15.281 8.474l-6.46 5.41-0.643-0.768 5.54-4.639-5.537-4.592 0.639-0.77 6.461 5.359z" fill="white" />
-            </svg>
+            <SkipForwardIcon/>
         </next-btn>
     </div>
 </template>
@@ -32,6 +19,9 @@ import {
     mapState,
     mapActions
 } from 'vuex';
+import { LoaderIcon,SkipForwardIcon } from 'vue-feather-icons'
+
+
 let global_timeout = null;
 let timer = null;
 const video_player_style = `
@@ -58,6 +48,8 @@ export default {
             import ('./components/header.vue'),
         nextBtn: () =>
             import ('./components/next-btn'),
+        LoaderIcon,
+        SkipForwardIcon
     },
     data: () => ({
         iframe_src: null,
@@ -349,6 +341,9 @@ progress {
         stroke: white;
         animation: spin 1s linear infinite;
     }
+}
+svg {
+    stroke: white;
 }
 @keyframes spin {
     0% {
