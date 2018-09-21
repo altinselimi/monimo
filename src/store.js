@@ -26,7 +26,8 @@ export default new Vuex.Store({
     watching_animes: {},
     searched_animes: [],
     search_query: null,
-    window_mode: 'normal'
+    window_mode: 'normal',
+    preferred_anime_type: 0,
   },
   mutations: {
     SET_ANIMES(state, payload) {
@@ -87,8 +88,15 @@ export default new Vuex.Store({
       state.searched_animes = payload;
     },
     SET_CURRENT_VIDEO_LINKS(state, payload) {
-      state.current_anime_video_links = payload;
-    }
+      let links = payload['subs'];
+      if(state.preferred_anime_type === 1) {
+        links = payload['dubs'];
+      }
+      state.current_anime_video_links = links;
+    },
+    SET_PREFERRED_TYPE(state, payload) {
+      state.preferred_anime_type = parseInt(payload);
+    },
   },
   actions: {
     getAnimes({ state, commit }, params) {

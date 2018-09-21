@@ -1,6 +1,6 @@
 <template>
     <div class="player" @mousemove="showHeader">
-        <headerr v-show="show_header" />
+        <picker :options="[{label: 'Subbed', value: 0}, {label: 'Dubbed', value: 1}]" v-model="anime_type"></picker>
         <div class="loader" v-if="loading_player || !video_length">
             <LoaderIcon/>
             <span>Go grab the 🍿, this might take a while.</span>
@@ -20,7 +20,8 @@ import {
     mapActions
 } from 'vuex';
 import { LoaderIcon,SkipForwardIcon } from 'vue-feather-icons'
-
+import Picker from '@/components/picker';
+import SubsIcon from '@/assets/sub-icon.vue';
 
 let global_timeout = null;
 let timer = null;
@@ -49,7 +50,9 @@ export default {
         nextBtn: () =>
             import ('./components/next-btn'),
         LoaderIcon,
-        SkipForwardIcon
+        SkipForwardIcon,
+        Picker,
+        SubsIcon
     },
     data: () => ({
         iframe_src: null,
@@ -67,7 +70,6 @@ export default {
         let links = this.current_anime_video_links;
         if (!links) this.$router.go(-1);
         this.anime_slug = links['slug'];
-        links = links['subs'];
         let video;
         let medium_quality = links.find(link => link.quality === 720);
         let low_quality = links.find(link => link.quality === 480);
@@ -141,9 +143,17 @@ export default {
         progressValue() {
             return parseInt(100 - (100 * this.countdown / 60));
         },
+        anime_type: {
+            get() {
+                return this.preferred_anime_type;
+            },
+            set(value) {
+                this.SET_PREFERRED_TYPE(value);
+            },
+        },
     },
     methods: {
-        ...mapMutations(['SET_CURRENT_TIME', 'UPDATE_DETAILED_ANIME', 'SET_CURRENT_VIDEO_LINKS', 'SET_WINDOW_MODE', 'ADD_TO_WATCHING']),
+        ...mapMutations(['SET_CURRENT_TIME', 'UPDATE_DETAILED_ANIME', 'SET_CURRENT_VIDEO_LINKS', 'SET_WINDOW_MODE', 'ADD_TO_WATCHING', 'SET_PREFERRED_TYPE']),
         ...mapActions(['getVideoLinks']),
         showHeader() {
             this.show_header = true;
