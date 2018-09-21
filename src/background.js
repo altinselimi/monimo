@@ -31,7 +31,7 @@ function createMainWindow() {
     width,
     height,
   });
-
+  //window.webContents.openDevTools();
   if (isDevelopment) {
     // Load the url of the dev server if in development mode
     window.loadURL(process.env.WEBPACK_DEV_SERVER_URL)

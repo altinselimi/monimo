@@ -42,7 +42,13 @@ export default new Vuex.Store({
       state.current_anime = payload;
     },
     ADD_ANIME_DETAILS(state, payload) {
-      Vue.set(state.animes_w_details, payload.id, {...state.animes_w_details[payload.id], ...payload.data});
+      let existing_details = state.animes_w_details[payload.id];
+      if (existing_details) {
+        payload.data.episodes.forEach((episode, index) => {
+          episode.current_time = existing_details.episodes[index].current_time;
+        });
+      }
+      Vue.set(state.animes_w_details, payload.id, { ...existing_details, ...payload.data });
     },
     ADD_PREFERRED_GENRE(state, payload) {
       state.preferred_genres.push(payload);
@@ -159,16 +165,17 @@ export default new Vuex.Store({
       let to_be_filtered = state.favorite_animes; //.concat(state.watching_animes);
       return state.animes && state.animes.filter(anime => !to_be_filtered.find(_anime => _anime.info.id === anime.id));
     },
-    favorite_animes: (state) => {
-      return state.favorite_animes.map(anime => {
-        return { ...anime.info, ['genres']: anime.genres, ['poster']: `https://cdn.masterani.me/poster/1/${anime.poster}` };
-      });
-    },
     currently_watching: (state) => {
       let keys = Object.keys(state.watching_animes);
-      return keys.length > 0 && keys.map(key => {
+      let result = keys.length > 0 && keys.map(key => {
         let anime = state.watching_animes[key];
-        if(!anime) return;
+        if (!anime) return;
+        return { ...anime.info, ['genres']: anime.genres, ['poster']: `https://cdn.masterani.me/poster/1/${anime.poster}` };
+      });
+      return result;
+    },
+    favorite_animes: (state) => {
+      return state.favorite_animes.map(anime => {
         return { ...anime.info, ['genres']: anime.genres, ['poster']: `https://cdn.masterani.me/poster/1/${anime.poster}` };
       });
     },

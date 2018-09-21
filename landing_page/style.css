@@ -14,6 +14,7 @@ body {
   padding-bottom: 50px;
   background: linear-gradient(135deg, #4287fb, #4485fb, #5575f9, #5b71f6, #646cf6, #676bf6, #6d66f2, #7563f1, #7b5ff0, #7b5def, #8757ec, #8e51eb, #954ee8, #994fe8, #9e4fe5, #ab51e2, #b451df, #bf53de, #c854d9);
 }
+
 .top .nav-bar {
   width: 100%;
   display: flex;
@@ -21,6 +22,7 @@ body {
   background-color: rgba(0, 0, 0, 0.4);
   padding: 10px 0;
 }
+
 .top .nav-bar .logo-container {
   display: flex;
   align-items: center;
@@ -31,6 +33,7 @@ body {
   background: red;
   border-radius: 5px;
 }
+
 .top .nav-bar .logo {
   font-family: "Lato";
   display: inline-flex;
@@ -39,6 +42,7 @@ body {
   font-weight: 800;
   color: white;
 }
+
 .top .main {
   position: relative;
   width: 100%;
@@ -58,10 +62,12 @@ body {
   margin: 0px;
   font-size: 35px;
 }
+
 .top .main .submain p.sub-heading {
   margin: 0px;
   font-size: 22px;
 }
+
 .top .main .submain p {
   font-size: 18px;
   max-width: 400px;
@@ -70,10 +76,12 @@ body {
   margin-top: 40px;
   opacity: .9;
 }
+
 .top .main .submain .buttons {
   display: flex;
   margin-top: 50px;
 }
+
 .top .main .submain .buttons button {
   cursor: pointer;
   outline: none;
@@ -84,11 +92,16 @@ body {
   padding: 15px 40px;
   margin-right: 20px;
   border-radius: 50px;
+  transition: all .2s linear;
   background: #fff;
 }
+
+.top .main .submain .buttons button:hover {
+  box-shadow: 1px 1px 25px 1px rgba(0, 0, 0, 0.3);
+}
+
 .top .main .submain .buttons button a,
 .top .main .submain .buttons button i {
-  font-weight: bold;
   letter-spacing: 0;
   font-size: 14px;
   background: linear-gradient(135deg, #4287fb, #4485fb, #5575f9, #5b71f6, #646cf6, #676bf6, #6d66f2, #7563f1, #7b5ff0, #7b5def, #8757ec, #8e51eb, #954ee8, #994fe8, #9e4fe5, #ab51e2, #b451df, #bf53de, #c854d9);
@@ -96,12 +109,19 @@ body {
   background-clip: text;
   color: transparent;
 }
+
+.top .main .submain .buttons button a {
+  font-weight: bold;
+}
+
 .top .main .submain .buttons button i {
   margin-right: 10px;
 }
+
 .top .main .the_pic {
   position: relative;
 }
+
 .top .main .the_pic .imazhi {
   position: absolute;
   z-index: 10;
@@ -113,6 +133,7 @@ body {
   background-size: cover;
   background-position: left center;
 }
+
 .top .main .the_pic img {
   position: relative;
   z-index: 1;
@@ -132,7 +153,9 @@ body {
 .bottom .highlight-card {
   display: flex;
   padding: 20px;
+  overflow: hidden;
 }
+
 .bottom .highlight-card h3 {
   margin: 0;
   font-weight: 400;
@@ -140,6 +163,7 @@ body {
   color: rgba(0, 0, 0, 0.8);
   margin-bottom: 8px;
 }
+
 .bottom .highlight-card p {
   margin: 0;
   margin-left: 3px;
@@ -148,11 +172,13 @@ body {
   letter-spacing: 0.4px;
   line-height: 24px;
 }
+
 .bottom .highlight-card i {
   color: rgba(0, 0, 255, 0.5);
   margin-right: 20px;
   margin-top: 5px;
 }
+
 .bottom .highlight-card div {
   display: flex;
   flex-direction: column;
@@ -188,6 +214,7 @@ body {
     padding: 100px 0;
   }
 }
+
 @media screen and (min-width: 650px) and (max-width: 768px) {
   .submain {
     text-align: center;

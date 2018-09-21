@@ -2,10 +2,7 @@
     <header>
         <nav>
             <div style="cursor: pointer;" @click="$router.go(-1)" v-if="!isHome">
-                <svg class="feather feather-arrow-left sc-iwsKbI cnlcoQ" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-reactid="121">
-                    <line x1="19" y1="12" x2="5" y2="12"></line>
-                    <polyline points="12 19 5 12 12 5"></polyline>
-                </svg>
+                <ArrowLeftIcon/>
             </div>
             <div class="logo-wrap">
                 <a tabindex="0" @click="$router.push('/home')" class="logo">
@@ -16,18 +13,12 @@
             </div>
             <div class="search">
                 <a tabindex="0" @click="showSearch()" :style="`opacity: ${!show_search ? 1 : 0}`">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
-                        <circle cx="11" cy="11" r="8"></circle>
-                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                    </svg>
+                    <SearchIcon/>
                 </a>
                 <form v-show="show_search" @submit.prevent>
                     <input type="text" v-model="search" ref="searchInput" placeholder="Anime name" @blur="hideSearch()" @keydown.enter="searchAnimes()">
                     <button type="button" @click="searchAnimes()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-search">
-                            <circle cx="11" cy="11" r="8"></circle>
-                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                        </svg>
+                        <SearchIcon/>
                     </button>
                 </form>
             </div>
@@ -40,10 +31,15 @@ import {
     mapMutations,
     mapState
 } from 'vuex';
+import { SearchIcon,ArrowLeftIcon } from 'vue-feather-icons'
 let timeouts = 0;
 let timeout;
 export default {
     props: ['isHome'],
+    components:{
+        ArrowLeftIcon,
+        SearchIcon
+    },
     computed: {
         search: {
             get() {
@@ -84,7 +80,7 @@ export default {
             //     order: 'relevance_desc',
             //     search: this.search
             // })
-            if (this.search && this.$router.currentRoute.path !== `/results/${this.search}`) {
+            if (this.search && this.search.length > 2 && this.$router.currentRoute.path !== `/results/${this.search}`) {
                 this.$router.push({ path: `/results/${this.search}` });
                 //console.log(this.$router.currentRoute);
             }
@@ -94,74 +90,74 @@ export default {
 </script>
 <style lang="scss">
 header {
-    //-webkit-user-select: none;
-    -webkit-app-region: drag;
-    backdrop-filter: blur(21px);
-    background-color: rgba(black, .75);
-    padding: 20px;
-    color: white;
-    stroke: white;
+  //-webkit-user-select: none;
+  -webkit-app-region: drag;
+  backdrop-filter: blur(21px);
+  background-color: rgba(black, 0.75);
+  padding: 20px;
+  color: white;
+  stroke: white;
+  display: flex;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 90px;
+  width: 100%;
+  z-index: 10;
+  .search {
+    position: relative;
     display: flex;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 90px;
-    width: 100%;
-    z-index: 10;
-    .search {
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+    justify-content: center;
+    align-items: center;
+  }
+  form {
+    display: flex;
+    align-items: stretch;
+    position: absolute;
+    right: 0px;
+    button {
+      height: 100%;
+      background: rgba(black, 0.8);
+      svg {
+        stroke: white;
+      }
+      border: none;
     }
-    form {
-        display: flex;
-        align-items: stretch;
-        position: absolute;
-        right: 0px;
-        button {
-            height: 100%;
-            background: rgba(black, .8);
-            svg {
-                stroke: white;
-            }
-            border: none;
-        }
+  }
+  input {
+    background: rgba(black, 0.8);
+    border: none;
+    outline: dashed 1px rgba(white, 0.3);
+    outline-offset: 2px;
+    font-size: 1rem;
+    padding: 5px;
+    color: white;
+  }
+  nav {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    > div.logo-wrap {
+      flex: 1;
+      display: inline-flex;
+      justify-content: center;
+      flex-shrink: 0;
     }
-    input {
-        background: rgba(black, .8);
-        border: none;
-        outline: dashed 1px rgba(white, .3);
-        outline-offset: 2px;
-        font-size: 1rem;
-        padding: 5px;
-        color: white;
+    .logo {
+      text-align: center;
+      font-size: 1.5rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
     }
-    nav {
-        display: flex;
-        align-items: center;
-        flex: 1;
-        >div.logo-wrap {
-            flex: 1;
-            display: inline-flex;
-            justify-content: center;
-            flex-shrink: 0;
-        }
-        .logo {
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-        }
-        .sublogo {
-            font-size: 1rem;
-            line-height: 1;
-            font-weight: 400;
-        }
+    .sublogo {
+      font-size: 1rem;
+      line-height: 1;
+      font-weight: 400;
     }
+  }
 }
-header+* {
-    padding-top: 90px;
+header + * {
+  padding-top: 90px;
 }
 </style>

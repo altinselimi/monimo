@@ -6,6 +6,9 @@ monimo-api
 .env.local
 .env.*.local
 
+# yarn files
+yarn.lock
+
 # Log files
 npm-debug.log*
 yarn-debug.log*
