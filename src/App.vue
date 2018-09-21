@@ -37,18 +37,6 @@ export default {
     ...mapMutations(['UPDATE_SEARCH_QUERY', 'SET_WINDOW_MODE']),
     getBack() {
       this.$router.go(-1);
-    },
-    fullscreen() {
-      if (this.window_mode === 'normal') {
-        document.body.requestFullscreen();
-        this.SET_WINDOW_MODE('fullscreen');
-      } else {
-        document.exitFullscreen();
-        this.SET_WINDOW_MODE('normal');
-      }
-    },
-    close() {
-      app.close();
     }
   },
   router,
