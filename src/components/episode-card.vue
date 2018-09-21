@@ -1,5 +1,5 @@
 <template>
-	<a class="episode-card" @click="$emit('watchit', episode)" tabindex="0" :class="{'currently-watching': current, 'sticker-overlay': current, 'finished_watching': finished }">
+	<a class="episode-card" @click="$emit('watchit', episode)" tabindex="0" :class="{'currently-watching': current, 'sticker-overlay': current}">
 		<div class="loader" v-if="showLoader">
             <svg class="feather feather-loader sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-reactid="706">
                 <line x1="12" y1="2" x2="12" y2="6"></line>
@@ -13,20 +13,42 @@
             </svg>
         </div>
 		<div class="holder">
-			<img :src="wallpaper" v-if="wallpaper">
+			<div class="loader" v-if="is_loading" :class="{'loader-dashed' : animeEpisodesList}">
+            <svg class="feather feather-loader sc-dnqmqq jxshSx" xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" data-reactid="706">
+                <line x1="12" y1="2" x2="12" y2="6"></line>
+                <line x1="12" y1="18" x2="12" y2="22"></line>
+                <line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line>
+                <line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line>
+                <line x1="2" y1="12" x2="6" y2="12"></line>
+                <line x1="18" y1="12" x2="22" y2="12"></line>
+                <line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line>
+                <line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line>
+            </svg>
+        </div>
+			<img v-if="!is_loading" :src="image_src">
 		</div>
 		<h4>Episode {{episode.info.episode}}</h4>
 	</a>
 </template>
 <script>
+	import {bypassWallpaper} from '../utils';
 export default {
-	props: ['episode', 'current', 'showLoader', 'finished'],
-	computed: {
-		wallpaper() {
-			if (!this.episode.thumbnail) return null;
-			return `https://cdn.masterani.me/episodes/${this.episode.thumbnail}`;
-		},
+	props: ['episode', 'current', 'showLoader', 'animeEpisodesList'],
+	data: ()=>({
+		image_src : null,
+		is_loading : true
+	}),
+	mounted(){
+		this.getWallpaper();
 	},
+	methods: {
+		getWallpaper() {
+			if (!this.episode.thumbnail) return null;
+			bypassWallpaper(`https://cdn.masterani.me/episodes/${this.episode.thumbnail}`).then(resp => {
+				this.is_loading = false;
+				this.image_src = resp});
+		}
+	}
 }
 </script>
 <style lang="scss">
@@ -50,20 +72,20 @@ export default {
 		content: 'Finished';
 		background-color: #4CAF50;
 	} */
-	&.currently-watching::before {
-		content: 'Last Watched';
-		background-color: #2196F3;
-	}
-	&.finished_watching::after{
-		position:absolute;
-		bottom: 0px;
-		right: 5px;
-		font-size: .8rem;
-		z-index:1;
-		padding:2px 5px;
-		content: 'Finished';
-		background-color: red;
-	}
+	// &.currently-watching::before {
+	// 	content: 'Last Watched';
+	// 	background-color: #2196F3;
+	// }
+	// &.finished_watching::after{
+	// 	position:absolute;
+	// 	bottom: 0px;
+	// 	right: 5px;
+	// 	font-size: .8rem;
+	// 	z-index:1;
+	// 	padding:2px 5px;
+	// 	content: 'Finished';
+	// 	background-color: red;
+	// }
 	h4 {
 		margin: 0px;
 		margin-top: 5px;
@@ -93,7 +115,7 @@ export default {
 .holder {
 	position: relative;
 	padding: 0 0 56.25%;
-	background-color: whitesmoke;
+	background-color: black;
 	position: relative;
 	&::before {
 		content: 'No thumbnail';
@@ -114,6 +136,9 @@ export default {
 		position: absolute;
 		width: 100%;
 	}
+}
+.loader-dashed{
+	border: 1px dashed white;
 }
 @keyframes spin {
 	0% {

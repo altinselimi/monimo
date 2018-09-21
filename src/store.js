@@ -101,7 +101,7 @@ export default new Vuex.Store({
         console.log('params at end:', _params);
         api.animes(_params).then(res => {
           console.log('Response:', res);
-          let animes = res.data.data.map(anime => {
+          let animes = res.data.map(anime => {
             return { ...anime,
               ['poster']: `https://cdn.masterani.me/poster/1/${anime.poster.file}`,
             }
@@ -117,7 +117,8 @@ export default new Vuex.Store({
     getLastReleases({ state, commit }, payload) {
       return new Promise((resolve, reject) => {
         api.getReleases().then(res => {
-          let animes = res.data.map(result => {
+          console.log(res);
+          let animes = res.map(result => {
             return { ...result.anime,
               ['poster']: `https://cdn.masterani.me/poster/1/${result.anime.poster}`,
               ['released_at']: result.created_at,
@@ -133,11 +134,11 @@ export default new Vuex.Store({
     getAnimeDetails({ state, commit }, anime_id) {
       return new Promise((resolve, reject) => {
         api.animeDetails({ anime_id: anime_id }).then(res => {
-          console.log('anime details:', res.data);
-          res.data.episodes.forEach(episode => episode.current_time = null);
-          commit('ADD_ANIME_DETAILS', { id: anime_id, data: res.data });
-          commit('SET_CURRENT_ANIME', res.data);
-          resolve(res.data);
+          console.log('anime details:', res);
+          res.episodes.forEach(episode => episode.current_time = null);
+          commit('ADD_ANIME_DETAILS', { id: anime_id, data: res });
+          commit('SET_CURRENT_ANIME', res);
+          resolve(res);
         }).catch(err => {
           reject(err);
         })

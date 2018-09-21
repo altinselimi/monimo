@@ -74,7 +74,7 @@
 					<h1>Episodes</h1>
 					<ul class="episodes">
 						<li v-for="(episode, index) in current_anime.episodes">
-							<episode-card :showLoader="index === start_episode" :episode="episode" @watchit="watchEpisode(episode)"></episode-card>
+							<episode-card :showLoader="index === start_episode" :episode="episode" @watchit="watchEpisode(episode)" :animeEpisodesList="true"></episode-card>
 						</li>
 					</ul>
 				</div>

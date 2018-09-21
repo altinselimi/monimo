@@ -15,7 +15,9 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "cloudscraper": "^1.5.0",
     "electron-updater": "^3.1.2",
+    "nearby-cities": "^1.1.0",
     "register-service-worker": "^1.0.0",
     "vue": "^2.5.17",
     "vue-router": "^3.0.1",
@@ -92,17 +94,17 @@
         "github"
       ],
       "target": [
-      {
-        "target": "nsis",
-        "arch": [
-          "x64",
-          "ia32"
-        ]
-      }
-    ],
+        {
+          "target": "nsis",
+          "arch": [
+            "x64",
+            "ia32"
+          ]
+        }
+      ],
       "icon": "src/assets/icon.png"
     },
-     "nsis": {
+    "nsis": {
       "createDesktopShortcut": true,
       "uninstallDisplayName": "Monimo"
     },
