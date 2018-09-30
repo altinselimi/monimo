@@ -76,12 +76,28 @@
 		"selected_items":
 		[
 			[
-				"install",
-				"Package Control: Install Package"
+				"package enable",
+				"Package Control: Enable Package"
 			],
 			[
 				"remove",
 				"Package Control: Remove Package"
+			],
+			[
+				"prettier",
+				"JsPrettier: Format Code"
+			],
+			[
+				"pretti",
+				"JsPrettier: Format Code"
+			],
+			[
+				"disable",
+				"Package Control: Disable Package"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
 			],
 			[
 				"arduino",
@@ -108,7 +124,7 @@
 	},
 	"console":
 	{
-		"height": 0.0,
+		"height": 137.0,
 		"history":
 		[
 		]
@@ -124,15 +140,21 @@
 	},
 	"expanded_folders":
 	[
-		"/Users/altinselimi/Documents/Fun/momonimo",
-		"/Users/altinselimi/Documents/Fun/momonimo/src"
 	],
 	"file_history":
 	[
+		"/Users/altinselimi/Documents/Fun/momonimo/src/Player.vue",
+		"/Users/altinselimi/Documents/Fun/momonimo/src/components/player-controls.vue",
+		"/Users/altinselimi/Documents/Fun/momonimo/src/components/progress-buttons/rectangular.vue",
+		"/Users/altinselimi/Library/Application Support/Sublime Text 3/Packages/HTML-CSS-JS Prettify/.jsbeautifyrc.defaults.json",
+		"/Users/altinselimi/Documents/Fun/momonimo/src/components/progress-buttons/circular.vue",
+		"/Users/altinselimi/Documents/Fun/momonimo/src/components/progress-button.vue",
+		"/Users/altinselimi/Documents/Fun/momonimo/src/utils/index.js",
+		"/Users/altinselimi/Library/Application Support/Sublime Text 3/Packages/User/.jsbeautifyrc",
+		"/Users/altinselimi/Library/Application Support/Sublime Text 3/Packages/HTML-CSS-JS Prettify/HTMLPrettify.sublime-settings",
 		"/Users/altinselimi/Documents/Fun/momonimo/src/main.js",
 		"/Users/altinselimi/Documents/Fun/momonimo/.gitignore",
 		"/Users/altinselimi/Documents/Backend/monimo/server.js",
-		"/Users/altinselimi/Documents/Fun/momonimo/src/Player.vue",
 		"/Users/altinselimi/Documents/Fun/momonimo/src/Anime-Profile.vue",
 		"/Users/altinselimi/Downloads/landing_page/index.html",
 		"/Users/altinselimi/Downloads/landing_page/style.css",
@@ -248,19 +270,11 @@
 		"/Users/altinselimi/Documents/Fun/calendarium/src/components/Calendar/EventPopup.vue",
 		"/Users/altinselimi/Documents/Fun/calendarium/build/webpack.prod.conf.js",
 		"/Users/altinselimi/Documents/Fun/calendarium/build/utils.js",
-		"/Users/altinselimi/Documents/Fun/calendarium/build/webpack.dev.conf.js",
-		"/Users/altinselimi/Documents/Fun/calendarium/build/service-worker-dev.js",
-		"/Users/altinselimi/Documents/Fun/calendarium/build/service-worker-prod.js",
-		"/Users/altinselimi/Documents/Fun/calendarium/build/load-minified.js",
-		"/Users/altinselimi/Documents/Fun/calendarium/src/components/Calendar/filters.js",
-		"/Users/altinselimi/Documents/Arduino/WifiWebClient/WifiWebClient.ino",
-		"/Users/altinselimi/Documents/Arduino/libraries/OLED_Display_128X64-master/examples/OLED_Hello_World/OLED_Hello_World.ino",
-		"/Users/altinselimi/Documents/Arduino/WifiWebClient/Adafruit_GFX.h",
-		"/Users/altinselimi/Documents/Arduino/WifiWebClient/Adafruit_SSD1306.h"
+		"/Users/altinselimi/Documents/Fun/calendarium/build/webpack.dev.conf.js"
 	],
 	"find":
 	{
-		"height": 54.0
+		"height": 40.0
 	},
 	"find_in_files":
 	{
@@ -274,6 +288,25 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"next-progress-button",
+			"120",
+			"circle_stringified_style",
+			"dashoffset",
+			"progress__meter",
+			"circular-progress-button",
+			"mouse-moved",
+			"show_header",
+			"this.show_header",
+			"showHeader",
+			"global_timeout",
+			"next-btn",
+			"fast",
+			"SkipForwardIcon",
+			"Picker",
+			"picker",
+			"Picker",
+			"120",
+			"goToNextEpisode"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -298,7 +331,7 @@
 	],
 	"incremental_find":
 	{
-		"height": 26.0
+		"height": 24.0
 	},
 	"input":
 	{
@@ -343,7 +376,7 @@
 	"project": "monimo.sublime-project",
 	"replace":
 	{
-		"height": 48.0
+		"height": 44.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -357,12 +390,16 @@
 	},
 	"select_project":
 	{
-		"height": 0.0,
+		"height": 500.0,
 		"last_filter": "",
 		"selected_items":
 		[
+			[
+				"",
+				"~/Documents/Frontend/casetabFrontEnd/casetab.sublime-project"
+			]
 		],
-		"width": 0.0
+		"width": 380.0
 	},
 	"select_symbol":
 	{

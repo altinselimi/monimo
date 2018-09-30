@@ -102,7 +102,7 @@ export default {
         justify-content: center;
         align-items: center;
         overflow: hidden;
-        border: 1px dashed white;
+        //border: 1px dashed white;
         svg {
         	stroke:white;
             animation: spin 1s linear infinite;

@@ -52,6 +52,16 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
   width: 100%;
+  &::before {
+    content: '';
+    position: fixed;
+    display: block;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 25px;
+    -webkit-app-region: drag;
+  }
 }
 
 a {
