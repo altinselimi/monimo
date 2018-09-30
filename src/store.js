@@ -1,10 +1,14 @@
 import Vuex from 'vuex';
 import createLogger from 'vuex/dist/logger';
 import Vue from 'vue';
-import api from './api';
+import real_api from './api';
+import cloudflare_bypass_api from './api_cloudflare_bypass.js';
+let api_module = real_api;
+
 import createPersistedState from 'vuex-persistedstate';
 import hardcoded_data from './hardcoded_data.js';
 const { staff_picks } = hardcoded_data;
+import { remote } from 'electron';
 
 const debug = process.env.NODE_ENV !== 'production';
 
@@ -29,6 +33,11 @@ export default new Vuex.Store({
     window_mode: 'normal',
     preferred_anime_type: 0,
     preferred_quality: 720,
+    notification: {
+      message: null,
+      type: null,
+    },
+    blocked_region: null,
   },
   mutations: {
     SET_ANIMES(state, payload) {
@@ -77,6 +86,13 @@ export default new Vuex.Store({
     },
     SET_WINDOW_MODE(state, payload) {
       state.window_mode = payload;
+      // if(payload === 'full') {
+      // document.body.requestFullScreen();
+      // remote.getCurrentWindow().setFullScreen(true);
+      // } else {
+      // document.body.exitFullscreen();
+      // remote.getCurrentWindow().setFullScreen(false);
+      // }
     },
     SET_CURRENT_TIME(state, payload) {
       if (!state.animes_w_details) return;
@@ -97,6 +113,16 @@ export default new Vuex.Store({
     SET_PREFERRED_QUALITY(state, payload) {
       state.preferred_quality = parseInt(payload);
     },
+    SET_NOTIFICATION(state, payload) {
+      state.notification = payload;
+    },
+    SET_REGION_BLOCKED(state, payload) {
+      state.blocked_region = payload;
+      if(payload === true) {
+        console.log('Setting api module to', cloudflare_bypass_api);
+        api_module = cloudflare_bypass_api;
+      }
+    }
   },
   actions: {
     getAnimes({ state, commit }, params) {
@@ -113,7 +139,7 @@ export default new Vuex.Store({
           _params.genres = state.preferred_genres;
         }
         console.log('params at end:', _params);
-        api.animes(_params).then(res => {
+        api_module.animes(_params).then(res => {
           console.log('Response:', res);
           let animes = res.data.map(anime => {
             return { ...anime,
@@ -130,7 +156,7 @@ export default new Vuex.Store({
     },
     getLastReleases({ state, commit }, payload) {
       return new Promise((resolve, reject) => {
-        api.getReleases().then(res => {
+        api_module.getReleases().then(res => {
           console.log(res);
           let animes = res.map(result => {
             return { ...result.anime,
@@ -140,6 +166,7 @@ export default new Vuex.Store({
             }
           });
           commit('SET_LAST_RELEASES', animes);
+          resolve(animes);
         }).catch(err => {
           reject(err);
         })
@@ -147,7 +174,7 @@ export default new Vuex.Store({
     },
     getAnimeDetails({ state, commit }, anime_id) {
       return new Promise((resolve, reject) => {
-        api.animeDetails({ anime_id: anime_id }).then(res => {
+        api_module.animeDetails({ anime_id: anime_id }).then(res => {
           console.log('anime details:', res);
           res.episodes.forEach(episode => episode.current_time = null);
           commit('ADD_ANIME_DETAILS', { id: anime_id, data: res });
@@ -159,8 +186,8 @@ export default new Vuex.Store({
       })
     },
     getVideoLinks({ state, commit }, { slug, episode }) {
-      return api.videoLinks({ slug: slug, episode: episode });
-    }
+      return api_module.videoLinks({ slug: slug, episode: episode });
+    },
   },
   getters: {
     normalized_animes: (state) => {
@@ -196,12 +223,12 @@ export default new Vuex.Store({
         result = dubs || subs;
       }
       result = subs;
-      return result;
+      //return result;
       return result.filter(link => link.quality === state.preferred_quality);
     },
     searched: (state) => {
       return state.searched_animes;
     }
   },
-  plugins: debug ? [createPersistedState()] : [createPersistedState()],
+  plugins: debug ? [] : [createPersistedState()],
 });

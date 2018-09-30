@@ -1,6 +1,6 @@
 <template>
     <div class="player" @mousemove="showUi">
-        <div class="top-buttons">
+        <div class="top-buttons" v-show="show_ui">
             <div class="buttons-left">
                 <button class="unstyled back-btn" @click="$router.go(-1)">
                     <ArrowLeftIcon style="stroke: white;" />
@@ -14,13 +14,15 @@
                 <option-picker class="type-picker" :left="true" :model.sync="requested_quality" :options="[{label: 'Low', value: 480}, {label: 'Medium', value: 720}, {label: 'High', value: 1080}]">
                     <droplet-icon slot="activator" style="fill: white;"></droplet-icon>
                 </option-picker>
+                <button @click="setWindowMode()" class="unstyled" v-if="window_mode === 'normal'"><maximize style="stroke: white" /></button>
+                <button @click="setWindowMode()" class="unstyled" v-else><minimize style="stroke: white"/></button>
             </div>
         </div>
         <div class="loader" v-if="loading_player">
             <LoaderIcon/>
             <span>Go grab the 🍿, this might take a while.</span>
         </div>
-        <video-instance v-for="(video, index) in video_links" class="vid-instance" :id="`video-${index+1}`" :key="index" :episode-current-time="episodeCurrentTime" :preferred-quality="requested_quality" :source="video.link" style="width:100%; height:100%;" @startedPlaying="destroyOthers(`video-${index+1}`)" @updateAnime="updateAnime(episode_number)" @addToWatching="ADD_TO_WATCHING(animeDetails)" @windowModeChange="SET_WINDOW_MODE" @setCurrentTime="setAnimeCurrentTime"></video-instance>
+        <video-instance v-for="(video, index) in video_links" class="vid-instance" :index="index" :loaded-index.sync="loaded_index" :loading-player.sync="loading_player" :key="index" :episode-current-time="episodeCurrentTime" :preferred-quality="requested_quality" :source="video.link" style="width:100%; height:100%;" @updateAnime="updateAnime(episode_number)" @addToWatching="ADD_TO_WATCHING(animeDetails)" @windowModeChange="SET_WINDOW_MODE" @setCurrentTime="setAnimeCurrentTime"></video-instance>
         <!--         <webview v-for="(video, index) in video_links" :key="index" :id="`candidate-${index + 1}`" :src="video.link" style="width:100%;height:100%"></webview>
  -->
         <!-- <player-controls :class="{'is-near-end': isEpisodeNear, 'show-ui': show_ui}" @next="navigateToEpisode(anime_id, episode_number)" @pause="pauseVideo()" @backwards="videos(15)"></player-controls> -->
@@ -33,7 +35,7 @@ import {
     mapActions,
     mapGetters
 } from 'vuex';
-import { LoaderIcon, ArrowLeftIcon, DropletIcon } from 'vue-feather-icons'
+import { LoaderIcon, ArrowLeftIcon, DropletIcon, Maximize2Icon, Minimize2Icon } from 'vue-feather-icons'
 import OptionPicker from '@/components/picker';
 import PlayerControls from '@/components/player-controls';
 import SubsIcon from '@/assets/sub-icon.vue';
@@ -50,6 +52,8 @@ export default {
         OptionPicker,
         SubsIcon,
         DropletIcon,
+        Maximize: Maximize2Icon,
+        Minimize: Minimize2Icon,
         PlayerControls,
         videoInstance,
     },
@@ -60,6 +64,7 @@ export default {
         loading_player: true,
         countdown: 60,
         internet_speed: null,
+        loaded_index: null,
     }),
     mounted() {
         if (!this.video_links) {
@@ -80,6 +85,7 @@ export default {
             current_anime_video_links: state => state.current_anime_video_links,
             preferred_anime_type: state => state.preferred_anime_type,
             preferred_quality: state => state.preferred_quality,
+            window_mode: state => state.window_mode,
         }),
         ...mapGetters(['video_links']),
         isElectron() {
@@ -102,6 +108,9 @@ export default {
         },
         progressValue() {
             return parseInt(100 - (100 * this.countdown / 60));
+        },
+        linkCandidates() {
+            return this.video_links[0]; //cant create multiple instances of webview for some reason
         },
         anime_type: {
             get() {
@@ -131,6 +140,15 @@ export default {
             global_timeout = setTimeout(() => {
                 this.show_ui = false;
             }, 3000);
+        },
+        setWindowMode(){
+            if(this.window_mode === 'normal'){
+                this.SET_WINDOW_MODE('full');
+                document.body.requestFullscreen()
+            }else{
+                this.SET_WINDOW_MODE('normal');
+                document.exitFullscreen();
+            }
         },
         setAnimeCurrentTime(time) {
             this.current_time = time;
@@ -181,16 +199,6 @@ export default {
             this.UPDATE_DETAILED_ANIME({
                 anime_id: this.anime_id,
                 new_data: { ...this.animeDetails, ['watching']: episode_number, ['expecting_next']: !!expecting_next },
-            });
-        },
-        destroyOthers(winner_id) {
-            this.loading_player = false;
-            let children = this.$children;
-            console.log('Children:', children);
-            children.forEach((child, index) => {
-                if (child.$el.className === 'vid-instance' && child.$el.id !== winner_id) {
-                    this.$children[index].destroyElement();
-                }
             });
         },
     },
@@ -306,4 +314,5 @@ svg {
         transform: rotate(360deg);
     }
 }
+
 </style>

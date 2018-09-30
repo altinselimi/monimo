@@ -1,25 +1,61 @@
-import Vue from 'vue';
+import cloudscraper from 'cloudscraper';
+
+const IsJsonString = function (str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+    return true;
+}
 
 export default {
 	animes: (req) => {
 		console.log('req query:', req);
 		let params = {
-			order: req.order || 'score_desc',
+			order: req.search ? 'relevance_desc' : 'score_desc',
 			genres: req.genres || null,
 			page: req.page || 1,
 			search: req.search || null,
 		}
 		let params_string = Object.keys(params).filter(key => params[key]).map(key => `${key}=${params[key]}`).join('&');
-		console.log('params string:', params_string);
 		let anime_url = `https://www.masterani.me/api/anime/filter?${params_string}`;
 		return new Promise((resolve, reject) => {
-			Vue.$http.get(anime_url).then(response => { resolve(response.data) }).catch(err => { reject(err) });
+			cloudscraper.request({
+				method: 'GET',
+				url: anime_url,
+				headers: {
+					//'Cache-Control': 'max-age=31556926',
+					//'User-Agent': 'request',
+					'content-type': 'application/json',
+				}
+			}, function(error, response, body) {
+				if (error) {
+					reject(error);
+					return;
+				}
+				IsJsonString(body) ? resolve(JSON.parse(body)) : reject('invalid json');
+			})
 		});
 	},
 	getReleases: (req) => {
-		let url = 'https://www.masterani.me/api/releases';
+		let _url = 'https://www.masterani.me/api/releases';
 		return new Promise((resolve, reject) => {
-			Vue.$http.get(url).then(response => { resolve(response.data) }).catch(err => { reject(err) });
+			cloudscraper.request({
+				method: 'GET',
+				url: _url,
+				headers: {
+					//'Cache-Control': 'max-age=31556926',
+					//'User-Agent': 'request',
+					'content-type': 'application/json',
+				}
+			}, function(error, response, body) {
+				if (error) {
+					reject(error);
+					return;
+				}
+				IsJsonString(body) ? resolve(JSON.parse(body)) : reject('invalid json');
+			})
 		});
 	},
 	animeDetails: (req) => {
@@ -27,18 +63,44 @@ export default {
 		let anime_url = `https://www.masterani.me/api/anime/${req.anime_id}/detailed`;
 		if (!req.anime_id) throw new Error('missing url');
 		return new Promise((resolve, reject) => {
-			Vue.$http.get(anime_url).then(response => { resolve(response.data) }).catch(err => { reject(err) });
+			cloudscraper.request({
+				method: 'GET',
+				url: anime_url,
+				headers: {
+					//'Cache-Control': 'max-age=31556926',
+					//'User-Agent': 'request',
+					'content-type': 'application/json',
+				},
+			}, function(error, response, body) {
+				if (error) {
+					reject(error);
+					return;
+				}
+				IsJsonString(body) ? resolve(JSON.parse(body)) : reject('invalid json');
+			})
 		});
 	},
 	videoLinks: (req) => {
 		let anime_url = `https://www.masterani.me/anime/watch/${req.slug}/${req.episode}`;
-		console.log("anime url:", anime_url);
 		if (!anime_url) throw new Error('missing url');
 		return new Promise((resolve, reject) => {
-			Vue.$http.get(anime_url).then(res => {
+			cloudscraper.request({
+				method: 'GET',
+				url: anime_url,
+				headers: {
+					//'Cache-Control': 'max-age=31556926',
+					//'User-Agent': 'request',
+					'content-type': 'application/json',
+				}
+			}, (error, resp, body) => {
+				if (error) {
+					reject(error);
+					return;
+				}
+				let res = body;
 				let section = document.createElement('section');
 				section.setAttribute('id', 'video-links');
-				section.innerHTML = res.data;
+				section.innerHTML = res;
 				let mirrors = section.querySelector('video-mirrors');
 				let links = JSON.parse(mirrors.getAttribute(':mirrors')).map(mirror => ({
 					quality: mirror.quality,
@@ -52,8 +114,7 @@ export default {
 				let dubs = links.filter(link => link.type === 'dub');
 				resolve({ subs, dubs, slug: req.slug, 'episode': req.episode });
 				//section.parentNode.removeChild(section);
-				section.parentNode.removeChild(section);
-			}).catch(err => reject(err));
+			})
 		});
 	},
-}
+};

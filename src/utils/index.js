@@ -1,8 +1,7 @@
 import cloudscraper from "cloudscraper";
 export const bypassWallpaper = link => {
 	return new Promise((resolve, reject) => {
-		cloudscraper.request(
-			{
+		cloudscraper.request({
 				method: "GET",
 				url: link,
 				encoding: null,

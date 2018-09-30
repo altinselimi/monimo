@@ -45,7 +45,7 @@ export default {
 		closeMenu() {
 			setTimeout(() => {
 				this.show_options = false;
-			}, 100);
+			}, 200);
 		},
 	},
 };
@@ -79,6 +79,7 @@ export default {
 		}
 		li {
 			padding: 5px;
+			cursor: pointer;
 			position: relative;
 			align-items: center;
 			padding-left: 15px;
