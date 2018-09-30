@@ -6,11 +6,11 @@ $sun: #FDB833;
 
 #alert {
   display: flex;
-  min-width: 300px;
+  min-width: 350px;
   position: fixed;
   top: 100px;
-  right: 0px;
-  max-width: 300px;
+  right: 10px;
+  max-width: 350px;
   align-items: stretch;
   border-radius: 4px;
   background-color: white;
@@ -25,6 +25,9 @@ $sun: #FDB833;
     padding-bottom: 15px;
     align-self: center;
   }
+  .content {
+    margin-right: 4px;
+  }
 
   .buttons {
     list-style: none;
@@ -34,7 +37,6 @@ $sun: #FDB833;
     display: inline-flex;
     flex-direction: column;
     border-left: solid 1px rgba(black, .08);
-    margin-left: 3px;
     button {
       flex: 1;
       padding: 5px 10px;
@@ -82,7 +84,7 @@ $sun: #FDB833;
 .swing-leave-active {}
 
 .swing-enter {
-  transform: translateX(300px);
+  transform: translateX(350px);
 }
 
 .swing-enter-to {
@@ -94,7 +96,7 @@ $sun: #FDB833;
 }
 
 .swing-leave-to {
-  transform: translateX(300px);
+  transform: translateX(350px);
 }
 </style>
 <template>
@@ -102,7 +104,7 @@ $sun: #FDB833;
     <div id="alert" :class="type" v-if="visibility">
       <div class="icon">
         <slot name="icon">
-          <alert-icon v-if="type === 'danger'"></alert-icon>
+          <alert-icon v-if="type === 'alert'"></alert-icon>
           <info-icon v-else></info-icon>
         </slot>
       </div>

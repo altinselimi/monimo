@@ -9,17 +9,17 @@
         <XCircleIcon/>
       </button>
     </div>
-    <alert :visibility.sync="notificationVisibility" :persistent="notification.persist">
+    <alert :visibility.sync="notificationVisibility" :persistent="notification.persist" type="alert">
       {{notification.message}}
       <div slot="buttons" class="buttons">
-        <button>Now</button>
+        <button style="width: 80px;">Now</button>
         <button @click="notificationVisibility = false">Later</button>
       </div>
     </alert>
-    <alert :visibility.sync="showHelpUs" :persistent="false" :duration="20">
-      Want to help keep this app alive ?
+    <alert :visibility.sync="showHelpUs" :persistent="false" :duration="10" style="top:180px;">
+      Want to help keep this Monimo alive ?
       <div slot="buttons" class="buttons">
-        <button style="width: 80px;">Yeah 😎</button>
+        <button style="width: 80px;" @click="openHelpLink()">Sure 🙂</button>
         <button @click="showHelpUs = false">Meh 😤</button>
       </div>
     </alert>
@@ -32,6 +32,7 @@ import store from './store';
 import { mapMutations, mapState } from 'vuex';
 import { Maximize2Icon, Minimize2Icon, XCircleIcon } from 'vue-feather-icons'
 import Alert from '@/components/alert';
+import { shell } from 'electron';
 
 import VuexRouterSync from 'vuex-router-sync';
 VuexRouterSync.sync(store, router);
@@ -73,7 +74,10 @@ export default {
     ...mapMutations(['UPDATE_SEARCH_QUERY', 'SET_WINDOW_MODE', 'SET_NOTIFICATION']),
     getBack() {
       this.$router.go(-1);
-    }
+    },
+    openHelpLink() {
+      shell.openExternal('http://monimoapp.com/#help-us')
+    },
   },
   router,
   store,
