@@ -16,11 +16,13 @@
                 </option-picker>
             </div>
         </div>
-        <div class="loader" v-if="loading_player || !video_length">
+        <div class="loader" v-if="loading_player">
             <LoaderIcon/>
             <span>Go grab the 🍿, this might take a while.</span>
         </div>
-        <webview v-for="(video, index) in video_links" :key="index" :id="`candidate-${index + 1}`" :src="video.link" style="width:100%;height:100%"></webview>
+        <video-instance v-for="(video, index) in video_links" class="vid-instance" :id="`video-${index+1}`" :key="index" :episode-current-time="episodeCurrentTime" :preferred-quality="requested_quality" :source="video.link" style="width:100%; height:100%;" @startedPlaying="destroyOthers(`video-${index+1}`)" @updateAnime="updateAnime(episode_number)" @addToWatching="ADD_TO_WATCHING(animeDetails)" @windowModeChange="SET_WINDOW_MODE" @setCurrentTime="setAnimeCurrentTime"></video-instance>
+        <!--         <webview v-for="(video, index) in video_links" :key="index" :id="`candidate-${index + 1}`" :src="video.link" style="width:100%;height:100%"></webview>
+ -->
         <!-- <player-controls :class="{'is-near-end': isEpisodeNear, 'show-ui': show_ui}" @next="navigateToEpisode(anime_id, episode_number)" @pause="pauseVideo()" @backwards="videos(15)"></player-controls> -->
     </div>
 </template>
@@ -35,28 +37,9 @@ import { LoaderIcon, ArrowLeftIcon, DropletIcon } from 'vue-feather-icons'
 import OptionPicker from '@/components/picker';
 import PlayerControls from '@/components/player-controls';
 import SubsIcon from '@/assets/sub-icon.vue';
+import videoInstance from '@/components/WebviewInstance.vue';
 
 let global_timeout = null;
-let timer = null;
-let webview; //defined here so all lifehooks have access to it
-
-const video_player_style = `
-    body,html {
-        background-color:black;
-    }
-    body > * {
-        display: none!important;
-    }
-    video#the-real-video {
-        display: block!important;
-    }
-    body > video {
-        height: 100%;
-        width: 100%;
-        border: none;
-        display: block;
-    }
-`;
 
 export default {
     props: ['episode_number', 'anime_id', 'anime_slug'],
@@ -68,6 +51,7 @@ export default {
         SubsIcon,
         DropletIcon,
         PlayerControls,
+        videoInstance,
     },
     data: () => ({
         show_ui: false,
@@ -75,25 +59,19 @@ export default {
         video_length: null,
         loading_player: true,
         countdown: 60,
-        js_executed: false,
         internet_speed: null,
-        winner: '#candidate_1',
     }),
     mounted() {
-        let links = this.video_links;
-        if (!links) {
+        if (!this.video_links) {
             this.getVideoLinks({
                 slug: this.anime_slug,
                 episode: this.episode_number,
             }).then(result => {
                 this.SET_CURRENT_VIDEO_LINKS(result);
-                this.setVideoQuality(this.video_links);
             }).catch(err => {
                 console.log('error');
                 //this.$router.go(-1);
             });
-        } else {
-            this.setVideoQuality(this.video_links);
         }
     },
     computed: {
@@ -142,9 +120,6 @@ export default {
                 this.SET_PREFERRED_QUALITY(value);
                 location.reload();
             },
-        },
-        candidates() {
-            return this.video_links && this.video_links.filter(link => link.quality === this.requested_quality).map((link, index) => `#candidate-${index+1}`);
         },
     },
     methods: {
@@ -208,101 +183,19 @@ export default {
                 new_data: { ...this.animeDetails, ['watching']: episode_number, ['expecting_next']: !!expecting_next },
             });
         },
-        addWebViewHooks(candidate, role) {
-            const debug = process.env.NODE_ENV !== 'production';
-            webview = document.querySelector(candidate);
-            webview.addEventListener('did-start-loading', e => {
-                webview.executeJavaScript(`
-                    document.querySelectorAll('script').forEach(el => { 
-                        let src = el.getAttribute('src');
-                        let is_popads = src && src.includes('popads');
-                        //if(is_popads) el.remove();
-                    });
-                    window.console.clear = () => {console.log('tried clearing')};`);
-            });
-            webview.addEventListener('did-finish-load', (e) => {
-                webview.openDevTools();
-                console.log(`Candidate ${candidate} did finish load`);
-                if (this.js_executed) return;
-                webview.insertCSS(video_player_style, role);
-                webview.executeJavaScript(this.playEpisode(this.episodeCurrentTime || null));
-                this.js_executed = true;
-            });
-            webview.addEventListener('console-message', (event) => {
-                let { message } = event;
-                if (message === 'started_playing') {
-                    console.log('Loaded player', candidate);
-                    this.loading_player = false;
-                    this.removeFailures(candidate);
-                    this.updateAnime(this.episode_number);
-                    this.ADD_TO_WATCHING(this.animeDetails);
-                    return;
-                }
-                if (message === 'fullscreen' || message === 'normal') {
-                    this.SET_WINDOW_MODE(message);
-                    return;
-                }
-                let msg = message.split(",");
-                let current_time = Number(msg[0]);
-                let length = Number(msg[1]);
-                if (!this.video_length && !isNaN(length)) {
-                    this.video_length = length;
-                }
-                if (!isNaN(current_time)) this.setAnimeCurrentTime(current_time); //the actual time that is emmited using console-message
-            });
-        },
-        setVideoQuality(video_links) {
-            let links = video_links;
-            console.log('Setting video stuff with links:', links);
-            this.candidates.forEach(candidate => {
-                this.addWebViewHooks(candidate);
-            });
-        },
-        removeFailures(winner) {
-            console.log('Removing failures. Winner is:', winner);
-            this.candidates.forEach(candidate => {
-                if (candidate !== winner) {
-                    console.log('Removing ', candidate);
-                    document.querySelector(candidate).remove();
+        destroyOthers(winner_id) {
+            this.loading_player = false;
+            let children = this.$children;
+            console.log('Children:', children);
+            children.forEach((child, index) => {
+                if (child.$el.className === 'vid-instance' && child.$el.id !== winner_id) {
+                    this.$children[index].destroyElement();
                 }
             });
         },
-        playEpisode(time, secondary) {
-            return `
-                    console.log('executing js');
-                    var page_video = document.querySelector("video");
-                    var video = document.createElement('video');
-                    video.setAttribute('src', page_video.src);
-                    video.setAttribute('autoplay', true);
-                    video.setAttribute('controls', false);
-                    video.setAttribute('preload', 'auto');
-                    video.setAttribute('id', 'the-real-video');
-                    video.addEventListener('webkitfullscreenchange', () => {
-                        console.log(document.webkitFullscreenElement !== null ? 'fullscreen' : 'normal_window');
-                    });
-                    let starting_point = ${time};
-                    document.body.append(video);
-                    video.play().then(() => {
-                        video.currentTime = ${time};
-                        console.log('started_playing');
-                        var timeout = setInterval(() => {
-                            if(video.duration === video.currentTime) {
-                                clearInterval(timeout);
-                            };
-                            console.log([video.currentTime, video.duration])
-                        }, 1000);
-                    }).catch(err => {
-                        console.log('playing_failed');
-                    });
-                    window.onunload = () => {
-                        clearInterval(timeout);
-                    }
-                `;
-        }
     },
     beforeDestroy() {
         clearTimeout(global_timeout);
-        clearInterval(timer);
     },
 };
 </script>

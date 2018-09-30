@@ -188,13 +188,16 @@ export default new Vuex.Store({
       });
     },
     video_links: (state) => {
+      let result;
       if (!state.current_anime_video_links) return;
       let subs = state.current_anime_video_links['subs'];
       let dubs = state.current_anime_video_links['dubs'];
       if (state.preferred_anime_type === 1) {
-        return dubs || subs;
+        result = dubs || subs;
       }
-      return subs;
+      result = subs;
+      return result;
+      return result.filter(link => link.quality === state.preferred_quality);
     },
     searched: (state) => {
       return state.searched_animes;
