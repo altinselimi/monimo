@@ -5,7 +5,7 @@
                 <button class="unstyled back-btn" @click="$router.go(-1)">
                     <ArrowLeftIcon style="stroke: white;" />
                 </button>
-                <p v-if="episode_number > 1 || nextEpisodeExists">{{`${animeDetails.info.title} - Episode ${episode_number}`}}</p>
+                <p v-if="animeDetails.info.episode_count > 1">{{`${animeDetails.info.title} - Episode ${episode_number}`}}</p>
                 <p v-else>{{`${animeDetails.info.title}`}}</p>
             </div>
             <div class="buttons-right">
