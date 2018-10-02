@@ -5,7 +5,8 @@
                 <button class="unstyled back-btn" @click="$router.go(-1)">
                     <ArrowLeftIcon style="stroke: white;" />
                 </button>
-                <p>{{`${animeDetails.info.title} - Episode ${episode_number}`}}</p>
+                <p v-if="animeDetails.info.episode_count > 1">{{`${animeDetails.info.title} - Episode ${episode_number}`}}</p>
+                <p v-else>{{`${animeDetails.info.title}`}}</p>
             </div>
             <div class="buttons-right">
                 <option-picker style="margin-left: 15px;" :left="true" class="type-picker" :options="[{label: 'Subbed', value: 0}, {label: 'Dubbed', value: 1}]" :model.sync="anime_type">
