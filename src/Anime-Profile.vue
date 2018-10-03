@@ -58,12 +58,12 @@
 				</div>
 				<div class="next-up" v-if="expectingNext && !finishedAnime">
 					<h1>Next Up ⚠️</h1>
-					<episode-card v-if="nextEpisode" :episode="nextEpisode" @watchit="watchEpisode(nextEpisode)" style="margin: 0px;"></episode-card>
+					<episode-card v-if="nextEpisode" :poster="animeWithDetails.poster" :episode="nextEpisode" @watchit="watchEpisode(nextEpisode)" style="margin: 0px;"></episode-card>
 					<h3 v-else>Upcoming episode has not been released yet. ☹️</h3>
 				</div>
 				<div class="next-up" v-if="wasWatching && !expectingNext">
 					<h1>Continue Watching 🍿</h1>
-					<episode-card :episode="wasWatching" @watchit="watchEpisode(wasWatching)" style="margin: 0px;"></episode-card>
+					<episode-card :poster="animeWithDetails.poster" :episode="wasWatching" @watchit="watchEpisode(wasWatching)" style="margin: 0px;"></episode-card>
 				</div>
 			</div>
 			<div class="episodes-section">
@@ -71,7 +71,7 @@
 					<h1>Episodes</h1>
 					<ul class="episodes">
 						<li v-for="(episode, index) in current_anime.episodes">
-							<episode-card :showLoader="index === start_episode" :episode="episode" @watchit="watchEpisode(episode)"></episode-card>
+							<episode-card :poster="animeWithDetails.poster" :showLoader="index === start_episode" :episode="episode" @watchit="watchEpisode(episode)"></episode-card>
 						</li>
 					</ul>
 				</div>
@@ -116,7 +116,7 @@ export default {
 		},
 		wallpaper() {
 			let { wallpapers } = this.current_anime;
-			if (!wallpapers || wallpapers.length === 0) return null;
+			if (!wallpapers || wallpapers.length === 0) return this.animeWithDetails.poster;
 			return this.current_anime && `https://cdn.masterani.me/wallpaper/0/${wallpapers[this.getRandomInt(wallpapers.length)].file}`;
 		},
 		wasWatching() {
@@ -146,9 +146,10 @@ export default {
 			let { slug, status } = this.current_anime.info;
 			let episode = _episode.info.episode;
 			this.getVideoLinks({ slug, episode }).then(result => {
+				console.log('Links:', result);
 				this.SET_CURRENT_VIDEO_LINKS(result);
 				if (this.isCurrentlyWatching) this.REMOVE_FROM_WATCHING(this.current_anime);
-				this.$router.push(`/anime/${this.current_anime.info.id}/watch/${episode}`);
+				this.$router.push(`/anime/${this.current_anime.info.id}/${this.current_anime.info.slug}/watch/${episode}`);
 			}).catch(err => {
 				throw err;
 			});

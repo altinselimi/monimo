@@ -55,7 +55,7 @@ body {
   height: 100%;
   padding: 50px 0px;
   min-height: 400px;
-  text-shadow: 0px 2px 1px rgba(0, 0, 0, 0.3);
+  text-shadow: 0px 2px 1px rgba(0, 0, 0, 0.2);
 }
 
 .top .main .submain h1 {
@@ -72,9 +72,9 @@ body {
   font-size: 18px;
   max-width: 400px;
   letter-spacing: 1px;
-  font-weight: 300;
+  font-weight: 400;
   margin-top: 40px;
-  opacity: .9;
+  opacity: 1;
 }
 
 .top .main .submain .buttons {
@@ -184,20 +184,97 @@ body {
   flex-direction: column;
 }
 
+#help-us {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 60px 20px;
+  padding-bottom: 90px;
+  background-color: whitesmoke;
+}
+#help-us .explanation {
+  max-width: 700px;
+  margin: 0 auto;
+}
+#help-us h2 {
+  font-family: 'Lato';
+  font-weight: 800;
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+#help-us .explanation p {
+  font-size: 1.3rem;
+  margin-top: 0px;
+}
+#help-us .cards {
+  max-width: 700px;
+  width: 100%;
+  display: flex;
+  grid-column-gap: 0px;
+  margin: 0 auto;
+  margin-top: 20px;
+}
+#help-us .card {
+  display: flex;
+  flex-shrink: 0;
+  flex-direction: column;
+  background-color: white;
+  padding: 40px;
+}
+#help-us .card:nth-child(2) {
+  border-left: dashed 1px rgba(0, 0, 0, 0.2);
+}
+#help-us .card li {
+  display: flex;
+  align-items: center;
+}
+#help-us .card i {
+  font-size: 15px;
+  margin-right: 10px;
+}
+#help-us .card h4 {
+  font-size: 1.4rem;
+  font-weight: 800;
+  font-family: 'Lato';
+  margin: 0px;
+  margin-bottom: 30px;
+}
+#help-us .card li {
+  font-size: 1.2rem;
+  margin-bottom: 15px;
+}
+#help-us a {
+  color: initial;
+  text-decoration: none;
+  border-bottom: solid 1px transparent;
+}
+#help-us a:hover, #help-us a:active {
+  border-bottom: solid 1px #4287fb;
+}
+#help-us ul {
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+}
+
 @media screen and (max-width: 650px) {
   .top .main {
     display: flex;
     flex-direction: column;
   }
+
   .top .main .submain {
     padding: 0 20px;
   }
+
   .top .main .submain .buttons {
     flex-direction: column;
   }
+
   .top .main .submain .buttons button {
     margin: 5px 0;
   }
+
   .top .main .the_pic {
     display: none;
   }
@@ -214,15 +291,16 @@ body {
     padding: 100px 0;
   }
 }
-
 @media screen and (min-width: 650px) and (max-width: 768px) {
   .submain {
     text-align: center;
   }
+
   .submain .buttons {
     display: flex;
     justify-content: space-around;
   }
+
   .submain .buttons button {
     margin-right: 0 !important;
   }

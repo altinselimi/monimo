@@ -1,10 +1,14 @@
 import Vuex from 'vuex';
 import createLogger from 'vuex/dist/logger';
 import Vue from 'vue';
-import api from './api';
+import real_api from './api';
+import cloudflare_bypass_api from './api_cloudflare_bypass.js';
+let api_module = real_api;
+
 import createPersistedState from 'vuex-persistedstate';
 import hardcoded_data from './hardcoded_data.js';
 const { staff_picks } = hardcoded_data;
+import { remote } from 'electron';
 
 const debug = process.env.NODE_ENV !== 'production';
 
@@ -26,7 +30,16 @@ export default new Vuex.Store({
     watching_animes: {},
     searched_animes: [],
     search_query: null,
-    window_mode: 'normal'
+    help_us: null,
+    window_mode: 'normal',
+    preferred_anime_type: 0,
+    preferred_quality: 720,
+    notification: {
+      message: null,
+      type: null,
+    },
+    downloaded_percentage: 0,
+    blocked_region: null,
   },
   mutations: {
     SET_ANIMES(state, payload) {
@@ -75,6 +88,13 @@ export default new Vuex.Store({
     },
     SET_WINDOW_MODE(state, payload) {
       state.window_mode = payload;
+      // if(payload === 'full') {
+      // document.body.requestFullScreen();
+      // remote.getCurrentWindow().setFullScreen(true);
+      // } else {
+      // document.body.exitFullscreen();
+      // remote.getCurrentWindow().setFullScreen(false);
+      // }
     },
     SET_CURRENT_TIME(state, payload) {
       if (!state.animes_w_details) return;
@@ -88,7 +108,29 @@ export default new Vuex.Store({
     },
     SET_CURRENT_VIDEO_LINKS(state, payload) {
       state.current_anime_video_links = payload;
-    }
+    },
+    SET_PREFERRED_TYPE(state, payload) {
+      state.preferred_anime_type = parseInt(payload);
+    },
+    SET_PREFERRED_QUALITY(state, payload) {
+      state.preferred_quality = parseInt(payload);
+    },
+    SET_NOTIFICATION(state, payload) {
+      state.notification = payload;
+    },
+    SET_REGION_BLOCKED(state, payload) {
+      state.blocked_region = payload;
+      if(payload === true) {
+        console.log('Setting api module to', cloudflare_bypass_api);
+        api_module = cloudflare_bypass_api;
+      }
+    },
+    SET_DOWNLOADED_PERCENTAGE(state, payload) {
+      state.downloaded_percentage = payload;
+    },
+    HELP_US(state, payload) {
+      state.help_us = payload;
+    },
   },
   actions: {
     getAnimes({ state, commit }, params) {
@@ -105,9 +147,9 @@ export default new Vuex.Store({
           _params.genres = state.preferred_genres;
         }
         console.log('params at end:', _params);
-        api.animes(_params).then(res => {
+        api_module.animes(_params).then(res => {
           console.log('Response:', res);
-          let animes = res.data.data.map(anime => {
+          let animes = res.data.map(anime => {
             return { ...anime,
               ['poster']: `https://cdn.masterani.me/poster/1/${anime.poster.file}`,
             }
@@ -122,8 +164,9 @@ export default new Vuex.Store({
     },
     getLastReleases({ state, commit }, payload) {
       return new Promise((resolve, reject) => {
-        api.getReleases().then(res => {
-          let animes = res.data.map(result => {
+        api_module.getReleases().then(res => {
+          console.log(res);
+          let animes = res.map(result => {
             return { ...result.anime,
               ['poster']: `https://cdn.masterani.me/poster/1/${result.anime.poster}`,
               ['released_at']: result.created_at,
@@ -131,6 +174,7 @@ export default new Vuex.Store({
             }
           });
           commit('SET_LAST_RELEASES', animes);
+          resolve(animes);
         }).catch(err => {
           reject(err);
         })
@@ -138,20 +182,23 @@ export default new Vuex.Store({
     },
     getAnimeDetails({ state, commit }, anime_id) {
       return new Promise((resolve, reject) => {
-        api.animeDetails({ anime_id: anime_id }).then(res => {
-          console.log('anime details:', res.data);
-          res.data.episodes.forEach(episode => episode.current_time = null);
-          commit('ADD_ANIME_DETAILS', { id: anime_id, data: res.data });
-          commit('SET_CURRENT_ANIME', res.data);
-          resolve(res.data);
+        api_module.animeDetails({ anime_id: anime_id }).then(res => {
+          console.log('anime details:', res);
+          res.poster = `https://cdn.masterani.me/poster/1/${res.poster}`;
+          res.episodes.forEach(episode => {
+            episode.current_time = null
+          });
+          commit('ADD_ANIME_DETAILS', { id: anime_id, data: res });
+          commit('SET_CURRENT_ANIME', res);
+          resolve(res);
         }).catch(err => {
           reject(err);
         })
       })
     },
     getVideoLinks({ state, commit }, { slug, episode }) {
-      return api.videoLinks({ slug: slug, episode: episode });
-    }
+      return api_module.videoLinks({ slug: slug, episode: episode });
+    },
   },
   getters: {
     normalized_animes: (state) => {
@@ -169,7 +216,7 @@ export default new Vuex.Store({
       let result = keys.length > 0 && keys.map(key => {
         let anime = state.watching_animes[key];
         if (!anime) return;
-        return { ...anime.info, ['genres']: anime.genres, ['poster']: `https://cdn.masterani.me/poster/1/${anime.poster}` };
+        return { ...anime.info, ['genres']: anime.genres, ['poster']: anime.poster };
       });
       return result;
     },
@@ -177,6 +224,18 @@ export default new Vuex.Store({
       return state.favorite_animes.map(anime => {
         return { ...anime.info, ['genres']: anime.genres, ['poster']: `https://cdn.masterani.me/poster/1/${anime.poster}` };
       });
+    },
+    video_links: (state) => {
+      let result;
+      if (!state.current_anime_video_links) return;
+      let subs = state.current_anime_video_links['subs'];
+      let dubs = state.current_anime_video_links['dubs'];
+      if (state.preferred_anime_type === 1) {
+        result = dubs || subs;
+      }
+      result = subs;
+      //return result;
+      return result.filter(link => link.quality === state.preferred_quality);
     },
     searched: (state) => {
       return state.searched_animes;

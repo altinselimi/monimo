@@ -1,12 +1,12 @@
 <template>
     <div class="movie-card" :class="{result: screen}">
-        <div class="loader" v-if=" showLoader">
+        <div class="loader" v-if="showLoader">
             <LoaderIcon/>
         </div>
         <div v-if="loading" class="loading"></div>
         <div class="contents" v-if="!loading">
             <div class="background">
-                <img :src="movie.poster">
+                <image-bypasser :source="movie.poster"></image-bypasser>
                 <div class="overlay">
                     <div class="score" v-if="movie.score">
                         <StarIcon/>
@@ -19,13 +19,15 @@
     </div>
 </template>
 <script>
-import { LoaderIcon,StarIcon } from 'vue-feather-icons'
+import { LoaderIcon, StarIcon } from 'vue-feather-icons'
+import ImageBypasser from './image';
 
 export default {
     props: ['movie', 'loading', 'showLoader', 'screen'],
-    components:{
+    components: {
         LoaderIcon,
-        StarIcon
+        StarIcon,
+        ImageBypasser,
     }
 }
 </script>
@@ -45,20 +47,6 @@ $yellow: #fbbd08;
     border-radius: 25px;
     overflow: hidden;
     margin: 15px;
-    .loading {
-        background-color: rgba(gray, .1);
-        flex: 1;
-        height: 100%;
-        width: 100%;
-        background-repeat: no-repeat;
-        background-image: linear-gradient( 90deg,
-        rgba(lightgrey, 0) 0,
-        rgba(lightgrey, .8) 50%,
-        rgba(lightgrey, 0) 100%);
-        background-size: 50% calc(100% - 35px), 100% 35px, 100% 100%;
-        background-position: -150% 0, 0 100%; //animation: loading 1.5s infinite;   
-        animation: loading 1.5s linear infinite;
-    }
     .loader {
         position: absolute;
         z-index: 1;

@@ -23,6 +23,7 @@
                 </form>
             </div>
         </nav>
+        <progress-bar v-if="downloaded_percentage" :progress="percentage"></progress-bar>
     </header>
 </template>
 <script>
@@ -32,13 +33,15 @@ import {
     mapState
 } from 'vuex';
 import { SearchIcon,ArrowLeftIcon } from 'vue-feather-icons'
+import progressBar from './progress-bar'
 let timeouts = 0;
 let timeout;
 export default {
     props: ['isHome'],
     components:{
         ArrowLeftIcon,
-        SearchIcon
+        SearchIcon,
+        progressBar
     },
     computed: {
         search: {
@@ -52,12 +55,16 @@ export default {
         isElectron() {
             return true; //navigator.userAgent.toLowerCase().indexOf('electron/') > -1;
         },
+        percentage() {
+          return -100+this.downloaded_percentage;
+        },
         ...mapState({
-            window_mode: state => state.window_mode
+            window_mode: state => state.window_mode,
+            downloaded_percentage: state => state.downloaded_percentage
         })
     },
     data: () => ({
-        show_search: false,
+        show_search: false
     }),
     methods: {
         showSearch() {
@@ -91,7 +98,7 @@ export default {
 <style lang="scss">
 header {
   //-webkit-user-select: none;
-  -webkit-app-region: drag;
+  // -webkit-app-region: drag;
   backdrop-filter: blur(21px);
   background-color: rgba(black, 0.75);
   padding: 20px;
