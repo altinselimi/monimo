@@ -37,6 +37,7 @@ export default new Vuex.Store({
       message: null,
       type: null,
     },
+    downloaded_percentage: 0,
     blocked_region: null,
   },
   mutations: {
@@ -122,6 +123,9 @@ export default new Vuex.Store({
         console.log('Setting api module to', cloudflare_bypass_api);
         api_module = cloudflare_bypass_api;
       }
+    },
+    SET_DOWNLOADED_PERCENTAGE(state, payload) {
+      state.downloaded_percentage = payload;
     }
   },
   actions: {
