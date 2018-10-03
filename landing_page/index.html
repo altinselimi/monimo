@@ -2,122 +2,164 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8">
-  <title>Monimo - Your anime best fren</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
-  <link rel="stylesheet" href="./fonts/fonts.css">
-  <link rel="stylesheet" href="./style.css">
-  <script src="./vue.js"></script>
-  <!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126063296-1"></script>
-  <script>
-  window.dataLayer = window.dataLayer || [];
+    <meta charset="UTF-8">
+    <title>Monimo - Your anime best fren</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css">
+    <link rel="stylesheet" href="./fonts/fonts.css">
+    <link rel="stylesheet" href="./style.css">
+    <script src="./vue.js"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-126063296-1"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
 
-  function gtag() { dataLayer.push(arguments); }
-  gtag('js', new Date());
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
-  gtag('config', 'UA-126063296-1');
-  </script>
+    gtag('config', 'UA-126063296-1');
+    </script>
 </head>
 
 <body>
-  <div id="app">
-    <div class="top">
-      <div class="nav-bar">
-        <div class="logo-container">
-          <h1 class="logo">M</h1>
-        </div>
+    <div id="app">
+        <div class="top">
+            <div class="nav-bar">
+                <div class="logo-container">
+                    <h1 class="logo">M</h1>
+                </div>
+            </div>
+            <div class="main">
+                <div class="submain">
+                    <h1>MONIMO</h1>
+                    <p class="sub-heading">Best experience in the anime land</p>
+                    <p>This application was made by anime fans, for anime fans, around the idea that having a great user experience, is as important as having basic features. If you'd like to support us, please star on Github and spread the word. Its open source so
+                        you can use it to make your own also. Limitless possibilities !</p>
+                    <div class="buttons">
+                        <button @click="goToLink(link)">
+                            <i color="black" class="fab" :class="{'fa-windows': system === 'windows', 'fa-apple': system === 'mac'}"></i>
+                            <a target="_blank">DOWNLOAD</a>
+                        </button>
+                        <button @click="goToLink('https://github.com/altinselimi/monimo')">
+                            <i class="fab fa-github"></i>
+                            <a>GITHUB</a>
+                        </button>
+                    </div>
+                </div>
+                <div class="the_pic">
+                    <div class="imazhi"></div>
+                    <img src="http://www.stickpng.com/assets/images/580b57fbd9996e24bc43bfe6.png" alt="">
       </div>
-      <div class="main">
-        <div class="submain">
-          <h1>MONIMO</h1>
-          <p class="sub-heading">Best experience in the anime land</p>
-          <p>This application was made by anime fans, for anime fans, around the idea that having a great user experience, is as important as having basic features. If you'd like to support us, please star on Github and spread the word. Its open source so you can use it to make your own also. Limitless possibilities !</p>
-          <div class="buttons">
-            <button @click="goToLink(link)">
-              <i color="black" class="fab" :class="{'fa-windows': system === 'windows', 'fa-apple': system === 'mac'}"></i>
-              <a target="_blank">DOWNLOAD</a>
-            </button>
-            <button @click="goToLink('https://github.com/altinselimi/monimo')">
-              <i class="fab fa-github"></i>
-              <a>GITHUB</a>
-            </button>
-          </div>
+                </div>
+            </div>
+            <div class="bottom">
+                <div class="highlight-card">
+                    <i class="fas fa-laptop-code" style="font-size:50px"></i>
+                    <div>
+                        <h3>Open Source</h3>
+                        <p style="max-width:200px;">Help us make the best Anime Player there is. Everything is open-sourced, so you can even dig in and see how everything works. PR's are welcome !</p>
+                    </div>
+                </div>
+                <div class="highlight-card">
+                    <i class="fas fa-users fa-4x"></i>
+                    <div>
+                        <h3>User Experience</h3>
+                        <p style="max-width:200px;">We built the application with you in mind. The essence of it is to make your experience as good as can be. That's why we implemented Autoplay, Next Episode, and Resume playing. You can expect the Skip Intro feature soon enough too ! </p>
+                    </div>
+                </div>
+                <div class="highlight-card">
+                    <i class="fas fa-pen-nib fa-4x"></i>
+                    <div>
+                        <h3>Beautiful User Interface</h3>
+                        <p style="max-width:200px;">When we started building this app, having a simple and yet beautiful user interface was one of the main goals. There is nothing fancy about it, but the usability does make up for all of that, and then some.</p>
+                    </div>
+                </div>
+                <div class="highlight-card">
+                    <i class="fas fa-object-group fa-4x" style="margin-top:2px;"></i>
+                    <div>
+                        <h3>Responsive Design</h3>
+                        <p style="max-width:200px;">You can resize the window to any proportion you wanted. The styling of the application makes it easy to adapt to smaller screen sizes or even portrait modes.</p>
+                    </div>
+                </div>
+                <div class="highlight-card">
+                    <i class="fas fa-sync fa-4x"></i>
+                    <div>
+                        <h3>Fast Update</h3>
+                        <p style="max-width:200px;">You will also be getting updates directly from our server. Make sure that your application was downloaded from the official repo https://github.com/altinselimi/monimo. Other sources may or may not have tampered with the application.</p>
+                    </div>
+                </div>
+                <div class="highlight-card">
+                    <i class="fas fa-rocket fa-4x"></i>
+                    <div>
+                        <h3>Quick Start</h3>
+                        <p style="max-width:200px;">The application uses electron, so its basically chrome under the hood. That's why you will always get fast starting time, and thanks to Vue, once you're inside, the experience will be the same.</p>
+                    </div>
+                </div>
+            </div>
+            <div id="help-us">
+                <div class="explanation">
+                    <h2>Help Monimo 🎬</h2>
+                    <p>You would do us a great favor by doing any of the undermentioned things. Might be small for you but would mean a lot for us 🙌🏻!</p>
+                </div>
+                <div class="cards">
+                    <div class="card">
+                        <h4>You definitely should:</h4>
+                        <ul>
+                            <li>
+                                <i class="fab fa-twitter"></i>
+                                <a href="https://twitter.com/intent/tweet?button_hashtag=monimo&ref_src=twsrc%5Etfw">Tweet #monimo on twitter</a>
+                            </li>
+                            <li>
+                                <i class="fab fa-reddit"></i>
+                                <a href="https://reddit.com/r/monimo">Sub to our reddit corner</a>
+                            </li>
+                            <li>
+                                <i class="fab fa-github"></i>
+                                <a href="https://github.com/altinselimi/monimo">Star us on Github</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h4>You may:</h4>
+                        <ul>
+                            <li>
+                                <i class="fab fa-patreon"></i>
+                                <a href="https://patreon.com/altin">Check out my Patreon</a>
+                            </li>
+                            <li>
+                                <i class="fab fa-twitter"></i>
+                                <a href="https://twitter.com/altinselimi">Follow me on twitter</a>
+                            </li>
+                            <li>
+                                <i class="fas fa-map-signs"></i>
+                                <a href="https://anitahendrieka.com/why-you-should-visit-kosovo/">Check this out</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="the_pic">
-          <div class="imazhi"></div>
-          <img src="http://www.stickpng.com/assets/images/580b57fbd9996e24bc43bfe6.png" alt="">
-        </div>
-      </div>
-    </div>
-    <div class="bottom">
-      <div class="highlight-card">
-        <i class="fas fa-laptop-code" style="font-size:50px"></i>
-        <div>
-          <h3>Open Source</h3>
-          <p style="max-width:200px;">Help us make the best Anime Player there is. Everything is open-sourced, so you can even dig in and see how everything works. PR's are welcome !</p>
-        </div>
-      </div>
-      <div class="highlight-card">
-        <i class="fas fa-users fa-4x"></i>
-        <div>
-          <h3>User Experience</h3>
-          <p style="max-width:200px;">We built the application with you in mind. The essence of it is to make your experience as good as can be. That's why we implemented Autoplay, Next Episode, and Resume playing. You can expect the Skip Intro feature soon enough too ! </p>
-        </div>
-      </div>
-      <div class="highlight-card">
-        <i class="fas fa-pen-nib fa-4x"></i>
-        <div>
-          <h3>Beautiful User Interface</h3>
-          <p style="max-width:200px;">When we started building this app, having a simple and yet beautiful user interface was one of the main goals. There is nothing fancy about it, but the usability does make up for all of that, and then some.</p>
-        </div>
-      </div>
-      <div class="highlight-card">
-        <i class="fas fa-object-group fa-4x" style="margin-top:2px;"></i>
-        <div>
-          <h3>Responsive Design</h3>
-          <p style="max-width:200px;">You can resize the window to any proportion you wanted. The styling of the application makes it easy to adapt to smaller screen sizes or even portrait modes.</p>
-        </div>
-      </div>
-      <div class="highlight-card">
-        <i class="fas fa-sync fa-4x"></i>
-        <div>
-          <h3>Fast Update</h3>
-          <p style="max-width:200px;">You will also be getting updates directly from our server. Make sure that your application was downloaded from the official repo https://github.com/altinselimi/monimo. Other sources may or may not have tampered with the application.</p>
-        </div>
-      </div>
-      <div class="highlight-card">
-        <i class="fas fa-rocket fa-4x"></i>
-        <div>
-          <h3>Quick Start</h3>
-          <p style="max-width:200px;">The application uses electron, so its basically chrome under the hood. That's why you will always get fast starting time, and thanks to Vue, once you're inside, the experience will be the same.</p>
-        </div>
-      </div>
-    </div>
-    <div></div>
-  </div>
 </body>
 <script>
 var app = new Vue({
-  el: '#app',
-  computed: {
-    system() {
-      if (navigator.platform.indexOf('Mac') > -1) return 'mac';
-      return 'windows';
+    el: '#app',
+    computed: {
+        system() {
+            if (navigator.platform.indexOf('Mac') > -1) return 'mac';
+            return 'windows';
+        },
+        link() {
+            if (this.system === 'mac') {
+                return 'https://github.com/altinselimi/monimo/releases/download/1.0/Monimo-0.1.0.dmg';
+            }
+            return 'https://github.com/altinselimi/monimo/releases/download/1.0/Monimo.Setup.0.1.0.exe';
+        },
     },
-    link() {
-      if (this.system === 'mac') {
-        return 'https://github.com/altinselimi/monimo/releases/download/1.0/Monimo-0.1.0.dmg';
-      }
-      return 'https://github.com/altinselimi/monimo/releases/download/1.0/Monimo.Setup.0.1.0.exe';
-    },
-  },
-  methods: {
-    goToLink(link) {
-      window.open(link, '_blank');
+    methods: {
+        goToLink(link) {
+            window.open(link, '_blank');
+        }
     }
-  }
 })
 </script>
 
