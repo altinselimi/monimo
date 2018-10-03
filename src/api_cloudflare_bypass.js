@@ -108,7 +108,7 @@ export default {
 					type: mirror.type === 1 ? 'sub' : 'dub',
 					name: mirror.host.name,
 					link: `${mirror.host.embed_prefix}${mirror.embed_id}${mirror.host.embed_suffix}`,
-				})).filter(video => !video.link.includes('openload') && !video.link.includes('streamango'));
+				}));//.filter(video => !video.link.includes('openload') && !video.link.includes('streamango'));
 				//openload and streamango giving troubles rn. They have scripts that are clearing the console logs, which we use to communicate with parent component.
 				let subs = links.filter(link => link.type === 'sub');
 				let dubs = links.filter(link => link.type === 'dub');

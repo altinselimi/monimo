@@ -8,13 +8,13 @@ $sun: #FDB833;
   display: flex;
   min-width: 350px;
   position: fixed;
-  top: 100px;
+  top: 90px;
   right: 10px;
   max-width: 350px;
   align-items: stretch;
   border-radius: 4px;
   background-color: white;
-  font-size: 10pt;
+  font-size: 12pt;
   box-shadow: 0px 2px 6px -3px rgba(black, .45);
   z-index: 20;
   box-sizing: border-box;
@@ -39,6 +39,7 @@ $sun: #FDB833;
     border-left: solid 1px rgba(black, .08);
     button {
       flex: 1;
+      font-size: 11pt;
       padding: 5px 10px;
       &:nth-child(2) {
         border-top: solid 1px rgba(black, .08);
@@ -49,6 +50,10 @@ $sun: #FDB833;
       outline: none;
       border: none;
       background: transparent;
+      opacity: .8;
+      &:hover, :active{
+        opacity: 1;
+      }
     }
   }
   .icon {

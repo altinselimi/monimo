@@ -4,7 +4,7 @@
 			<LoaderIcon/>
 		</div>
 		<div class="holder">
-			<image-bypasser :source="`https://cdn.masterani.me/episodes/${episode.thumbnail}`"></image-bypasser>
+			<image-bypasser :source="episode.thumbnail ? `https://cdn.masterani.me/episodes/${episode.thumbnail}` : poster"></image-bypasser>
 		</div>
 		<h4>Episode {{episode.info.episode}}</h4>
 	</a>
@@ -13,7 +13,7 @@
 import { LoaderIcon } from 'vue-feather-icons';
 import ImageBypasser from './image';
 export default {
-	props: ['episode', 'current', 'showLoader'],
+	props: ['episode', 'current', 'showLoader', 'poster'],
 	components: {
 		LoaderIcon,
 		ImageBypasser,

@@ -32,7 +32,7 @@ export default {
 			return parseInt(options.length);
 		},
 		isValidObject() {
-			return this.options[0].hasOwnProperty('value');
+			return this.options[0] && this.options[0].hasOwnProperty('value');
 		},
 	},
 	methods: {

@@ -8,7 +8,10 @@
                 <p>{{`${animeDetails.info.title} - Episode ${episode_number}`}}</p>
             </div>
             <div class="buttons-right">
-                <option-picker style="margin-left: 15px;" :left="true" class="type-picker" :options="[{label: 'Subbed', value: 0}, {label: 'Dubbed', value: 1}]" :model.sync="anime_type">
+                <option-picker :left="true" class="type-picker" :options="linkOptions" :model.sync="videoLink">
+                    <link-icon slot="activator" style="stroke: white;"></link-icon>
+                </option-picker>
+                <option-picker :left="true" class="type-picker" :options="animeTypes" :model.sync="anime_type">
                     <subs-icon slot="activator"></subs-icon>
                 </option-picker>
                 <option-picker class="type-picker" :left="true" :model.sync="requested_quality" :options="[{label: 'Low', value: 480}, {label: 'Medium', value: 720}, {label: 'High', value: 1080}]">
@@ -18,11 +21,15 @@
                 <button @click="setWindowMode()" class="unstyled" v-else><minimize style="stroke: white"/></button>
             </div>
         </div>
+        <div class="loader" v-if="failed_links.includes(videoLink)">
+            <triangle-icon style="stroke: red; animation: none; width: 40px; height: 40px;"/>
+            <span>We are sorry, this link does not seem to be working 😔.</span>
+        </div>
         <div class="loader" v-if="loading_player">
             <LoaderIcon/>
             <span>Go grab the 🍿, this might take a while.</span>
         </div>
-        <video-instance v-for="(video, index) in video_links" class="vid-instance" :index="index" :loaded-index.sync="loaded_index" :loading-player.sync="loading_player" :key="index" :episode-current-time="episodeCurrentTime" :preferred-quality="requested_quality" :source="video.link" style="width:100%; height:100%;" @updateAnime="updateAnime(episode_number)" @addToWatching="ADD_TO_WATCHING(animeDetails)" @windowModeChange="SET_WINDOW_MODE" @setCurrentTime="setAnimeCurrentTime"></video-instance>
+        <video-instance class="vid-instance" :key="videoLink" :loading-player.sync="loading_player" :episode-current-time="episodeCurrentTime" :preferred-quality="requested_quality" :source="videoLink" style="width:100%; height:100%;" @updateAnime="updateAnime(episode_number)" @addToWatching="ADD_TO_WATCHING(animeDetails)" @windowModeChange="SET_WINDOW_MODE" @setCurrentTime="setAnimeCurrentTime" @failed="linkFailed(videoLink)"></video-instance>
         <!--         <webview v-for="(video, index) in video_links" :key="index" :id="`candidate-${index + 1}`" :src="video.link" style="width:100%;height:100%"></webview>
  -->
         <!-- <player-controls :class="{'is-near-end': isEpisodeNear, 'show-ui': show_ui}" @next="navigateToEpisode(anime_id, episode_number)" @pause="pauseVideo()" @backwards="videos(15)"></player-controls> -->
@@ -35,7 +42,7 @@ import {
     mapActions,
     mapGetters
 } from 'vuex';
-import { LoaderIcon, ArrowLeftIcon, DropletIcon, Maximize2Icon, Minimize2Icon } from 'vue-feather-icons'
+import { LoaderIcon, ArrowLeftIcon, DropletIcon, Maximize2Icon, Minimize2Icon, LinkIcon, AlertTriangleIcon } from 'vue-feather-icons'
 import OptionPicker from '@/components/picker';
 import PlayerControls from '@/components/player-controls';
 import SubsIcon from '@/assets/sub-icon.vue';
@@ -54,8 +61,10 @@ export default {
         DropletIcon,
         Maximize: Maximize2Icon,
         Minimize: Minimize2Icon,
+        TriangleIcon: AlertTriangleIcon,
         PlayerControls,
         videoInstance,
+        LinkIcon,
     },
     data: () => ({
         show_ui: false,
@@ -65,6 +74,8 @@ export default {
         countdown: 60,
         internet_speed: null,
         loaded_index: null,
+        preferred_link: null,
+        failed_links: [],
     }),
     mounted() {
         if (!this.video_links) {
@@ -109,8 +120,25 @@ export default {
         progressValue() {
             return parseInt(100 - (100 * this.countdown / 60));
         },
-        linkCandidates() {
-            return this.video_links[0]; //cant create multiple instances of webview for some reason
+        linkOptions() {
+            return this.video_links ? this.video_links.reduce((b, a) => {
+                b.push({...a, ['label']: a.name, ['value']: a.link});
+                return b;
+            }, []) : [];
+        },
+        videoLink: {
+            get() {
+                return this.preferred_link || this.linkOptions[0].link;
+            },
+            set(value) {
+                console.log('Setting loading player to true');
+                this.loading_player = true;
+                this.preferred_link = value;
+            },
+        },
+        animeTypes() {
+            let options = [{label: 'Subbed', value: 0, field: 'subs'}, {label: 'Dubbed', value: 1, field:'dubs'}];
+            return options.filter(option => this.current_anime_video_links[option.field].length > 0);
         },
         anime_type: {
             get() {
@@ -151,6 +179,7 @@ export default {
             }
         },
         setAnimeCurrentTime(time) {
+            if(this.current_time === time) return;
             this.current_time = time;
             if (this.isEpisodeNear) {
                 this.updateAnime(this.episode_number, true);
@@ -200,6 +229,9 @@ export default {
                 anime_id: this.anime_id,
                 new_data: { ...this.animeDetails, ['watching']: episode_number, ['expecting_next']: !!expecting_next },
             });
+        },
+        linkFailed(link) {
+            this.failed_links.push(link);
         },
     },
     beforeDestroy() {

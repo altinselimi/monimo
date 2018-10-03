@@ -176,7 +176,10 @@ export default new Vuex.Store({
       return new Promise((resolve, reject) => {
         api_module.animeDetails({ anime_id: anime_id }).then(res => {
           console.log('anime details:', res);
-          res.episodes.forEach(episode => episode.current_time = null);
+          res.poster = `https://cdn.masterani.me/poster/1/${res.poster}`;
+          res.episodes.forEach(episode => {
+            episode.current_time = null
+          });
           commit('ADD_ANIME_DETAILS', { id: anime_id, data: res });
           commit('SET_CURRENT_ANIME', res);
           resolve(res);
@@ -205,7 +208,7 @@ export default new Vuex.Store({
       let result = keys.length > 0 && keys.map(key => {
         let anime = state.watching_animes[key];
         if (!anime) return;
-        return { ...anime.info, ['genres']: anime.genres, ['poster']: `https://cdn.masterani.me/poster/1/${anime.poster}` };
+        return { ...anime.info, ['genres']: anime.genres };
       });
       return result;
     },
