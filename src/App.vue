@@ -9,6 +9,20 @@
         <XCircleIcon/>
       </button>
     </div>
+    <alert :visibility.sync="notificationVisibility" :persistent="notification.persist" type="alert">
+      {{notification.message}}
+      <div slot="buttons" class="buttons">
+        <button style="width: 80px;">Now</button>
+        <button @click="notificationVisibility = false">Later</button>
+      </div>
+    </alert>
+    <alert :visibility.sync="showHelpUs" :persistent="false" :duration="10" style="top:180px;">
+      Want to help keep this Monimo alive ?
+      <div slot="buttons" class="buttons">
+        <button style="width: 80px;" @click="openHelpLink()">Sure 🙂</button>
+        <button @click="showHelpUs = false">Meh 😤</button>
+      </div>
+    </alert>
     <router-view :key="$route.fullPath"></router-view>
   </div>
 </template>
@@ -16,40 +30,54 @@
 import { router } from './routes';
 import store from './store';
 import { mapMutations, mapState } from 'vuex';
-import { Maximize2Icon,Minimize2Icon,XCircleIcon } from 'vue-feather-icons'
+import { Maximize2Icon, Minimize2Icon, XCircleIcon } from 'vue-feather-icons'
+import Alert from '@/components/alert';
+import { shell } from 'electron';
 
 import VuexRouterSync from 'vuex-router-sync';
 VuexRouterSync.sync(store, router);
 
 export default {
   name: 'monimo',
-  components:{
+  components: {
     Maximize2Icon,
     Minimize2Icon,
-    XCircleIcon
+    XCircleIcon,
+    Alert,
+  },
+  data:() => ({
+    showHelpUs: true,
+  }),
+  mounted() {
+    if (this.newVersionAvailable) {
+      this.SET_NOTIFICATION({ message: 'New version exists. Want to update ?', type: 'info', persist: true });
+    }
   },
   computed: {
     ...mapState({
-      window_mode: state => state.window_mode
+      window_mode: state => state.window_mode,
+      notification: state => state.notification,
     }),
+    notificationVisibility: {
+      get() {
+        return !!this.notification.message;
+      },
+      set(val) {
+        if (!val) this.SET_NOTIFICATION({ message: null, type: null });
+      },
+    },
+    newVersionAvailable() {
+      return true; //@Shpetim must use this variable to display a popup
+    },
   },
   methods: {
-    ...mapMutations(['UPDATE_SEARCH_QUERY', 'SET_WINDOW_MODE']),
+    ...mapMutations(['UPDATE_SEARCH_QUERY', 'SET_WINDOW_MODE', 'SET_NOTIFICATION']),
     getBack() {
       this.$router.go(-1);
     },
-    fullscreen() {
-      if (this.window_mode === 'normal') {
-        document.body.requestFullscreen();
-        this.SET_WINDOW_MODE('fullscreen');
-      } else {
-        document.exitFullscreen();
-        this.SET_WINDOW_MODE('normal');
-      }
+    openHelpLink() {
+      shell.openExternal('http://monimoapp.com/#help-us')
     },
-    close() {
-      app.close();
-    }
   },
   router,
   store,
@@ -64,6 +92,16 @@ export default {
   -moz-osx-font-smoothing: grayscale;
   height: 100%;
   width: 100%;
+  &::before {
+    content: '';
+    position: fixed;
+    display: block;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 25px;
+    -webkit-app-region: drag;
+  }
 }
 
 a {
@@ -110,8 +148,7 @@ html {
   cursor: pointer;
   /* align-items: flex-end; */
   justify-content: flex-end;
-  opacity: 0;
-  //-webkit-user-select: none;
+  opacity: 0; //-webkit-user-select: none;
   -webkit-app-region: drag;
 
   .buttons {
@@ -130,6 +167,8 @@ html {
     transition: 0.3s ease-in-out;
   }
 }
+
+
 
 
 
@@ -159,7 +198,6 @@ html {
 ::-webkit-scrollbar-thumb {
   background: rgba(0, 0, 0, 0.5);
   -webkit-border-radius: 100px;
-
 }
 
 ::-webkit-scrollbar-thumb:active {

@@ -1,27 +1,22 @@
 <template>
-	<a class="episode-card" @click="$emit('watchit', episode)" tabindex="0" :class="{'currently-watching': current, 'sticker-overlay': current, 'finished_watching': finished }">
+	<a class="episode-card" @click="$emit('watchit', episode)" tabindex="0" :class="{'currently-watching': current, 'sticker-overlay': current}">
 		<div class="loader" v-if="showLoader">
-            <LoaderIcon/>
-        </div>
+			<LoaderIcon/>
+		</div>
 		<div class="holder">
-			<img :src="wallpaper" v-if="wallpaper">
+			<image-bypasser :source="`https://cdn.masterani.me/episodes/${episode.thumbnail}`"></image-bypasser>
 		</div>
 		<h4>Episode {{episode.info.episode}}</h4>
 	</a>
 </template>
 <script>
-import { LoaderIcon } from 'vue-feather-icons'
-
+import { LoaderIcon } from 'vue-feather-icons';
+import ImageBypasser from './image';
 export default {
-	props: ['episode', 'current', 'showLoader', 'finished'],
-	components:{
-		LoaderIcon
-	},
-	computed: {
-		wallpaper() {
-			if (!this.episode.thumbnail) return null;
-			return `https://cdn.masterani.me/episodes/${this.episode.thumbnail}`;
-		},
+	props: ['episode', 'current', 'showLoader'],
+	components: {
+		LoaderIcon,
+		ImageBypasser,
 	},
 }
 </script>
@@ -42,24 +37,24 @@ export default {
 		z-index: 1;
 		padding: 2px 5px;
 	}
-/* 	&.finished::before {
+	/* 	&.finished::before {
 		content: 'Finished';
 		background-color: #4CAF50;
 	} */
-	&.currently-watching::before {
-		content: 'Last Watched';
-		background-color: #2196F3;
-	}
-	&.finished_watching::after{
-		position:absolute;
-		bottom: 0px;
-		right: 5px;
-		font-size: .8rem;
-		z-index:1;
-		padding:2px 5px;
-		content: 'Finished';
-		background-color: red;
-	}
+	// &.currently-watching::before {
+	// 	content: 'Last Watched';
+	// 	background-color: #2196F3;
+	// }
+	// &.finished_watching::after{
+	// 	position:absolute;
+	// 	bottom: 0px;
+	// 	right: 5px;
+	// 	font-size: .8rem;
+	// 	z-index:1;
+	// 	padding:2px 5px;
+	// 	content: 'Finished';
+	// 	background-color: red;
+	// }
 	h4 {
 		margin: 0px;
 		margin-top: 5px;
@@ -69,27 +64,11 @@ export default {
 	}
 	margin: 15px;
 }
- .loader {
-        position: absolute;
-        z-index: 1;
-        height: 100%;
-        width: 100%;
-        background: rgba(black, .8);
-        top: 0;
-        left: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-        svg {
-        	stroke:white;
-            animation: spin 1s linear infinite;
-        }
-    }
+
 .holder {
 	position: relative;
 	padding: 0 0 56.25%;
-	background-color: whitesmoke;
+	background-color: black;
 	position: relative;
 	&::before {
 		content: 'No thumbnail';
@@ -111,6 +90,7 @@ export default {
 		width: 100%;
 	}
 }
+
 @keyframes spin {
 	0% {
 		transform: rotate(0deg);

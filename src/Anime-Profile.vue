@@ -146,9 +146,10 @@ export default {
 			let { slug, status } = this.current_anime.info;
 			let episode = _episode.info.episode;
 			this.getVideoLinks({ slug, episode }).then(result => {
+				console.log('Links:', result);
 				this.SET_CURRENT_VIDEO_LINKS(result);
 				if (this.isCurrentlyWatching) this.REMOVE_FROM_WATCHING(this.current_anime);
-				this.$router.push(`/anime/${this.current_anime.info.id}/watch/${episode}`);
+				this.$router.push(`/anime/${this.current_anime.info.id}/${this.current_anime.info.slug}/watch/${episode}`);
 			}).catch(err => {
 				throw err;
 			});

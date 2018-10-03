@@ -1,7 +1,9 @@
 <template>
     <div class="carousel-wrapper">
         <div class="title">
-            <h3 v-if="title">{{title}} <span>{{ genres ? `from ${genres}` : ''}}</span></h3>
+            <h3 v-if="title">{{title}}
+                <span>{{ genres ? `from ${genres}` : ''}}</span>
+            </h3>
         </div>
         <ul class="movie-carousel" :class="isResult?'result':'normal'" v-if="movies">
             <li v-for="movie in movies" v-if="movie">
@@ -25,10 +27,10 @@ export default {
     },
     computed: {
         genres() {
-            if(!this.selectedGenres || this.selectedGenres.length === 0) return;
+            if (!this.selectedGenres || this.selectedGenres.length === 0) return;
             return this.selectedGenres.reduce((acc, cur, idx, src) => {
-                if(idx > 0 && (idx === src.length - 1)) return acc += ` AND ${cur}`;
-                if(idx > 0) return acc += `, ${cur}`;
+                if (idx > 0 && (idx === src.length - 1)) return acc += ` AND ${cur}`;
+                if (idx > 0) return acc += `, ${cur}`;
                 return acc += ` ${cur}`;
             }, '');
         },
@@ -48,6 +50,10 @@ export default {
         text-shadow: 1px 2px black;
         text-transform: uppercase;
         font-size: 1.2rem;
+    }
+    .image-wrapper {
+        min-width: 350px;
+        min-height: 496px;
     }
 }
 

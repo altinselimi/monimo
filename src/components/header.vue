@@ -91,7 +91,7 @@ export default {
 <style lang="scss">
 header {
   //-webkit-user-select: none;
-  -webkit-app-region: drag;
+  // -webkit-app-region: drag;
   backdrop-filter: blur(21px);
   background-color: rgba(black, 0.75);
   padding: 20px;
