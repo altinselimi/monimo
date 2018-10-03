@@ -1,6 +1,6 @@
 'use strict'
 
-import { app, protocol, BrowserWindow, screen } from 'electron'
+import { app, protocol, BrowserWindow, screen, ipcMain } from 'electron'
 import { autoUpdater } from 'electron-updater'
 import * as path from 'path'
 import { format as formatUrl } from 'url'
@@ -87,27 +87,27 @@ app.on('ready', async() => {
   autoUpdater.checkForUpdatesAndNotify();
   mainWindow = createMainWindow()
 })
-autoUpdater.on('checking-for-update', () => {
-  sendStatusToWindow('Checking for update...');
-});
-autoUpdater.on('update-available', info => {
-  sendStatusToWindow('Update available.');
-});
-autoUpdater.on('update-not-available', info => {
-  sendStatusToWindow('Update not available.');
-});
-autoUpdater.on('error', err => {
-  sendStatusToWindow(`Error in auto-updater: ${err.toString()}`);
-});
+// autoUpdater.on('checking-for-update', () => {
+//   sendStatusToWindow('Checking for update...');
+// });
+// autoUpdater.on('update-available', info => {
+//   sendStatusToWindow('Update available.');
+// });
+// autoUpdater.on('update-not-available', info => {
+//   sendStatusToWindow('Update not available.');
+// });
+// autoUpdater.on('error', err => {
+//   sendStatusToWindow(`Error in auto-updater: ${err.toString()}`);
+// });
 autoUpdater.on('download-progress', progressObj => {
-  sendStatusToWindow(
-    `Download speed: ${progressObj.bytesPerSecond} - Downloaded ${progressObj.percent}% (${progressObj.transferred} + '/' + ${progressObj.total} + )`
-  );
+  sendStatusToWindow('download-progress', progressObj);
+  // );
+  //  `Download speed: ${progressObj.bytesPerSecond} - Downloaded ${progressObj.percent}% (${progressObj.transferred} + '/' + ${progressObj.total} + )`
 });
-autoUpdater.on('update-downloaded', info => {
-  sendStatusToWindow('Update downloaded; will install now');
-});
-
-autoUpdater.on('update-downloaded', info => {
+// autoUpdater.on('update-downloaded', info => {
+//   sendStatusToWindow('update-downloaded', true);
+// });
+ipcMain.on('installUpdate', (e, a) => {
+  // console.log("it is trying to update!!");
   autoUpdater.quitAndInstall();
 });

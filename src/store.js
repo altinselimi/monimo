@@ -30,6 +30,7 @@ export default new Vuex.Store({
     watching_animes: {},
     searched_animes: [],
     search_query: null,
+    help_us: null,
     window_mode: 'normal',
     preferred_anime_type: 0,
     preferred_quality: 720,
@@ -37,6 +38,7 @@ export default new Vuex.Store({
       message: null,
       type: null,
     },
+    downloaded_percentage: 0,
     blocked_region: null,
   },
   mutations: {
@@ -122,7 +124,13 @@ export default new Vuex.Store({
         console.log('Setting api module to', cloudflare_bypass_api);
         api_module = cloudflare_bypass_api;
       }
-    }
+    },
+    SET_DOWNLOADED_PERCENTAGE(state, payload) {
+      state.downloaded_percentage = payload;
+    },
+    HELP_US(state, payload) {
+      state.help_us = payload;
+    },
   },
   actions: {
     getAnimes({ state, commit }, params) {
@@ -208,7 +216,7 @@ export default new Vuex.Store({
       let result = keys.length > 0 && keys.map(key => {
         let anime = state.watching_animes[key];
         if (!anime) return;
-        return { ...anime.info, ['genres']: anime.genres };
+        return { ...anime.info, ['genres']: anime.genres, ['poster']: anime.poster };
       });
       return result;
     },
@@ -233,5 +241,5 @@ export default new Vuex.Store({
       return state.searched_animes;
     }
   },
-  plugins: debug ? [] : [createPersistedState()],
+  plugins: debug ? [createPersistedState()] : [createPersistedState()],
 });

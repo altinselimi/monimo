@@ -6,6 +6,7 @@ import './routes';
 import store from './store';
 
 Axios.defaults.headers.common.Accept = 'application/json';
+Axios.defaults.headers.common["User-Agent"] = "monimo";
 let baseURL = `http://localhost:6069/`;
 if (process.env.NODE_ENV !== 'production') {
 	//baseURL = 'http://localhost:6069';

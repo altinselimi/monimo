@@ -17,12 +17,23 @@
                     <button @click="notificationVisibility = false">Later</button>
                 </div>
             </alert>
-            <alert :visibility.sync="showHelpUs" :persistent="false" :duration="10">
+            <alert :visibility.sync="helpUs" :persistent="true">
                 Want to help keep Monimo alive?
                 <div slot="buttons" class="buttons">
                     <button style="width: 80px;" @click="openHelpLink()">Sure 🙂</button>
-                    <button @click="showHelpUs = false">Meh 😤</button>
+                    <button @click="helpUs = false">Nope</button>
                 </div>
+            </alert>
+            <alert :visibility.sync="helpUs" :persistent="true">
+                Want to help keep Monimo alive?
+                <div slot="buttons" class="buttons">
+                    <button style="width: 80px;" @click="openHelpLink()">Sure 🙂</button>
+                    <button @click="helpUs = false">Nope</button>
+                </div>
+            </alert>
+            <alert :visibility="blocked_region" :persistent="false" :duration="80" type="alert">
+                Your region is blocked from the anime servers. Please try a VPN solution and set country as US/Europe until we fix this.
+                <div slot="buttons"></div>
             </alert>
         </div>
         <router-view :key="$route.fullPath"></router-view>
@@ -34,11 +45,9 @@ import store from './store';
 import { mapMutations, mapState } from 'vuex';
 import { Maximize2Icon, Minimize2Icon, XCircleIcon } from 'vue-feather-icons'
 import Alert from '@/components/alert';
-import { shell } from 'electron';
-
+import { shell, ipcRenderer } from 'electron';
 import VuexRouterSync from 'vuex-router-sync';
 VuexRouterSync.sync(store, router);
-
 export default {
     name: 'monimo',
     components: {
@@ -48,37 +57,60 @@ export default {
         Alert,
     },
     data: () => ({
-        showHelpUs: true,
+        update_available: false,
+        update_finished: false
     }),
     mounted() {
-        if (this.newVersionAvailable) {
-            this.SET_NOTIFICATION({ message: 'New version exists. Want to update ?', type: 'info', persist: true });
-        }
+        this.SET_NOTIFICATION({ message: null, type: null });
+    },
+    created() {
+        ipcRenderer.on('download-progress', (event, progressObj) => {
+            this.SET_DOWNLOADED_PERCENTAGE(progressObj.percent);
+        });
     },
     computed: {
         ...mapState({
             window_mode: state => state.window_mode,
             notification: state => state.notification,
+            downloaded_percentage: state => state.downloaded_percentage,
+            help_us: state => state.help_us,
+            blocked_region: state => state.blocked_region,
         }),
         notificationVisibility: {
             get() {
+                if (this.newVersionAvailable) this.SET_NOTIFICATION({ message: 'New version available. Want to update ?', type: 'info', persist: true })
                 return !!this.notification.message;
             },
             set(val) {
-                if (!val) this.SET_NOTIFICATION({ message: null, type: null });
+                if (!val) this.SET_NOTIFICATION({ message: null, type: null })
+                else this.updateApp();
             },
         },
         newVersionAvailable() {
-            return true; //@Shpetim must use this variable to display a popup
+            return this.downloaded_percentage === 100
+        },
+        helpUs: {
+            get() {
+                return this.help_us === null;
+            },
+            set(value) {
+                this.HELP_US(value);
+            }
         },
     },
     methods: {
-        ...mapMutations(['UPDATE_SEARCH_QUERY', 'SET_WINDOW_MODE', 'SET_NOTIFICATION']),
+        ...mapMutations(['UPDATE_SEARCH_QUERY', 'SET_WINDOW_MODE', 'SET_NOTIFICATION', 'SET_DOWNLOADED_PERCENTAGE', 'HELP_US']),
         getBack() {
             this.$router.go(-1);
         },
+        updateApp() {
+            this.SET_DOWNLOADED_PERCENTAGE(0)
+            this.SET_NOTIFICATION({ message: null, type: null })
+            ipcRenderer.send('installUpdate')
+        },
         openHelpLink() {
-            shell.openExternal('http://monimoapp.com/#help-us')
+            shell.openExternal('http://monimoapp.com/#help-us');
+            this.HELP_US(true);
         },
     },
     router,
