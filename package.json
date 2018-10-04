@@ -11,7 +11,7 @@
     "build:electron": "vue-cli-service build:electron",
     "serve:electron": "vue-cli-service serve:electron",
     "postinstall": "electron-builder install-app-deps",
-    "ship": "build -p always"
+    "publish": "vue-cli-service build:electron --win -p always"
   },
   "dependencies": {
     "axios": "^0.18.0",

@@ -45,7 +45,6 @@
                             <a>GITHUB</a>
                         </button>
                     </div>
-                    <span v-if="system === 'windows'" class="info">Latest version (v2) is not available yet for Windows. Please check again later today.</span>
                 </div>
                 <div class="the_pic">
                     <div class="imazhi"></div>
@@ -153,7 +152,7 @@ var app = new Vue({
             if (this.system === 'mac') {
                 return 'https://github.com/altinselimi/monimo/releases/download/v2/Monimo-0.2.0.dmg';
             }
-            return 'https://github.com/altinselimi/monimo/releases/download/1.0/Monimo.Setup.0.1.0.exe';
+            return 'https://github.com/altinselimi/monimo/releases/download/v2/Monimo.Setup.0.2.0.exe';
         },
     },
     methods: {
