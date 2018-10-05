@@ -2,7 +2,7 @@
     <div class="player" @mousemove="showUi">
         <div class="top-buttons" v-show="show_ui">
             <div class="buttons-left">
-                <button class="unstyled back-btn" @click="$router.go(-1)">
+                <button class="unstyled back-btn" @click="setWindowMode('normal'); $router.go(-1)">
                     <ArrowLeftIcon style="stroke: white;" />
                 </button>
                 <p v-if="animeDetails.info.episode_count > 1">{{`${animeDetails.info.title} - Episode ${episode_number}`}}</p>
@@ -41,6 +41,7 @@ import OptionPicker from '@/components/picker';
 import PlayerControls from '@/components/player-controls';
 import SubsIcon from '@/assets/sub-icon.vue';
 import videoInstance from '@/components/WebviewInstance.vue';
+import { isNull } from 'util';
 
 let global_timeout = null;
 
@@ -142,13 +143,27 @@ export default {
                 this.show_ui = false;
             }, 3000);
         },
-        setWindowMode(){
-            if(this.window_mode === 'normal'){
+        setWindowMode(mode){
+            //If a mode is not specified, change from full to normal or vice versa
+            console.log('Mode: ', mode);
+            if(mode === undefined){
+                if(this.window_mode === 'normal'){
                 this.SET_WINDOW_MODE('full');
                 document.body.requestFullscreen()
-            }else{
-                this.SET_WINDOW_MODE('normal');
-                document.exitFullscreen();
+                }else{
+                    this.SET_WINDOW_MODE('normal');
+                    document.exitFullscreen();
+                }
+            }
+            else {
+                if(mode === 'normal'){
+                    this.SET_WINDOW_MODE('normal');
+                    document.exitFullscreen();
+                }           
+                else if(mode === 'full'){
+                    this.SET_WINDOW_MODE('full');
+                    document.body.requestFullscreen();
+                }
             }
         },
         setAnimeCurrentTime(time) {
