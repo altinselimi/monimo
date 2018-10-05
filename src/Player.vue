@@ -2,7 +2,7 @@
     <div class="player" @mousemove="showUi">
         <div class="top-buttons" v-show="show_ui">
             <div class="buttons-left">
-                <button class="unstyled back-btn" @click="$router.go(-1)">
+                <button class="unstyled back-btn" @click="setWindowMode('normal'); $router.go(-1)">
                     <ArrowLeftIcon style="stroke: white;" />
                 </button>
                 <p v-if="animeDetails.info.episode_count > 1">{{`${animeDetails.info.title} - Episode ${episode_number}`}}</p>
@@ -170,13 +170,26 @@ export default {
                 this.show_ui = false;
             }, 3000);
         },
-        setWindowMode(){
-            if(this.window_mode === 'normal'){
+        setWindowMode(mode){
+            //If a mode is not specified, change from full to normal or vice versa
+            if(mode === undefined){
+                if(this.window_mode === 'normal'){
                 this.SET_WINDOW_MODE('full');
                 document.body.requestFullscreen()
-            }else{
-                this.SET_WINDOW_MODE('normal');
-                document.exitFullscreen();
+                }else{
+                    this.SET_WINDOW_MODE('normal');
+                    document.exitFullscreen();
+                }
+            }
+            else {
+                if(mode === 'normal'){
+                    this.SET_WINDOW_MODE('normal');
+                    document.exitFullscreen();
+                }           
+                else if(mode === 'full'){
+                    this.SET_WINDOW_MODE('full');
+                    document.body.requestFullscreen();
+                }
             }
         },
         setAnimeCurrentTime(time) {
