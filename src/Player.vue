@@ -41,7 +41,6 @@ import OptionPicker from '@/components/picker';
 import PlayerControls from '@/components/player-controls';
 import SubsIcon from '@/assets/sub-icon.vue';
 import videoInstance from '@/components/WebviewInstance.vue';
-import { isNull } from 'util';
 
 let global_timeout = null;
 
@@ -145,7 +144,6 @@ export default {
         },
         setWindowMode(mode){
             //If a mode is not specified, change from full to normal or vice versa
-            console.log('Mode: ', mode);
             if(mode === undefined){
                 if(this.window_mode === 'normal'){
                 this.SET_WINDOW_MODE('full');
