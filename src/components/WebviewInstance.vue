@@ -42,7 +42,7 @@ const video_player_style = `
 `;
 
 export default {
-    props: ['source', 'preferredQuality', 'episodeCurrentTime', 'loadingPlayer'],
+    props: ['source', 'preferredQuality', 'episodeCurrentTime', 'videoLength', 'loadingPlayer'],
     mounted() {
         console.log('Mounted!');
         webview = document.querySelector('webview');
@@ -104,8 +104,8 @@ export default {
                 let msg = message.split(",");
                 let current_time = Number(msg[0]);
                 let length = Number(msg[1]);
-                if (!this.video_length && !isNaN(length)) {
-                    this.video_length = length;
+                if (!isNaN(length) && this.videoLength !== length) {
+                    this.$emit('update:videoLength', length);
                 }
                 if (!isNaN(current_time) && current_time !== this.episodeCurrentTime) this.$emit('setCurrentTime', current_time); //the actual time that is emmited using console-message
             };

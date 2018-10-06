@@ -3,12 +3,12 @@
 		<headerr :is-home="true"></headerr>
 		<categories-section :categories="store_genres" @addCategory="addCategory"></categories-section>
 		<movie-carousel :showLoader="getting_anime_info" :movies="animes" :selected-genres="selected_genres_name" :title="'Trending'" @navigate="openAnime" :loading="getting_animes"></movie-carousel>
-		<movie-carousel :movies="currently_watching" title="Continue Watching" @navigate="openAnime" v-if="currently_watching.length"></movie-carousel>
+		<movie-carousel :movies="currently_watching" title="Continue Watching" @navigate="openAnime" v-if="currently_watching.length" @remove="removeFromCurrentlyWatching" :removable="true"></movie-carousel>
 		<div class="two-in-one">
 			<movie-carousel style="flex: 1;" :movies="last_releases" title="Fresh Off The Oven" @navigate="openAnime($event, false)"></movie-carousel>
 			<movie-carousel style="flex: 1;" :movies="staff_picks" title="Staff Picks" @navigate="openAnime"></movie-carousel>
 		</div>
-		<movie-carousel :movies="favorite_animes" title="Favorites" @navigate="openAnime" v-if="favorite_animes.length > 0"></movie-carousel>
+		<movie-carousel :movies="favorite_animes" title="Favorites" @navigate="openAnime" v-if="favorite_animes.length > 0" @remove="removeFromFavorites" :removable="true"></movie-carousel>
 		<doggo></doggo>
 	</div>
 </template>
@@ -61,7 +61,7 @@ export default {
 	}),
 	methods: {
 		...mapActions(['getAnimes', 'getAnimeDetails', 'getLastReleases']),
-		...mapMutations(['SET_CURRENT_ANIME', 'ADD_PREFERRED_GENRE', 'REMOVE_PREFERRED_GENRE', 'SET_NOTIFICATION']),
+		...mapMutations(['SET_CURRENT_ANIME', 'ADD_PREFERRED_GENRE', 'REMOVE_PREFERRED_GENRE', 'SET_NOTIFICATION', 'REMOVE_FROM_FAVORITES', 'REMOVE_FROM_WATCHING']),
 		loadAnimes() {
 			this.getting_animes = true;
 			this.getAnimes().then(res => {
@@ -109,7 +109,13 @@ export default {
 				this.selected_genre_names.push(genre.name);
 			}
 			this.loadAnimes();
-		}
+		},
+		removeFromFavorites(anime) {
+			this.REMOVE_FROM_FAVORITES(anime);
+		},
+		removeFromCurrentlyWatching(anime) {
+			this.REMOVE_FROM_WATCHING(anime);
+		},
 	},
 }
 </script>

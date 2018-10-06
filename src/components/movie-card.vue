@@ -1,15 +1,18 @@
 <template>
     <div class="movie-card" :class="{result: screen}">
         <div class="loader" v-if="showLoader">
-            <LoaderIcon/>
+            <LoaderIcon />
         </div>
         <div v-if="loading" class="loading"></div>
         <div class="contents" v-if="!loading">
             <div class="background">
                 <image-bypasser :source="movie.poster"></image-bypasser>
                 <div class="overlay">
+                    <button class="unstyled remove" v-if="removable" @click.stop="$emit('remove')">
+                        <remove-icon stroke-width="1" />
+                    </button>
                     <div class="score" v-if="movie.score">
-                        <StarIcon/>
+                        <StarIcon />
                         <span>{{movie.score}}</span>
                     </div>
                     <h4>{{movie.title.slice(0,22)}}</h4>
@@ -19,27 +22,33 @@
     </div>
 </template>
 <script>
-import { LoaderIcon, StarIcon } from 'vue-feather-icons'
+import { LoaderIcon, StarIcon, RemoveIcon, XCircleIcon } from 'vue-feather-icons'
 import ImageBypasser from './image';
 
 export default {
-    props: ['movie', 'loading', 'showLoader', 'screen'],
+    props: ['movie', 'loading', 'showLoader', 'screen', 'removable'],
     components: {
         LoaderIcon,
         StarIcon,
         ImageBypasser,
+        RemoveIcon: XCircleIcon,
     }
 }
 </script>
 <style lang="scss">
 $yellow: #fbbd08;
-
+.unstyled {
+    border: none;
+    background: none;
+    font-size: 1rem;
+    outline: none;
+}
 .movie-card {
     --width: 350px;
     --height: 496px;
     position: relative;
-    width: calc( var(--width) - 100px);
-    height: calc( var(--height) - 100px);
+    width: calc(var(--width) - 100px);
+    height: calc(var(--height) - 100px);
     max-width: var(--width);
     max-height: var(--height);
     display: flex;
@@ -47,6 +56,7 @@ $yellow: #fbbd08;
     border-radius: 25px;
     overflow: hidden;
     margin: 15px;
+
     .loader {
         position: absolute;
         z-index: 1;
@@ -59,21 +69,25 @@ $yellow: #fbbd08;
         justify-content: center;
         align-items: center;
         overflow: hidden;
+
         svg {
             stroke: white;
             animation: spin 1s linear infinite;
         }
     }
+
     .contents {
         display: flex;
         flex-direction: column;
         width: 100%;
     }
+
     .background {
         display: flex;
         justify-content: center;
         align-items: center;
         position: relative;
+
         img {
             /*             height: auto;
             width: 100%; */
@@ -81,6 +95,21 @@ $yellow: #fbbd08;
             object-position: center center;
         }
     }
+
+    .remove {
+        position: absolute;
+        right: 8px;
+        top: 8px;
+        opacity: 0;
+        will-change: opacity;
+        svg {
+            fill: rgba(red, .4);
+            stroke: white;
+            width: 25px;
+            height: 25px;
+        }
+    }
+
     .score {
         position: absolute;
         bottom: 48px;
@@ -92,6 +121,7 @@ $yellow: #fbbd08;
         font-size: .75rem;
         background-color: rgba(black, .8);
         color: white;
+
         svg {
             fill: $yellow;
             stroke: transparent;
@@ -100,6 +130,7 @@ $yellow: #fbbd08;
             margin-right: 3px;
         }
     }
+
     h4 {
         margin: 0px;
         padding: 10px 13px;
@@ -117,6 +148,12 @@ $yellow: #fbbd08;
         width: 100%;
         background-color: rgba(white, 1);
     }
+
+    &:hover {
+        .remove {
+            opacity: 1;
+        }
+    }
 }
 
 .result {
@@ -126,7 +163,7 @@ $yellow: #fbbd08;
 @keyframes loading {
     to {
         background-position: 350% 0,
-        0 0;
+            0 0;
     }
 }
 
@@ -134,6 +171,7 @@ $yellow: #fbbd08;
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }

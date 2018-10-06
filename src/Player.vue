@@ -18,19 +18,27 @@
                 <option-picker class="type-picker" :left="true" :model.sync="requested_quality" :options="[{label: 'Low', value: 480}, {label: 'Medium', value: 720}, {label: 'High', value: 1080}]">
                     <droplet-icon slot="activator" style="fill: white;"></droplet-icon>
                 </option-picker>
-                <button @click="setWindowMode()" class="unstyled" v-if="window_mode === 'normal'"><maximize style="stroke: white" /></button>
-                <button @click="setWindowMode()" class="unstyled" v-else><minimize style="stroke: white"/></button>
+                <button @click="setWindowMode()" class="unstyled" v-if="window_mode === 'normal'">
+                    <maximize style="stroke: white" /></button>
+                <button @click="setWindowMode()" class="unstyled" v-else>
+                    <minimize style="stroke: white" /></button>
             </div>
         </div>
         <div class="loader" v-if="failed_links.includes(videoLink)">
-            <triangle-icon style="stroke: red; animation: none; width: 40px; height: 40px;"/>
+            <triangle-icon style="stroke: red; animation: none; width: 40px; height: 40px;" />
             <span>We are sorry, this link does not seem to be working 😔.</span>
         </div>
         <div class="loader" v-if="loading_player">
-            <LoaderIcon/>
+            <LoaderIcon />
             <span>Go grab the 🍿, this might take a while.</span>
         </div>
-        <video-instance class="vid-instance" :key="videoLink" :loading-player.sync="loading_player" :episode-current-time="episodeCurrentTime" :preferred-quality="requested_quality" :source="videoLink" style="width:100%; height:100%;" @updateAnime="updateAnime(episode_number)" @addToWatching="ADD_TO_WATCHING(animeDetails)" @windowModeChange="SET_WINDOW_MODE" @setCurrentTime="setAnimeCurrentTime" @failed="linkFailed(videoLink)"></video-instance>
+        <video-instance class="vid-instance" :key="videoLink" :loading-player.sync="loading_player" :episode-current-time="episodeCurrentTime" :preferred-quality="requested_quality" :source="videoLink" :video-length.sync="video_length" style="width:100%; height:100%;" @updateAnime="updateAnime(episode_number)" @addToWatching="ADD_TO_WATCHING(animeDetails)" @windowModeChange="SET_WINDOW_MODE" @setCurrentTime="setAnimeCurrentTime" @failed="linkFailed(videoLink)"></video-instance>
+        <button class="unstyled play-next" v-show="!isEpisodeNear && show_ui && nextEpisodeExists">
+            <play-icon style="stroke-width: 1px; margin-right: 10px;" /> Play next episode</button>
+        <rectangular-progress v-show="isEpisodeNear" v-if="nextEpisodeExists" :progress-value="progressValue" class="nexting" :stroke-width="5" :width="320" :height="40" style="cursor: pointer;" @click.native="navigateToEpisode(anime_id, episode_number)">
+            <play-icon style="stroke-width: 1px; margin-right: 10px;" />
+            Next episode playing in <span style="color: red; margin-left: 5px;">{{countdown}} seconds</span>
+        </rectangular-progress>
         <!--         <webview v-for="(video, index) in video_links" :key="index" :id="`candidate-${index + 1}`" :src="video.link" style="width:100%;height:100%"></webview>
  -->
         <!-- <player-controls :class="{'is-near-end': isEpisodeNear, 'show-ui': show_ui}" @next="navigateToEpisode(anime_id, episode_number)" @pause="pauseVideo()" @backwards="videos(15)"></player-controls> -->
@@ -43,9 +51,10 @@ import {
     mapActions,
     mapGetters
 } from 'vuex';
-import { LoaderIcon, ArrowLeftIcon, DropletIcon, Maximize2Icon, Minimize2Icon, LinkIcon, AlertTriangleIcon } from 'vue-feather-icons'
+import { LoaderIcon, ArrowLeftIcon, DropletIcon, Maximize2Icon, Minimize2Icon, LinkIcon, AlertTriangleIcon, PlayCircleIcon } from 'vue-feather-icons'
 import OptionPicker from '@/components/picker';
 import PlayerControls from '@/components/player-controls';
+import RectangularProgress from '@/components/progress-buttons/rectangular.vue';
 import SubsIcon from '@/assets/sub-icon.vue';
 import videoInstance from '@/components/WebviewInstance.vue';
 
@@ -66,6 +75,8 @@ export default {
         PlayerControls,
         videoInstance,
         LinkIcon,
+        RectangularProgress,
+        PlayIcon: PlayCircleIcon,
     },
     data: () => ({
         show_ui: false,
@@ -122,10 +133,15 @@ export default {
             return parseInt(100 - (100 * this.countdown / 60));
         },
         linkOptions() {
-            return this.video_links ? this.video_links.reduce((b, a) => {
-                b.push({...a, ['label']: a.name, ['value']: a.link});
+            let links = this.video_links.slice(0);
+            if (links.length === 0) {
+                links.push({ link: 'unavailable', name: 'Unavailable' });
+                this.failed_links.push('unavailable');
+            }
+            return links && links.reduce((b, a) => {
+                b.push({ ...a, ['label']: a.name, ['value']: a.link });
                 return b;
-            }, []) : [];
+            }, []);
         },
         videoLink: {
             get() {
@@ -138,7 +154,7 @@ export default {
             },
         },
         animeTypes() {
-            let options = [{label: 'Subbed', value: 0, field: 'subs'}, {label: 'Dubbed', value: 1, field:'dubs'}];
+            let options = [{ label: 'Subbed', value: 0, field: 'subs' }, { label: 'Dubbed', value: 1, field: 'dubs' }];
             return options.filter(option => this.current_anime_video_links[option.field].length > 0);
         },
         anime_type: {
@@ -170,17 +186,17 @@ export default {
                 this.show_ui = false;
             }, 3000);
         },
-        setWindowMode(){
-            if(this.window_mode === 'normal'){
+        setWindowMode() {
+            if (this.window_mode === 'normal') {
                 this.SET_WINDOW_MODE('full');
                 document.body.requestFullscreen()
-            }else{
+            } else {
                 this.SET_WINDOW_MODE('normal');
                 document.exitFullscreen();
             }
         },
         setAnimeCurrentTime(time) {
-            if(this.current_time === time) return;
+            if (this.current_time === time) return;
             this.current_time = time;
             if (this.isEpisodeNear) {
                 this.updateAnime(this.episode_number, true);
@@ -191,7 +207,10 @@ export default {
                     episode: this.episode_number,
                     time: 0 //reset time so next time user is here, they start from beginning
                 });
-                if (seconds_left <= 0) this.navigateToEpisode(this.anime_id, this.episode_number);
+                if (seconds_left <= 0) {
+                    console.log('Playing next');
+                    this.navigateToEpisode(this.anime_id, this.episode_number);
+                }
             } else {
                 this.SET_CURRENT_TIME({
                     anime: this.anime_id,
@@ -201,19 +220,16 @@ export default {
             }
         },
         navigateToEpisode(anime_id, episode_number, forwards = true) {
-            if (this.animes_w_details[anime_id].episodes[episode_number]) {
-                let next_episode_index = parseInt(episode_number + 1) // + (forwards ? 1 : -1);
+            if (this.nextEpisodeExists) {
+                let next_episode_index = parseInt(episode_number) + 1 // + (forwards ? 1 : -1);
+                console.log('Next episode exists', next_episode_index);
                 this.getVideoLinks({
                     slug: this.anime_slug,
                     episode: next_episode_index,
                 }).then(result => {
-                    this.SET_CURRENT_TIME({
-                        anime: this.anime_id,
-                        episode: this.episode_number,
-                        time: 0 //reset time so next time user is here, they start from beginning
-                    });
                     this.SET_CURRENT_VIDEO_LINKS(result);
-                    let router_link = `/anime/${anime_id}/watch/${next_episode_index}`;
+                    let router_link = `/anime/${anime_id}/${this.anime_slug}/watch/${next_episode_index}`;
+                    console.log('router link', router_link);
                     this.$router.replace({ path: router_link });
                 }).catch(err => {
                     this.$router.go(-1);
@@ -250,6 +266,7 @@ button.unstyled {
     width: 100%;
     height: 100%;
     overflow-y: hidden;
+
     .top-buttons {
         position: absolute;
         display: flex;
@@ -260,13 +277,16 @@ button.unstyled {
         padding: 40px 25px;
         width: 100%;
         z-index: 2;
+
         >div {
             display: flex;
             align-items: center;
         }
+
         button:not(:last-child) {
             margin-right: 10px;
         }
+
         .buttons-right {
             margin-left: auto;
         }
@@ -283,10 +303,37 @@ button.unstyled {
             margin: 0px;
         }
     }
+
+    .nexting {
+        position: fixed;
+        bottom: 50px;
+        right: 20px;
+
+        .progress-btn-content {
+            background-color: rgba(black, .8);
+            backdrop-filter: blur(10px);
+            color: white;
+        }
+    }
+
+    .play-next {
+        position: fixed;
+        padding: 10px;
+        bottom: 50px;
+        right: 20px;
+        display: flex;
+        align-items: center;
+        font-size: 1rem;
+        background-color: rgba(black, .8);
+        backdrop-filter: blur(10px);
+        border: solid 1px rgba(white, .3);
+        color: white;
+        cursor: pointer;
+    }
 }
 
 webview {
-    padding-top: 0px!important;
+    padding-top: 0px !important;
     width: 100%;
     height: 100%;
     border: none;
@@ -306,8 +353,9 @@ webview {
     &.show-ui {
         opacity: 1;
     }
+
     &.is-near-end {
-        opacity: 1!important;
+        opacity: 1 !important;
     }
 }
 
@@ -325,10 +373,12 @@ webview {
     overflow: hidden;
     flex-direction: column;
     color: white;
+
     span {
         margin-top: 10px;
         opacity: .8;
     }
+
     svg {
         stroke: white;
         animation: spin 1s linear infinite;
@@ -343,9 +393,9 @@ svg {
     0% {
         transform: rotate(0deg);
     }
+
     100% {
         transform: rotate(360deg);
     }
 }
-
 </style>

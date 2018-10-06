@@ -8,7 +8,7 @@
         <ul class="movie-carousel" :class="isResult?'result':'normal'" v-if="movies">
             <li v-for="movie in movies" v-if="movie">
                 <a tabindex="0">
-                    <movie-card :movie="movie" @click.native="$emit('navigate', movie)" :showLoader="movie.id === showLoader" :loading="loading" :screen="isResult">
+                    <movie-card :removable="removable" :movie="movie" @remove="$emit('remove', movie)" @click.native="$emit('navigate', movie)" :showLoader="movie.id === showLoader" :loading="loading" :screen="isResult">
                     </movie-card>
                 </a>
             </li>
@@ -20,7 +20,7 @@
 </template>
 <script>
 export default {
-    props: ['movies', 'loading', 'title', 'showLoader', 'selectedGenres', 'isResult'],
+    props: ['movies', 'loading', 'title', 'showLoader', 'selectedGenres', 'isResult', 'removable'],
     components: {
         movieCard: () =>
             import ('./movie-card.vue'),

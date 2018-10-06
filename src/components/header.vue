@@ -7,7 +7,9 @@
             <div class="logo-wrap">
                 <a tabindex="0" @click="$router.push('/home')" class="logo">
                     <span style="font-size:80%; align-self: flex-end;">🦉</span>
-                    <span>MONIMO</span>
+                    <span style="position: relative;">MONIMO
+                      <span class="version">v0.1.2</span>
+                    </span>
                     <!-- <span class="sublogo">your anime best fren</span> -->
                 </a>
             </div>
@@ -116,6 +118,13 @@ header {
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+  .version {
+    color: red;
+    font-size: 10px;
+    position: absolute;
+    top: 0;
+    left: 100%;
   }
   form {
     display: flex;
