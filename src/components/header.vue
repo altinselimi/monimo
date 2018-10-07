@@ -56,7 +56,7 @@ export default {
             },
         },
         version(){
-            return remote.app.getVersion()
+            return remote.app.getVersion();//just adding this line to check if update is working
         },
         isElectron() {
             return true; //navigator.userAgent.toLowerCase().indexOf('electron/') > -1;
