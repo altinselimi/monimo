@@ -33,7 +33,7 @@
             <span>Go grab the 🍿, this might take a while.</span>
         </div>
         <video-instance class="vid-instance" :key="videoLink" :loading-player.sync="loading_player" :episode-current-time="episodeCurrentTime" :preferred-quality="requested_quality" :source="videoLink" :video-length.sync="video_length" style="width:100%; height:100%;" @updateAnime="updateAnime(episode_number)" @addToWatching="ADD_TO_WATCHING(animeDetails)" @windowModeChange="SET_WINDOW_MODE" @setCurrentTime="setAnimeCurrentTime" @failed="linkFailed(videoLink)"></video-instance>
-        <button class="unstyled play-next" v-show="!isEpisodeNear && show_ui && nextEpisodeExists">
+        <button class="unstyled play-next" v-show="!isEpisodeNear && show_ui && nextEpisodeExists" @click="navigateToEpisode(anime_id, episode_number)">
             <play-icon style="stroke-width: 1px; margin-right: 10px;" /> Play next episode</button>
         <rectangular-progress v-show="isEpisodeNear" v-if="nextEpisodeExists" :progress-value="progressValue" class="nexting" :stroke-width="5" :width="320" :height="40" style="cursor: pointer;" @click.native="navigateToEpisode(anime_id, episode_number)">
             <play-icon style="stroke-width: 1px; margin-right: 10px;" />
