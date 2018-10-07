@@ -8,7 +8,7 @@
                 <a tabindex="0" @click="$router.push('/home')" class="logo">
                     <span style="font-size:80%; align-self: flex-end;">🦉</span>
                     <span style="position: relative;">MONIMO
-                      <span class="version">v0.1.2</span>
+                      <span class="version">{{ version }}</span>
                     </span>
                     <!-- <span class="sublogo">your anime best fren</span> -->
                 </a>
@@ -36,6 +36,7 @@ import {
 } from 'vuex';
 import { SearchIcon,ArrowLeftIcon } from 'vue-feather-icons'
 import progressBar from './progress-bar'
+import { remote } from 'electron'
 let timeouts = 0;
 let timeout;
 export default {
@@ -53,6 +54,9 @@ export default {
             set(value) {
                 this.UPDATE_SEARCH_QUERY(value);
             },
+        },
+        version(){
+            return remote.app.getVersion()
         },
         isElectron() {
             return true; //navigator.userAgent.toLowerCase().indexOf('electron/') > -1;

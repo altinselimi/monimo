@@ -62,7 +62,9 @@ function createMainWindow() {
 
   return window
 }
-
+function sendStatusToWindow(channel, text) {
+  mainWindow.webContents.send(channel, text);
+}
 // quit application when all windows are closed
 app.on('window-all-closed', () => {
   // on macOS it is common for applications to stay open until the user explicitly quits
@@ -84,8 +86,8 @@ app.on('ready', async() => {
     // Install Vue Devtools
     await installVueDevtools()
   }
-  autoUpdater.checkForUpdatesAndNotify();
-  mainWindow = createMainWindow()
+  mainWindow = createMainWindow();
+  autoUpdater.checkForUpdatesAndNotify()
 })
 // autoUpdater.on('checking-for-update', () => {
 //   sendStatusToWindow('Checking for update...');
