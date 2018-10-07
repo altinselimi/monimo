@@ -187,9 +187,22 @@ export default new Vuex.Store({
                 api_module.animeDetails({ anime_id: anime_id }).then(res => {
                     console.log('anime details:', res);
                     res.poster = `https://cdn.masterani.me/poster/1/${res.poster}`;
-                    res.episodes.forEach(episode => {
-                        episode.current_time = null
-                    });
+                    let existing_record = state.animes_w_details[res.info.id];
+                    if (!existing_record) {
+                        res.episodes.forEach(episode => {
+                            episode.current_time = null
+                        });
+                    } else {
+                        console.log('existing_record', existing_record);
+                        res.episodes.forEach((episode, index) => {
+                            if(!existing_record.episodes[index]) {
+                                episode.current_time = null;
+                            } else {
+                                episode.current_time = existing_record.episodes[index].current_time;
+                            }
+                        });
+                    }
+
                     commit('ADD_ANIME_DETAILS', { id: anime_id, data: res });
                     commit('SET_CURRENT_ANIME', res);
                     resolve(res);

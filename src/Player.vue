@@ -24,11 +24,11 @@
                     <minimize style="stroke: white" /></button>
             </div>
         </div>
-        <div class="loader" v-if="failed_links.includes(videoLink)">
+        <div class="loader" v-if="failed">
             <triangle-icon style="stroke: red; animation: none; width: 40px; height: 40px;" />
-            <span>We are sorry, this link does not seem to be working 😔.</span>
+            <span style="max-width:410px;">We are sorry, this link does not seem to be working 😔. Please try another link, or the dubbed/subbed version of this anime.</span>
         </div>
-        <div class="loader" v-if="loading_player">
+        <div class="loader" v-else-if="loading_player">
             <LoaderIcon />
             <span>Go grab the 🍿, this might take a while.</span>
         </div>
@@ -174,6 +174,9 @@ export default {
                 this.SET_PREFERRED_QUALITY(value);
                 location.reload();
             },
+        },
+        failed() {
+            return this.failed_links.includes(this.videoLink) || this.video_links.length === 0;
         },
     },
     methods: {

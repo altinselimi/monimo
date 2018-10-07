@@ -13,15 +13,8 @@
             <alert :visibility.sync="notificationVisibility" :persistent="notification.persist" type="alert">
                 {{notification.message}}
                 <div slot="buttons" class="buttons">
-                    <button style="width: 80px;">Now</button>
+                    <button style="width: 80px;" @click="updateApp()">Now</button>
                     <button @click="notificationVisibility = false">Later</button>
-                </div>
-            </alert>
-            <alert :visibility.sync="helpUs" :persistent="true">
-                Want to help keep Monimo alive?
-                <div slot="buttons" class="buttons">
-                    <button style="width: 80px;" @click="openHelpLink()">Sure 🙂</button>
-                    <button @click="helpUs = false">Nope</button>
                 </div>
             </alert>
             <alert :visibility.sync="helpUs" :persistent="true">
@@ -78,12 +71,10 @@ export default {
         }),
         notificationVisibility: {
             get() {
-                if (this.newVersionAvailable) this.SET_NOTIFICATION({ message: 'New version available. Want to update ?', type: 'info', persist: true })
                 return !!this.notification.message;
             },
             set(val) {
                 if (!val) this.SET_NOTIFICATION({ message: null, type: null })
-                else this.updateApp();
             },
         },
         newVersionAvailable() {
@@ -104,13 +95,18 @@ export default {
             this.$router.go(-1);
         },
         updateApp() {
-            this.SET_DOWNLOADED_PERCENTAGE(0)
-            this.SET_NOTIFICATION({ message: null, type: null })
-            ipcRenderer.send('installUpdate')
+            this.SET_DOWNLOADED_PERCENTAGE(0);
+            this.notificationVisibility = false;
+            ipcRenderer.send('installUpdate');
         },
         openHelpLink() {
             shell.openExternal('http://monimoapp.com/#help-us');
-            this.HELP_US(true);
+            this.helpUs = true;
+        },
+    },
+    watch: {
+        newVersionAvailable(value) {
+            if(value) this.SET_NOTIFICATION({ message: 'New version available. Want to update ?', type: 'info', persist: true });
         },
     },
     router,
