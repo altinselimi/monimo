@@ -2,7 +2,7 @@
   "name": "monimo",
   "author": "Monimo",
   "description": "First class experience for watching animes.",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "private": false,
   "scripts": {
     "serve": "vue-cli-service serve ",
@@ -11,7 +11,7 @@
     "build:electron": "vue-cli-service build:electron",
     "serve:electron": "vue-cli-service serve:electron",
     "postinstall": "electron-builder install-app-deps",
-    "publish": "vue-cli-service build:electron --win -p always"
+    "publish": "vue-cli-service build:electron --mac -p always"
   },
   "dependencies": {
     "axios": "^0.18.0",
