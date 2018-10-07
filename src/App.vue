@@ -241,4 +241,7 @@ html {
     background: rgba(0, 0, 0, 0.61);
     -webkit-border-radius: 100px;
 }
+:-webkit-full-screen {
+  overflow: auto;
+}
 </style>
