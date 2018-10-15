@@ -2,6 +2,7 @@
 
 import { app, protocol, BrowserWindow, screen, ipcMain } from 'electron'
 import { autoUpdater } from 'electron-updater'
+import windowStateKeeper from 'electron-window-state'
 import * as path from 'path'
 import { format as formatUrl } from 'url'
 import { createProtocol, installVueDevtools } from 'vue-cli-plugin-electron-builder/lib'
@@ -19,6 +20,13 @@ protocol.registerStandardSchemes(['app'], { secure: true })
 
 function createMainWindow() {
   const { width, height } = screen.getPrimaryDisplay().workAreaSize;
+
+  // Default window state
+  let mainWindowState = windowStateKeeper({
+    defaultWidth: width,
+    defaultHeight: height
+  });
+
   const window = new BrowserWindow({
     fullscreenable: true,
     titleBarStyle: 'hiddenInset',
@@ -28,9 +36,15 @@ function createMainWindow() {
       webSecurity: false
     },
     backgroundColor: '#353535',
-    width,
-    height,
+    x: mainWindowState.x,
+    y: mainWindowState.y,
+    width: mainWindowState.width,
+    height: mainWindowState.height
   });
+
+  // Start listening to window changes 
+  mainWindowState.manage(window);
+
   //window.webContents.openDevTools();
   if (isDevelopment) {
     // Load the url of the dev server if in development mode
