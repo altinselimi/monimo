@@ -52,7 +52,7 @@ export default {
         Alert,
     },
     data: () => ({
-        update_available: true,
+        update_available: false,
         update_finished: false
     }),
     mounted() {
