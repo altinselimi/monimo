@@ -92,9 +92,9 @@ app.on('ready', async() => {
 // autoUpdater.on('checking-for-update', () => {
 //   sendStatusToWindow('Checking for update...');
 // });
-// autoUpdater.on('update-available', info => {
-//   sendStatusToWindow('Update available.');
-// });
+autoUpdater.on('update-available', info => {
+  sendStatusToWindow('update-available', true);
+});
 // autoUpdater.on('update-not-available', info => {
 //   sendStatusToWindow('Update not available.');
 // });
