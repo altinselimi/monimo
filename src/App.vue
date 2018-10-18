@@ -29,7 +29,9 @@
                 <div slot="buttons"></div>
             </alert>
         </div>
-        <router-view :key="$route.fullPath"></router-view>
+        <transition name="fade" mode="out-in">
+            <router-view :key="$route.fullPath"></router-view>
+        </transition>
     </div>
 </template>
 <script>
@@ -133,6 +135,14 @@ export default {
         height: 25px;
         -webkit-app-region: drag;
     }
+}
+
+.fade-enter-active, .fade-leave-active {
+    transition: opacity .3s
+}
+
+.fade-enter, .fade-leave-to {
+    opacity: 0
 }
 
 a {
