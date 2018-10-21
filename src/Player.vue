@@ -1,8 +1,8 @@
 <template>
-    <div class="player" @mousemove="showUi">
+    <div class="player" @mousemove="showUi" @keydown.space="pauseVideo()" @keydown.delete="goToProfile()">
         <div class="top-buttons" v-show="show_ui">
             <div class="buttons-left">
-                <button class="unstyled back-btn" @click="$router.go(-1)">
+                <button class="unstyled back-btn" @click="goToProfile()">
                     <ArrowLeftIcon style="stroke: white;" />
                 </button>
                 <p v-if="animeDetails.info.episode_count > 1">{{`${animeDetails.info.title} - Episode ${episode_number}`}}</p>
@@ -98,7 +98,7 @@ export default {
                 this.SET_CURRENT_VIDEO_LINKS(result);
             }).catch(err => {
                 console.log('error');
-                //this.$router.go(-1);
+                //this.goToProfile();
             });
         }
     },
@@ -235,13 +235,13 @@ export default {
                     console.log('router link', router_link);
                     this.$router.replace({ path: router_link });
                 }).catch(err => {
-                    this.$router.go(-1);
+                    this.goToProfile();
                 });
             } else {
                 if (this.animeDetails.info.status > 0) { // if anime is still ongoing
                     this.updateAnime(episode_number, true); // set expecting_next to true
                 }
-                this.$router.go(-1);
+                this.goToProfile();
             }
         },
         updateAnime(episode_number, expecting_next) {
@@ -252,6 +252,17 @@ export default {
         },
         linkFailed(link) {
             this.failed_links.push(link);
+        },
+        goToProfile() {
+            this.$router.replace(`/anime/${this.anime_id}`);
+        },
+        pauseVideo() {
+            console.log('tryna pause');
+            let webview = document.querySelector('webview'); //we still need acces to webview from here afterall :(
+            webview.executeJavaScript(`
+                var real_video = document.querySelector("#the-real-video");
+                real_video.paused ? real_video.play() : real_video.pause();
+                    `);
         },
     },
     beforeDestroy() {

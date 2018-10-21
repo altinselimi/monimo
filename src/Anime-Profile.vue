@@ -296,7 +296,7 @@ export default {
         padding: 20px;
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: flex-start;
         flex: 2;
         flex-shrink: 0;
     }

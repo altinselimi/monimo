@@ -1,5 +1,5 @@
 <template>
-    <header>
+    <header class="monimo-header">
         <nav>
             <div style="cursor: pointer;" @click="$router.go(-1)" v-if="!isHome">
                 <ArrowLeftIcon/>
@@ -102,7 +102,7 @@ export default {
 }
 </script>
 <style lang="scss">
-header {
+header.monimo-header {
   //-webkit-user-select: none;
   // -webkit-app-region: drag;
   backdrop-filter: blur(21px);

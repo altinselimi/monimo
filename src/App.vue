@@ -14,7 +14,7 @@
                 {{notification.message}}
                 <div slot="buttons" class="buttons">
                     <button style="width: 80px;" @click="updateApp()">Now</button>
-                    <button @click="notificationVisibility = false, update_available = false">Later</button>
+                    <button @click="maybeLater()">Later</button>
                 </div>
             </alert>
             <alert :visibility.sync="helpUs" :persistent="true">
@@ -59,15 +59,15 @@ export default {
         this.SET_NOTIFICATION({ message: null, type: null });
     },
     created() {
-        if (this.system() === 'mac') {
-        ipcRenderer.on('update-available', (e, response) => {
-            this.SET_NOTIFICATION({ message: 'New version available. Want to update ?', type: 'info', persist: true });
-            this.update_available = response;
-        });
+        if (this.system === 'mac') {
+            ipcRenderer.on('update-available', (e, response) => {
+                this.SET_NOTIFICATION({ message: 'New version available. Want to update ?', type: 'info', persist: true });
+                this.update_available = response;
+            });
         } else {
-        ipcRenderer.on('download-progress', (event, progressObj) => {
-            this.SET_DOWNLOADED_PERCENTAGE(progressObj.percent);
-        });
+            ipcRenderer.on('download-progress', (event, progressObj) => {
+                this.SET_DOWNLOADED_PERCENTAGE(progressObj.percent);
+            });
         }
     },
     computed: {
@@ -80,11 +80,15 @@ export default {
         }),
         notificationVisibility: {
             get() {
-                return !!this.notification.message || this.update_available;
+                return !!this.notification.message;
             },
             set(val) {
                 if (!val) this.SET_NOTIFICATION({ message: null, type: null })
             },
+        },
+        system() {
+            if (navigator.platform.indexOf('Mac') > -1) return 'mac';
+            return 'windows';
         },
         newVersionAvailable() {
             return this.downloaded_percentage === 100
@@ -103,18 +107,18 @@ export default {
         getBack() {
             this.$router.go(-1);
         },
-        system() {
-            if (navigator.platform.indexOf('Mac') > -1) return 'mac';
-            return 'windows';
-        },
         updateApp() {
             this.SET_DOWNLOADED_PERCENTAGE(0);
             this.notificationVisibility = false;
-            if (this.system() === 'mac') {
+            if (this.system === 'mac') {
                 shell.openExternal('http://monimoapp.com/');
             } else {
                 ipcRenderer.send('installUpdate');
             }
+        },
+        maybeLater() {
+            this.notificationVisibility = false;
+            this.update_available = false;
         },
         openHelpLink() {
             shell.openExternal('http://monimoapp.com/#help-us');
@@ -123,7 +127,7 @@ export default {
     },
     watch: {
         newVersionAvailable(value) {
-            if(value) this.SET_NOTIFICATION({ message: 'New version available. Want to update ?', type: 'info', persist: true });
+            if (value) this.SET_NOTIFICATION({ message: 'New version available. Want to update ?', type: 'info', persist: true });
         },
     },
     router,
@@ -152,11 +156,13 @@ export default {
     }
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
     transition: opacity .3s
 }
 
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
     opacity: 0
 }
 
@@ -262,7 +268,8 @@ html {
     background: rgba(0, 0, 0, 0.61);
     -webkit-border-radius: 100px;
 }
+
 :-webkit-full-screen {
-  overflow: auto;
+    overflow: auto;
 }
 </style>

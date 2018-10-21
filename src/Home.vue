@@ -1,14 +1,15 @@
 <template>
 	<div class="home">
+		<div class="home-background" :style="`background-image: url('${random_wallpaper}')`"></div>
 		<headerr :is-home="true"></headerr>
 		<categories-section :categories="store_genres" @addCategory="addCategory"></categories-section>
-		<movie-carousel :showLoader="getting_anime_info" :movies="animes" :selected-genres="selected_genres_name" :title="'Trending'" @navigate="openAnime" :loading="getting_animes"></movie-carousel>
-		<movie-carousel :movies="currently_watching" title="Continue Watching" @navigate="openAnime" v-if="currently_watching.length" @remove="removeFromCurrentlyWatching" :removable="true"></movie-carousel>
-		<div class="two-in-one">
-			<movie-carousel style="flex: 1;" :movies="last_releases" title="Fresh Off The Oven" @navigate="openAnime($event, false)"></movie-carousel>
-			<movie-carousel style="flex: 1;" :movies="staff_picks" title="Staff Picks" @navigate="openAnime"></movie-carousel>
+		<div class="movie-carousels">
+			<movie-carousel @changeOrder="SET_SECTION_ORDER" :section-order="sections_order['trending']" :showLoader="getting_anime_info" :movies="animes" :selected-genres="selected_genres_name" :title="'Trending'" @navigate="openAnime" :loading="getting_animes"></movie-carousel>
+			<movie-carousel @changeOrder="SET_SECTION_ORDER" :section-order="sections_order['continue']" :movies="currently_watching" title="Continue Watching" @navigate="openAnime" message="You'll find here animes you are currently watching" :will-appear="!currently_watching" @remove="removeFromCurrentlyWatching" :removable="true"></movie-carousel>
+			<movie-carousel @changeOrder="SET_SECTION_ORDER" :section-order="sections_order['fresh']" :movies="last_releases" title="Fresh Off The Oven" @navigate="openAnime($event, false)"></movie-carousel>
+			<movie-carousel @changeOrder="SET_SECTION_ORDER" :section-order="sections_order['staff']" :movies="staff_picks" title="Staff Picks" @navigate="openAnime"></movie-carousel>
+			<movie-carousel @changeOrder="SET_SECTION_ORDER" :section-order="sections_order['favorites']" :movies="favorite_animes" title="Favorites" @navigate="openAnime" message="This is a sacred place for only your most favorite ones!" :will-appear="!favorite_animes" @remove="removeFromFavorites" :removable="true"></movie-carousel>
 		</div>
-		<movie-carousel :movies="favorite_animes" title="Favorites" @navigate="openAnime" v-if="favorite_animes.length > 0" @remove="removeFromFavorites" :removable="true"></movie-carousel>
 		<doggo></doggo>
 	</div>
 </template>
@@ -36,7 +37,7 @@ export default {
 		this.loadLastReleases();
 	},
 	computed: {
-		...mapGetters(['filtered_animes', 'favorite_animes', 'currently_watching']),
+		...mapGetters(['filtered_animes', 'favorite_animes', 'currently_watching', 'sections_order']),
 		...mapState({
 			animes: state => state.animes,
 			last_releases: state => state.last_releases,
@@ -51,17 +52,21 @@ export default {
 		selected_genres_name() {
 			return this.store_genres.filter(genre => genre.selected).map(genre => genre.name);
 		},
+		random_wallpaper() {
+			return './wallpapers/' + this.wallpapers[Math.floor(Math.random() * this.wallpapers.length)];
+		},
 	},
 	data: () => ({
 		getting_anime_info: null,
+		wallpapers: ['doggo.jpg', 'boygirl.jpg', 'sunset.png'],
 		getting_last_releases: false,
 		getting_animes: false,
-		genres: [{ "name": "action", "id": 57 }, { "name": "adventure", "id": 58 }, { "name": "drama", "id": 60 }, { "name": "fantasy", "id": 77 }, { "name": "horror", "id": 71 }, { "name": "kids", "id": 95 }, { "name": "mystery", "id": 63 }, { "name": "psychological", "id": 73 }, { "name": "romance", "id": 67 }, { "name": "school", "id": 78 }, { "name": "sci-fi", "id": 61 }, { "name": "sports", "id": 65 }, { "name": "thriller", "id": 74 }],
+		genres: [{ "name": "action", "id": 57 }, { "name": "adventure", "id": 58 }, { "name": "comedy", "id": 59 }, { "name": "drama", "id": 60 }, { "name": "fantasy", "id": 77 }, { "name": "horror", "id": 71 }, { "name": "kids", "id": 95 }, { "name": "mystery", "id": 63 }, { "name": "psychological", "id": 73 }, { "name": "romance", "id": 67 }, { "name": "school", "id": 78 }, { "name": "sci-fi", "id": 61 }, { "name": "sports", "id": 65 }, { "name": "thriller", "id": 74 }],
 		selected_genre_names: [],
 	}),
 	methods: {
 		...mapActions(['getAnimes', 'getAnimeDetails', 'getLastReleases']),
-		...mapMutations(['SET_CURRENT_ANIME', 'ADD_PREFERRED_GENRE', 'REMOVE_PREFERRED_GENRE', 'SET_NOTIFICATION', 'REMOVE_FROM_FAVORITES', 'REMOVE_FROM_WATCHING']),
+		...mapMutations(['SET_CURRENT_ANIME', 'ADD_PREFERRED_GENRE', 'REMOVE_PREFERRED_GENRE', 'SET_NOTIFICATION', 'REMOVE_FROM_FAVORITES', 'REMOVE_FROM_WATCHING', 'SET_SECTION_ORDER']),
 		loadAnimes() {
 			this.getting_animes = true;
 			this.getAnimes().then(res => {
@@ -121,31 +126,56 @@ export default {
 </script>
 <style lang="scss">
 .home {
-	background-image: url('./assets/doggo.jpg');
-	background-position: center center;
-	background-size: cover;
-	min-height: 100vh;
-	background-color: rgba(black, 0.75);
-	background-blend-mode: overlay;
 	padding-top: 90px;
+
+	.home-background {
+		position: fixed;
+		z-index: 0;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		transform: scaleX(-1);
+        filter: FlipH;
+		background-position: center center;
+		background-size: cover;
+		min-height: 100vh;
+		background-color: rgba(black, 0.75);
+		background-blend-mode: overlay;
+	}
+
+	.movie-carousels {
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+	}
+
 	.movie-carousel {
 		display: flex;
 		overflow-x: auto;
 		padding-bottom: 10px;
 	}
+
 	.carousel-wrapper {
 		//flex: 1;
 		overflow-x: auto;
 	}
+
 	.two-in-one {
 		display: grid;
 		grid-template-columns: 1fr;
 		grid-column-gap: 20px;
 	}
+
 	.categories-carousel,
 	.carousel-wrapper {
 		//margin-left: 10px;
 	}
+}
+
+.home-background~* {
+	z-index: 1;
+	position: relative;
 }
 
 

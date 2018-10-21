@@ -40,6 +40,7 @@ export default new Vuex.Store({
         },
         downloaded_percentage: 0,
         blocked_region: null,
+        home_sections_order: ['trending', 'continue', 'fresh', 'staff', 'favorites']
     },
     mutations: {
         SET_ANIMES(state, payload) {
@@ -90,13 +91,6 @@ export default new Vuex.Store({
         },
         SET_WINDOW_MODE(state, payload) {
             state.window_mode = payload;
-            // if(payload === 'full') {
-            // document.body.requestFullScreen();
-            // remote.getCurrentWindow().setFullScreen(true);
-            // } else {
-            // document.body.exitFullscreen();
-            // remote.getCurrentWindow().setFullScreen(false);
-            // }
         },
         SET_CURRENT_TIME(state, payload) {
             if (!state.animes_w_details) return;
@@ -133,6 +127,18 @@ export default new Vuex.Store({
         HELP_US(state, payload) {
             state.help_us = payload;
         },
+        SET_SECTION_ORDER(state, {order, direction}) {
+            let crr_idx = parseInt(order) - 1;
+            let new_idx = direction === 'up' ? crr_idx - 1 : crr_idx + 1;
+            console.log(`Current index: ${crr_idx}. New index: ${new_idx}`);
+            let new_order = state.home_sections_order.slice(0);
+            let section_name = state.home_sections_order[crr_idx]; 
+            new_order.splice(crr_idx, 1);
+            new_order.splice(new_idx, 0, section_name);
+            console.log('Old order:', state.home_sections_order);
+            console.log('New order:', new_order);
+            state.home_sections_order = new_order;
+        }
     },
     actions: {
         getAnimes({ state, commit }, params) {
@@ -237,7 +243,7 @@ export default new Vuex.Store({
             return result;
         },
         favorite_animes: (state) => {
-            return state.favorite_animes.map(anime => {
+            return state.favorite_animes.length > 0 && state.favorite_animes.map(anime => {
                 let poster = anime.poster.includes('.masterani.me') ? anime.poster : `https://cdn.masterani.me/poster/1/${anime.poster}`;
                 return { ...anime.info, ['genres']: anime.genres, ['poster']: poster };
             });
@@ -254,7 +260,13 @@ export default new Vuex.Store({
         },
         searched: (state) => {
             return state.searched_animes;
+        },
+        sections_order: (state) => {
+            return state.home_sections_order.reduce((b, a, idx) => {
+                b[a] = { name: a, order: idx+1};
+                return b;
+            }, {});
         }
     },
-    plugins: debug ? [createPersistedState()] : [createPersistedState()],
+    plugins: debug ? [] : [createPersistedState()],
 });

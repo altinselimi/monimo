@@ -1,11 +1,16 @@
 <template>
-    <div class="movie-card" :class="{result: screen}">
+    <div class="movie-card" :class="{'result': screen, 'wireframe': wireframe}">
         <div class="loader" v-if="showLoader">
             <LoaderIcon />
         </div>
         <div v-if="loading" class="loading"></div>
         <div class="contents" v-if="!loading">
-            <div class="background">
+            <div class="wireframe-content" v-if="wireframe">
+                <slot name="empty-carousel">
+                    <small>Nothing to do here</small>
+                </slot>
+            </div>
+            <div class="background" v-if="movie">
                 <image-bypasser :source="movie.poster"></image-bypasser>
                 <div class="overlay">
                     <button class="unstyled remove" v-if="removable" @click.stop="$emit('remove')">
@@ -26,7 +31,7 @@ import { LoaderIcon, StarIcon, RemoveIcon, XCircleIcon } from 'vue-feather-icons
 import ImageBypasser from './image';
 
 export default {
-    props: ['movie', 'loading', 'showLoader', 'screen', 'removable'],
+    props: ['movie', 'loading', 'showLoader', 'screen', 'removable', 'wireframe'],
     components: {
         LoaderIcon,
         StarIcon,
@@ -53,9 +58,22 @@ $yellow: #fbbd08;
     max-height: var(--height);
     display: flex;
     background-color: white;
-    border-radius: 25px;
+    border-radius: 10px;
     overflow: hidden;
     margin: 15px;
+
+    &.wireframe {
+        background-color: rgba(black, .5);
+        backdrop-filter: blur(20px);
+        border: dashed 1px rgba(white, .8);
+        height: 100%;
+        display: flex;
+        align-items: center;
+        .wireframe-content {
+            color: rgba(white, .6);
+            padding: 15px;
+        }
+    }
 
     .loader {
         position: absolute;
@@ -103,7 +121,7 @@ $yellow: #fbbd08;
         opacity: 0;
         will-change: opacity;
         svg {
-            fill: rgba(red, .4);
+            fill: rgba(red, .66);
             stroke: white;
             width: 25px;
             height: 25px;

@@ -1,5 +1,5 @@
 <template>
-	<div class="image-wrapper" :class="{'loading': region_blocked && is_loading}">
+	<div class="image-wrapper" :class="{'loading': is_loading}">
 		<img :src="source" v-if="!region_blocked">
 		<img :src="base64_img" v-else>
 	</div>

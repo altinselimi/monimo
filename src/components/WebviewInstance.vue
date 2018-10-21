@@ -22,23 +22,23 @@ const video_player_style = `
     }
 
     video::-webkit-media-controls-play-button {
-    	color: red;
-    	transform: scale(1.2);
+        color: red;
+        transform: scale(1.2);
     }
 
     video::-webkit-media-controls-fullscreen-button, video::-webkit-media-controls-volume-slider,
     video::-webkit-media-controls-fullscreen-button {
-    	display: none;
+        display: none;
     }
 
     video::-webkit-media-controls-panel {
-	    background-color: rgba(255,255,255,.8);
-	    backdrop-filter: blur(15px);
-	}
+        background-color: rgba(255,255,255,.8);
+        backdrop-filter: blur(15px);
+    }
 
-	video::-webkit-media-controls-timeline {
-	    background-color: grey;
-	}
+    video::-webkit-media-controls-timeline {
+        background-color: grey;
+    }
 `;
 
 export default {
