@@ -14,7 +14,7 @@
                 {{notification.message}}
                 <div slot="buttons" class="buttons">
                     <button style="width: 80px;" @click="updateApp()">Now</button>
-                    <button @click="notificationVisibility = false">Later</button>
+                    <button @click="notificationVisibility = false, update_available = false">Later</button>
                 </div>
             </alert>
             <alert :visibility.sync="helpUs" :persistent="true">
@@ -59,9 +59,16 @@ export default {
         this.SET_NOTIFICATION({ message: null, type: null });
     },
     created() {
+        if (this.system() === 'mac') {
+        ipcRenderer.on('update-available', (e, response) => {
+            this.SET_NOTIFICATION({ message: 'New version available. Want to update ?', type: 'info', persist: true });
+            this.update_available = response;
+        });
+        } else {
         ipcRenderer.on('download-progress', (event, progressObj) => {
             this.SET_DOWNLOADED_PERCENTAGE(progressObj.percent);
         });
+        }
     },
     computed: {
         ...mapState({
@@ -73,7 +80,7 @@ export default {
         }),
         notificationVisibility: {
             get() {
-                return !!this.notification.message;
+                return !!this.notification.message || this.update_available;
             },
             set(val) {
                 if (!val) this.SET_NOTIFICATION({ message: null, type: null })
@@ -96,10 +103,18 @@ export default {
         getBack() {
             this.$router.go(-1);
         },
+        system() {
+            if (navigator.platform.indexOf('Mac') > -1) return 'mac';
+            return 'windows';
+        },
         updateApp() {
             this.SET_DOWNLOADED_PERCENTAGE(0);
             this.notificationVisibility = false;
-            ipcRenderer.send('installUpdate');
+            if (this.system() === 'mac') {
+                shell.openExternal('http://monimoapp.com/');
+            } else {
+                ipcRenderer.send('installUpdate');
+            }
         },
         openHelpLink() {
             shell.openExternal('http://monimoapp.com/#help-us');
