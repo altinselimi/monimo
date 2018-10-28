@@ -1,14 +1,14 @@
 <template>
-    <div class="carousel-wrapper" :style="`order: ${order}`">
+    <div class="carousel-wrapper" :style="`order: ${order}`" :class="`item-${order}`">
         <div class="carousel-title">
             <h3 v-if="title">{{title}}
                 <span>{{ genres ? `from ${genres}` : ''}}</span>
             </h3>
             <div class="carousel-actions" style="margin-left: auto; margin-right: 10px;">
-                <button @click="$emit('changeOrder', {order: order, direction: 'up'})" v-show="order > 1">
+                <button @click="orderChanged('up')" v-show="order > 1">
                     <arrow-up-icon></arrow-up-icon>
                 </button>
-                <button @click="$emit('changeOrder', {order: order, direction: 'down'})">
+                <button @click="orderChanged('down')">
                     <arrow-up-icon style="transform: rotate(180deg)"></arrow-up-icon>
                 </button>
                 <button :class="{'shuffled': shuffle}" @click="shuffle = !shuffle">
@@ -45,7 +45,7 @@ export default {
     props: ['movies', 'sectionOrder', 'willAppear', 'message', 'loading', 'title', 'showLoader', 'selectedGenres', 'isResult', 'removable'],
     components: {
         movieCard: () =>
-            import ('./movie-card.vue'),
+            import('./movie-card.vue'),
         ShuffleIcon,
         ArrowUpIcon
     },
@@ -74,9 +74,14 @@ export default {
             c = a.length;
             while (c) b = Math.random() * c-- | 0, d = a[c], a[c] = a[b], a[b] = d;
             return a;
+        },
+        orderChanged(direction) {
+            this.$emit('changeOrder', { order: this.order, direction: direction });
+            let target_for_scroll = document.querySelector(`.item-${direction === 'up' ? this.order - 1 : this.order + 1 }`);
+            target_for_scroll.scrollIntoView({ behavior: "smooth" });
         }
     },
-};
+}
 </script>
 <style lang="scss">
 $blue: #03A9F4;
