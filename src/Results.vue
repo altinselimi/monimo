@@ -1,7 +1,7 @@
 <template>
 	<div class="results">
 		<headerr></headerr>
-		<movie-carousel :showLoader="getting_anime_info" :movies="getting_animes ? [1,2,3,4,5,6,7]: results" :title="result()" :filteredSeries="selected_genre_names" @navigate="openAnime" :loading="getting_animes" :isResult="true"></movie-carousel>
+		<movie-carousel :sectionOrder="1" :showLoader="getting_anime_info" :movies="getting_animes ? [1,2,3,4,5,6,7]: results" :title="result()" :filteredSeries="selected_genre_names" @navigate="openAnime" :loading="getting_animes" :isResult="true"></movie-carousel>
 	</div>
 </template>
 <script>
