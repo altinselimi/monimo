@@ -1,7 +1,7 @@
 <template>
     <div class="wrapper" v-if="current_anime">
         <div class="background-wrap">
-            <div class="background-top" :style="`background-image: url('${wallpaper}')`">
+            <div class="background-top" :style="{backgroundImage: `url('${wallpapertest}')`}">
             </div>
             <div class="overlay"></div>
         </div>
@@ -82,12 +82,13 @@
 <script>
 import { mapActions, mapMutations, mapState } from 'vuex';
 import { HeartIcon } from 'vue-feather-icons'
-
+import { bypassWallpaper } from './utils';
 export default {
     name: 'anime-profile',
     data: () => ({
         start_episode: null,
         show_trailer: false,
+        wallpapertest: ''
     }),
     components: {
         episodeCard: () =>
@@ -100,8 +101,27 @@ export default {
         console.log('anime profile mounted', this.$route.params);
         this.getAnimeDetails(this.$route.params.id); //fetch the anime details again. this includes episodes.
     },
+    // mounted() {
+    //   //do something after mounting vue instance
+    //   let { wallpapers } = this.current_anime;
+    //   if (this.region_blocked) {
+    //     if (!wallpapers || wallpapers.length === 0) {
+    //       bypassWallpaper(this.animeWithDetails.poster).then(response => {
+    //         this.wallpapertest = response;
+    //       });
+    //     }
+    //     const selectedWallpaper = `https://cdn.masterani.me/wallpaper/0/${wallpapers[this.getRandomInt(wallpapers.length)].file}`;
+    //     bypassWallpaper(selectedWallpaper).then(response => {
+    //       this.wallpapertest = response;
+    //     });
+    //   } else {
+    //     if (!wallpapers || wallpapers.length === 0) this.wallpapertest = this.animeWithDetails.poster;
+    //     this.wallpapertest = `https://cdn.masterani.me/wallpaper/0/${wallpapers[this.getRandomInt(wallpapers.length)].file}`;
+    //   }
+    // },
     computed: {
         ...mapState({
+            region_blocked: state => state.blocked_region,
             current_anime: state => state.current_anime,
             favorite_animes: state => state.favorite_animes,
             animes_w_details: state => state.animes_w_details,
@@ -113,9 +133,28 @@ export default {
             return this.animes_w_details && this.animes_w_details[this.current_anime.info.id];
         },
         wallpaper() {
+            let retURL = ''
             let { wallpapers } = this.current_anime;
-            if (!wallpapers || wallpapers.length === 0) return this.animeWithDetails.poster;
-            return this.current_anime && `https://cdn.masterani.me/wallpaper/0/${wallpapers[this.getRandomInt(wallpapers.length)].file}`;
+            if (this.region_blocked) {
+              if (!wallpapers || wallpapers.length === 0) {
+                bypassWallpaper(this.source).then(response => {
+                  return response;
+          			});
+              }
+              const selectedWallpaper = `https://cdn.masterani.me/wallpaper/0/${wallpapers[this.getRandomInt(wallpapers.length)].file}`;
+              bypassWallpaper(selectedWallpaper).then(response => {
+                console.log('I am being called!');
+                retURL = response;
+                this.wallpapertest = retURL;
+              });
+              // const res = bypassWallpaper(selectedWallpaper);
+              // retURL = res;
+            } else {
+              if (!wallpapers || wallpapers.length === 0) return this.animeWithDetails.poster;
+              return this.current_anime && `https://cdn.masterani.me/wallpaper/0/${wallpapers[this.getRandomInt(wallpapers.length)].file}`;
+            }
+          console.log(retURL);
+          return retURL
         },
         wasWatching() {
             let { watching, episodes } = this.animeWithDetails;
