@@ -29,10 +29,10 @@
     "vuex-router-sync": "^5.0.0"
   },
   "devDependencies": {
-    "@vue/cli-plugin-babel": "^3.0.3",
-    "@vue/cli-plugin-eslint": "^3.0.3",
-    "@vue/cli-plugin-pwa": "^3.0.3",
-    "@vue/cli-service": "^3.0.3",
+    "@vue/cli-plugin-babel": "^3.3.0",
+    "@vue/cli-plugin-eslint": "^3.3.0",
+    "@vue/cli-plugin-pwa": "^3.3.0",
+    "@vue/cli-service": "^3.3.0",
     "concurrently": "^4.0.1",
     "electron": "^2.0.9",
     "node-sass": "^4.9.0",
