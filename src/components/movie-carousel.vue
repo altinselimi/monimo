@@ -17,7 +17,7 @@
             </div>
         </div>
         <ul class="movie-carousel" :class="isResult?'result':'normal'" v-if="movies">
-            <li v-for="movie in movieList" v-if="movie">
+            <li v-for="movie in movieList" :key="movie.anime_id" :v-if="movie">
                 <a tabindex="0">
                     <movie-card :removable="removable" :movie="movie" @remove="$emit('remove', movie)" @click.native="$emit('navigate', movie)" :showLoader="movie.id === showLoader" :loading="loading" :screen="isResult">
                     </movie-card>
