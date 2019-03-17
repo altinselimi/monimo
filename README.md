@@ -5,6 +5,12 @@
 
 > Your anime best fren.
 
+# APPLICATION IS CURRENTLY NOT WORKING
+Hello good people, with the demise of **Masterani** a chapter is closed in our books too. Our application relied heavily on their service to provide our users with the experience we previously did. 
+What does that mean for Monimo?
+It basically means we are refugees just like you. But while you are looking for a website, we are looking for a service that feeds us data, which we can use to bring our beloved application back to life.
+An announcment will be made when that happens. Till then, Sayonara mother*******s !
+
 ## Idea
 For people that love animes, there are not tons of great choices. Crunchyroll just sucks. Netflix selection sucks too. So what if we had something that offers a kick-ass experience with all the animes you can watch, for the awesome price of 0$ a month ?
 
