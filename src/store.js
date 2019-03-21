@@ -4,6 +4,7 @@ import Vue from 'vue';
 import real_api from './api';
 import cloudflare_bypass_api from './api_cloudflare_bypass.js';
 let api_module = real_api;
+// let api_module = cloudflare_bypass_api;
 
 import createPersistedState from 'vuex-persistedstate';
 import hardcoded_data from './hardcoded_data.js';
