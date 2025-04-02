@@ -24,10 +24,10 @@
                     <button @click="helpUs = false">Nope</button>
                 </div>
             </alert>
-            <alert :visibility="blocked_region" :persistent="false" :duration="80" type="alert">
+            <!-- <alert :visibility="blocked_region" :persistent="false" :duration="80" type="alert">
                 Your region is blocked from the anime servers. Please try a VPN solution and set country as US/Europe until we fix this.
                 <div slot="buttons"></div>
-            </alert>
+            </alert> --> <!-- This is not needed when using the api that bypasses cloudflare-->
         </div>
         <transition name="fade" mode="out-in">
             <router-view :key="$route.fullPath"></router-view>

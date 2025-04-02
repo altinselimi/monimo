@@ -28,7 +28,7 @@ function renderVue() {
 	new Vue({
 		render: h => h(App),
 	}).$mount('#app')
-};
+}
 
 async function bootstrapApp() {
 	let result;
@@ -37,8 +37,9 @@ async function bootstrapApp() {
 		store.commit('SET_REGION_BLOCKED', false);
 	} catch (err) {
 		store.commit('SET_REGION_BLOCKED', true);
+		result = await store.dispatch('getLastReleases');
 	}
 	renderVue();
-};
+}
 
 bootstrapApp();
